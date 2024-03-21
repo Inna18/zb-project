@@ -1,15 +1,15 @@
 import styles from '../page.module.css'
 
 import React from 'react'
-import ModeSelector from './ModeSelector'
-import { useMode } from "../hooks/useMode";
+import ThemeModeSelector from './ThemeModeSelector'
+import { useThemeModeContext } from "../hooks/useThemeModeContext";
 
 const AppContainer = () => {
-  const { mode } = useMode();
+  const { mode } = useThemeModeContext();
 
   return (
     <div className={styles[mode]}>
-      <ModeSelector />
+      <ThemeModeSelector />
       <div className={styles.description}>Study Next.js, React & TypeScript</div>
     </div>
   )

@@ -7,33 +7,32 @@ interface Props {
     changeMode: ((mode: string) => void)
 } 
 
-export const ModeContext = createContext<Props>({
+export const ThemeModeContext = createContext<Props>({
     mode: "light",
     changeMode: ((mode: string) => {})
 });
 
-const themeReducer = (state: any, action: {type: string, payload: string}) => {
+const themeModeReducer = (state: Object, action: {type: string, payload: string}) => {
     switch (action.type) {
       case "CHANGE_MODE":
-        return { ...state, mode: action.payload }
+        return { mode: action.payload }
       default:
         return state;
     }
 }
 
-export const ModeProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(themeReducer, {
+export const ThemeModeProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(themeModeReducer, {
     mode: "light"
   });
 
   const changeMode = (mode: string) => {
-    console.log("mode: ", mode)
     dispatch({ type: "CHANGE_MODE", payload: mode })
   }
 
   return (
-    <ModeContext.Provider value={{ ...state, changeMode }}>
+    <ThemeModeContext.Provider value={{ ...state, changeMode }}>
       {children}
-    </ModeContext.Provider>
+    </ThemeModeContext.Provider>
   )
 }

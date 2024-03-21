@@ -1,11 +1,10 @@
 'use client'
 
 import {useContext} from "react";
-import {ModeContext} from "../context/ModeContext";
+import {ThemeModeContext} from "../context/ThemeModeContext";
 
-export const useMode = () => {
-  const context = useContext(ModeContext);
-  console.log(context)
+export const useThemeModeContext = () => {
+  const context = useContext(ThemeModeContext);
 
   if (context === undefined) {
     console.log("Error. Use this context inside ThemeProvider scope...")
