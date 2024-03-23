@@ -3,6 +3,7 @@ import styles from '../page.module.css'
 import React from 'react'
 import ThemeModeSelector from './ThemeModeSelector'
 import { useThemeModeContext } from "../hooks/useThemeModeContext";
+import PhotoList from './PhotoList';
 
 const AppContainer = () => {
   const { mode } = useThemeModeContext();
@@ -10,7 +11,7 @@ const AppContainer = () => {
   return (
     <div className={styles[mode]}>
       <ThemeModeSelector />
-      <div className={styles.description}>Study Next.js, React & TypeScript</div>
+      <PhotoList />
     </div>
   )
 }

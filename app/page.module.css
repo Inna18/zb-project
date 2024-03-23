@@ -4,6 +4,7 @@
 .light {
   min-height: 100vh;
   background-color: #ccc;
+  color: #000;
 }
 .dark {
   min-height: 100vh;
@@ -74,4 +75,25 @@ input:checked + .sliderRound:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+}
+
+/* photoList styles */
+.photoSearch {
+  margin: 30px;
+}
+.photoSearch input {
+  padding: 10px 30px 10px 5px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.photoList {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
 }
