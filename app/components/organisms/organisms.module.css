@@ -1,0 +1,15 @@
+/* form */
+.form {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;   
+}
+.form-section {
+    margin: 10px 0;
+}
+.form-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
