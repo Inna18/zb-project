@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { InputHTMLAttributes } from 'react'
 
 import styles from "./atoms.module.css"
 
-type InputProps = {
-    type: string,
-    id: string,
-    className?: string,
-    placeholder: string
+interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
+  hasLabel: boolean,
+  labelText?: string
 }
 
 const Input = (inputProps: InputProps) => {
-  const { type, id, className, placeholder } = inputProps;
+  const { type, id, className, placeholder, hasLabel, labelText } = inputProps;
 
   return (
-    <input type={type} id={id} className={`${styles.input} ${className}`} placeholder={placeholder} />
+    <div className={styles['input-section']}>
+      {hasLabel && <label htmlFor={id}>{labelText}</label>}
+      <input type={type} id={id} className={`${styles.input} ${className}`} placeholder={placeholder} />
+    </div>
   )
 }
 
