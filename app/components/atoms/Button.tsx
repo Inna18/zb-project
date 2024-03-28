@@ -1,17 +1,14 @@
-import React from 'react'
+import React, { ButtonHTMLAttributes } from 'react'
 
 import styles from "./atoms.module.css"
 
-type ButtonProps = {
-    className?: string
-    text: string
-}
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{}
 
-const Button = (buttonProps: ButtonProps) => {
-  const { className, text } = buttonProps;
+const Button = (btnProps: ButtonProps) => {
+  const { className, value } = btnProps;
 
   return (
-    <button className={`${styles.button} ${className}`}>{text}</button>
+    <button className={`${styles.button} ${className}`}>{value}</button>
   )
 }
 

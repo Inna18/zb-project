@@ -1,15 +1,20 @@
-import React from 'react'
+import React, { InputHTMLAttributes } from 'react'
 
-type CheckboxProps = {
-    value: string,
-    id: string
+import styles from "./atoms.module.css"
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
+  hasLabel: boolean,
+  labelText?: string
 }
 
-const Checkbox = (checkboxProps: CheckboxProps) => {
-  const { id, value } = checkboxProps;
+const Checkbox = (inputProps: InputProps) => {
+  const { type, id, className, hasLabel, labelText } = inputProps;
 
   return (
-    <input type="checkbox" id={id} value={value} />
+    <div className={styles['checkbox-section']}>
+      <input type={type} id={id} className={`${styles.checkbox} ${className}`} />
+      {hasLabel && <label htmlFor={id}>{labelText}</label>}
+    </div>
   )
 }
 
