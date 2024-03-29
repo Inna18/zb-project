@@ -27,7 +27,7 @@ const LoginFormTemplate = () => {
 
   return (
     <form className={`${styles.form} ${styles['form-login']}`} onSubmit={handleSubmit}>
-      <h2>Login</h2>
+      <div className={styles.title}>LOGIN</div>
       <Form list={LIST} formType={"login"} userProps={userProperties} changeFunc={handleInputChange} />
       <div>
         <Checkbox type="checkbox" id="login-checkbox" hasLabel={true} labelText="Remember me" /> 

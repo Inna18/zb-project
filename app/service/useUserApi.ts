@@ -12,7 +12,7 @@ export default interface User {
 
 async function getUsers() {
     return client.fetch(
-        `*[_type == 'user']{
+        groq`*[_type == 'user']{
           email,
           password, 
           name, 

@@ -26,7 +26,7 @@ const SignupFornTemplate = () => {
 
   return (
     <form className={`${styles.form} ${styles['form-signup']}`} onSubmit={handleSubmit}>
-      <h2>Signup</h2>
+      <h2  className={styles.title}>SIGNUP</h2>
       <Form list={LIST} formType={"signup"} userProps={userProperties} changeFunc={handleInputChange}/>
       <div className={styles.button}>
         <Button value="Signup" />
@@ -36,7 +36,4 @@ const SignupFornTemplate = () => {
 }
 
 export default SignupFornTemplate
-function userState(): [any, any] {
-  throw new Error('Function not implemented.')
-}
 
