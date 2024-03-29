@@ -1,5 +1,3 @@
-'use client'
-
 import AppContainer from "./components/AppContainer";
 import { ThemeModeProvider } from "./context/ThemeModeContext";
 import styles from "./page.module.css";
