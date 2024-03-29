@@ -1,26 +1,24 @@
 /* login form */
 .form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 400px;
     background: #fff;
     padding: 20px;
     border: 1px solid #4d4d4d;
 }
+.button {
+    margin: 20px 0;
+}
 .form-login {
-    height: 320px;
+    height: 340px;
+}
+.login-checkbox {
+    align-self: start;
+    margin-right: 40px;
 }
 .form-signup {
-    height: 440px;
-}
-.input {
-    width: 260px;
-    height: 30px;
-}
-.checkbox {
-    margin: 5px 72px;
-}
-
-.button {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    height: 460px;
 }

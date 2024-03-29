@@ -1,15 +1,12 @@
-import React from 'react'
+import React, { LinkHTMLAttributes } from 'react'
 
-type LinkProps = {
-    to: string,
-    text: string
-}
+interface LinkProps extends LinkHTMLAttributes<HTMLLinkElement>{}
 
-const Link = (linkProps: LinkProps) => {
-  const { to, text } = linkProps;
+const Link = (linkProps: LinkProps, text: string) => {
+  const { href } = linkProps;
 
   return (
-    <a href={to}>{text}</a>
+    <a href={href}>{text}</a>
   )
 }
 

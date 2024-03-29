@@ -1,26 +1,29 @@
 import React from 'react'
-import Form from '../organisms/Form'
-import CheckboxWithLabel from '../molecules/CheckboxWithLabel'
+import Form from '../molecules/Form'
 import Button from "../atoms/Button"
-import InputWithLabel from '../molecules/InputWithLabel'
+import Checkbox from '../atoms/Checkbox'
 
 import styles from "./templates.module.css"
 
+const LIST = [
+  ["email", "login-email", "login", "Insert email", "Email"],
+  ["password", "login-password", , "Insert password", "Password"]
+]
+
 const LoginFormTemplate = () => {
+
   return (
     <form className={`${styles.form} ${styles['form-login']}`}>
-      <Form title="Login" inputList={[
-        <InputWithLabel inputType="email" inputId="login-email" inputClass={styles.input} inputPlaceholder="Insert email" labelValue="Email" />,
-        <InputWithLabel inputType="password" inputId="login-password" inputClass={styles.input} inputPlaceholder="Insert password" labelValue="Password" />
-      ]}  />
-      <div className={styles.checkbox}>
-        <CheckboxWithLabel checkboxId="login" checkboxValue="true" labelValue="Remember me" /> 
+      <h2>Login</h2>
+      <Form list={LIST} />
+      <div>
+        <Checkbox type="checkbox" id="login-checkbox" hasLabel={true} labelText="Remember me" /> 
       </div>
       <div className={styles.button}>
-        <Button text="Login" />
+        <Button value="Login"/>
       </div>
     </form>
   )
 }
 
-export default LoginFormTemplate
+export default LoginFormTemplate  
