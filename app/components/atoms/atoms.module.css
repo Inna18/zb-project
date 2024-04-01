@@ -2,26 +2,39 @@
 .button {
     width: 80px;
     height: 40px;
-    background-color: #467ddb;
+    background-color: #E58025;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 5px #E58025;
 }
 
 /* input */
 .input-section {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-gap: 10px;
+    align-items: center;
+    font-size: 12px;
+    color: rgb(36, 34, 32, .7)
 }
 .input {
     width: 300px;
     height: 30px;
     border-radius: 4px;
-    border: 1px solid #71788d;
+    border: 1px solid rgb(99, 96, 93, .4);
     padding-left: 4px;
 }
-
+.input::placeholder {
+    color: rgb(99, 96, 93, .3);
+}
 /* checkbox */
 .checkbox-section {
+    display: flex;
+    align-items: center;
     font-size: 12px;
+}
+.checkbox-section label {
+    margin-left: 6px;
 }
