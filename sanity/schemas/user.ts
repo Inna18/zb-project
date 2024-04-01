@@ -8,6 +8,12 @@ export default {
         { name: 'name', title: 'Name', type: 'string' },
         { name: 'address', title: 'Address', type: 'string' },
         { name: 'phoneNumber', title: 'Phone number', type: 'string' },
-        { name: 'profileImg', title: 'Profile image', type: 'image', options: { hotspot: true } },
+        { name: 'profileImg', title: 'Profile image', type: 'image', options: { hotspot: true }, fields: [
+            {
+                name: 'alt',
+                title: "Alt",
+                type: 'string'
+            }
+        ] },
     ]
 }

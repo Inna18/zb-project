@@ -29,12 +29,41 @@
 .input::placeholder {
     color: rgb(99, 96, 93, .3);
 }
+
 /* checkbox */
 .checkbox-section {
     display: flex;
     align-items: center;
     font-size: 12px;
+    color: rgb(36, 34, 32, .7)
 }
 .checkbox-section label {
     margin-left: 6px;
+}
+.checkbox {
+    border: 1px solid rgb(99, 96, 93, .4);
+}
+
+/* image */
+.image-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+.profile-img {
+    display: none;
+}
+.custom-img-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90px;
+    height: 30px;
+    font-size: 12px;
+    background-color: #fff;
+    border: 1px solid #E58025;
+    border-radius: 12px;
+    color: #E58025;
+    cursor: pointer;
 }

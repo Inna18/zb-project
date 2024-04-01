@@ -1,7 +1,6 @@
-import React, { InputHTMLAttributes, useEffect, useState } from 'react'
+import React, { InputHTMLAttributes } from 'react'
 
 import styles from "./atoms.module.css"
-import { capitalize } from '@/app/utils/utils'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement>{
   changeFunc: (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -14,7 +13,7 @@ const Input = (inputProps: InputProps) => {
 
   return (
     <div className={styles['input-section']}>
-      {hasLabel && <label htmlFor={id}>{capitalize(labelText)}</label>}
+      {hasLabel && <label htmlFor={id}>{labelText}</label>}
       <input type={type} id={id} className={`${styles.input} ${className}`} placeholder={placeholder} name={name} value={value} onChange={changeFunc}/>
     </div>
   )

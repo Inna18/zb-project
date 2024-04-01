@@ -7,7 +7,7 @@ export default interface User {
     name?: string,
     address?: string,
     phoneNumber?: string,
-    profileImg?: any
+    profileImg?: File
 }
 
 async function getUsers() {
@@ -18,7 +18,7 @@ async function getUsers() {
           name, 
           address, 
           phoneNumber,
-          profileImg
+          profileImg {alt, 'image': asset->url},
         }`
       )
 }
@@ -31,6 +31,8 @@ async function getUser(emailProp: string) {
 }
 
 async function createUser(user: User) {
+    const uploadedImg = user.profileImg ? await client.assets.upload('image', user.profileImg) : null
+
     const sanityUser = {
       _type: 'user',
       email: user.email,
@@ -38,10 +40,20 @@ async function createUser(user: User) {
       name: user.name, 
       address: user.address,
       phoneNumber: user.phoneNumber,
-      profileImg: user.profileImg
+      profileImg: uploadedImg?{
+        _type: 'image',
+        asset: {
+          _type: 'reference',
+          _ref: uploadedImg?._id,
+        },
+      }:undefined
     }
-    const result = client.create(sanityUser)
+    const result = await client.create(sanityUser)
     return result;
 }
 
-export { getUsers, getUser, createUser }
+async function deleteAllUsers() {
+  await client.delete({query: `*[_type == 'user']`})
+}
+
+export { getUsers, getUser, createUser, deleteAllUsers }

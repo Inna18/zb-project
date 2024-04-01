@@ -1,6 +1,3 @@
-import AppContainer from "./components/AppContainer";
-import { ThemeModeProvider } from "./context/ThemeModeContext";
-import styles from "./page.module.css";
 import { Inter } from 'next/font/google';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -14,10 +11,10 @@ export default function Home() {
         }
       `}
       </style>
-      <main className={styles.main}>
-        <ThemeModeProvider>
+      <main>
+        {/* <ThemeModeProvider>
           <AppContainer />
-        </ThemeModeProvider>
+        </ThemeModeProvider> */}
       </main>
     </>
   

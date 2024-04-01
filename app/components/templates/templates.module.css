@@ -19,6 +19,16 @@
     margin-bottom: 30px;
     font-weight: 500;
 }
+.image-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 11px;
+    color: #8e8e8e;
+}
+.image-section div {
+    margin-left: 10px;
+}
 .form-login {
     height: 360px;
 }

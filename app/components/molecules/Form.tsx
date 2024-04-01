@@ -2,6 +2,7 @@ import React from 'react'
 import Input from '../atoms/Input';
 
 import styles from "./molecules.module.css"
+import { capitalize } from '@/app/utils/text';
 
 interface FormProps {
   list: (string)[],
@@ -22,7 +23,7 @@ const Form = (formProps: FormProps) => {
                className={formType} 
                placeholder={`Insert ${input}`} 
                hasLabel={true} 
-               labelText={input} 
+               labelText={capitalize(input)} 
                name={input}
                value={userProps[idx]} 
                changeFunc={changeFunc}/> 
@@ -32,8 +33,3 @@ const Form = (formProps: FormProps) => {
 }
 
 export default Form
-
-const LIST = [
-  ["email", "login-email", "login", "Insert email", "Email"],
-  ["password", "login-password", , "Insert password", "Password"]
-]
