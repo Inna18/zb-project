@@ -1,13 +1,15 @@
-import React from 'react'
-import { getUsers } from "@/app/service/useUserApi"
+import styles from '../page.module.css'
 
-const AppContainer = async () => {
-  const users = await getUsers();
-  console.log(users)
+import React from 'react'
+import ThemeModeSelector from './ThemeModeSelector'
+import { useThemeModeContext } from "../hooks/useThemeModeContext";
+
+const AppContainer = () => {
+  const { mode } = useThemeModeContext();
 
   return (
-    <div>
-      
+    <div className={styles[mode]}>
+      <ThemeModeSelector />
     </div>
   )
 }

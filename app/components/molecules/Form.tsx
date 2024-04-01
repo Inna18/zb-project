@@ -2,31 +2,18 @@ import React from 'react'
 import Input from '../atoms/Input';
 
 import styles from "./molecules.module.css"
-import { capitalize } from '@/app/utils/text';
 
 interface FormProps {
-  list: (string)[],
-  formType: string,
-  userProps: (string | undefined)[],
-  changeFunc: (e: React.ChangeEvent<HTMLInputElement>) => void
+  list: (string | undefined)[][]
 }
 
 const Form = (formProps: FormProps) => {
-  const { list, formType, userProps, changeFunc } = formProps;
+  const { list } = formProps;
 
   return (
     <div className={styles['input-list']}>
-      { list.map((input, idx) => (
-        <Input key={idx} 
-               type={input=='email'||input=='password'?input:'string'} 
-               id={`login-${input}`} 
-               className={formType} 
-               placeholder={`Insert ${input}`} 
-               hasLabel={true} 
-               labelText={capitalize(input)} 
-               name={input}
-               value={userProps[idx]} 
-               changeFunc={changeFunc}/> 
+      { list.map(input => (
+        <Input type={input[0]} id={input[1]} className={input[2]} placeholder={input[3]} hasLabel={true} labelText={input[4]} /> 
       ))}
     </div>
   )
