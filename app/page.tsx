@@ -1,15 +1,22 @@
-'use client'
+import { Inter } from 'next/font/google';
 
-import AppContainer from "./components/AppContainer";
-import { ThemeModeProvider } from "./context/ThemeModeContext";
-import styles from "./page.module.css";
+const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <ThemeModeProvider>
-        <AppContainer />
-      </ThemeModeProvider>
-    </main>
+    <>
+      <style jsx global>{`
+        html {
+          font-family: ${inter.style.fontFamily};
+        }
+      `}
+      </style>
+      <main>
+        {/* <ThemeModeProvider>
+          <AppContainer />
+        </ThemeModeProvider> */}
+      </main>
+    </>
+  
   );
 }
