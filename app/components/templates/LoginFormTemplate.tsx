@@ -21,8 +21,7 @@ const LoginFormTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let userExist = await getUser(loginUser.email);
-    console.log('user exists in DB: ', ...userExist)
+    await getUser(loginUser.email);
   }
 
   return (
