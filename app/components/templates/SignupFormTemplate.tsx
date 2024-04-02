@@ -4,7 +4,7 @@ import styles from './templates.module.css';
 import React, { useState } from 'react';
 import Form from '../molecules/Form';
 import Button from '../atoms/Button';
-import Image from '../atoms/Image';
+import ImageUpload from '../atoms/ImageUpload';
 import User, { createUser } from '@/app/service/useUserApi';
 import { limit } from '@/app/utils/text';
 import { useRouter } from 'next/navigation';
@@ -52,7 +52,7 @@ const SignupFornTemplate = () => {
         required={true}
       />
       <div className={styles['image-section']}>
-        <Image uploadImg={handleImageUpload} />
+        <ImageUpload uploadImg={handleImageUpload} />
         <div>{limit(imgName, 20)}</div>
       </div>
       <div className={styles.button}>

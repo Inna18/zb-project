@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginFormTemplate from '../components/templates/LoginFormTemplate';
+import LoginFormTemplate from '../../../components/templates/LoginFormTemplate';
 
 import styles from './page.module.css';
 

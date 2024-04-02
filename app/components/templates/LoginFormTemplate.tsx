@@ -27,7 +27,7 @@ const LoginFormTemplate = () => {
       loginUser.email,
       loginUser.password
     );
-    if (res) router.push('/');
+    if (res) router.push('/home');
   };
 
   return (

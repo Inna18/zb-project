@@ -15,7 +15,6 @@ export default function Home() {
         `}
       </style>
       <main>
-        <div>Welcome</div>
         {/* <ThemeModeProvider>
           <AppContainer />
         </ThemeModeProvider> */}
