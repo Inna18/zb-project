@@ -19,6 +19,7 @@ const Input = (inputProps: InputProps) => {
     changeFunc,
     hasLabel,
     labelText,
+    required,
   } = inputProps;
 
   return (
@@ -32,6 +33,7 @@ const Input = (inputProps: InputProps) => {
         name={name}
         value={value}
         onChange={changeFunc}
+        required={required}
       />
     </div>
   );

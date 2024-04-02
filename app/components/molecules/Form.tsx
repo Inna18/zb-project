@@ -5,6 +5,7 @@ import styles from './molecules.module.css';
 import { capitalize } from '@/app/utils/text';
 
 interface FormProps {
+  required?: boolean;
   list: string[];
   formType: string;
   userProps: (string | undefined)[];
@@ -12,7 +13,7 @@ interface FormProps {
 }
 
 const Form = (formProps: FormProps) => {
-  const { list, formType, userProps, changeFunc } = formProps;
+  const { required, list, formType, userProps, changeFunc } = formProps;
 
   return (
     <div className={styles['input-list']}>
@@ -28,6 +29,7 @@ const Form = (formProps: FormProps) => {
           name={input}
           value={userProps[idx]}
           changeFunc={changeFunc}
+          required={required}
         />
       ))}
     </div>

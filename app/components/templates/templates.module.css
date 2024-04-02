@@ -19,6 +19,13 @@
   margin-bottom: 30px;
   font-weight: 500;
 }
+.link a {
+  color: #8e8e8e;
+  font-size: 11px;
+}
+.link a:visited {
+  color: #8e8e8e;
+}
 .image-section {
   display: flex;
   justify-content: center;

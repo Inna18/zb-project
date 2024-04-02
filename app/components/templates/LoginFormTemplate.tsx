@@ -1,16 +1,18 @@
 'use client';
+import styles from './templates.module.css';
 
 import React, { useState } from 'react';
 import Form from '../molecules/Form';
 import Button from '../atoms/Button';
 import Checkbox from '../atoms/Checkbox';
-
-import styles from './templates.module.css';
-import User, { getUser } from '@/app/service/useUserApi';
+import User, { getUserByEmailAndPassword } from '@/app/service/useUserApi';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const LIST = ['email', 'password'];
 
 const LoginFormTemplate = () => {
+  const router = useRouter();
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
 
@@ -21,7 +23,11 @@ const LoginFormTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await getUser(loginUser.email);
+    let res = await getUserByEmailAndPassword(
+      loginUser.email,
+      loginUser.password
+    );
+    if (res) router.push('/');
   };
 
   return (
@@ -35,6 +41,7 @@ const LoginFormTemplate = () => {
         formType={'login'}
         userProps={userProperties}
         changeFunc={handleInputChange}
+        required={true}
       />
       <div>
         <Checkbox
@@ -46,6 +53,9 @@ const LoginFormTemplate = () => {
       </div>
       <div className={styles.button}>
         <Button value='Login' />
+      </div>
+      <div className={styles.link}>
+        <Link href={'/signup'}>Signup</Link>
       </div>
     </form>
   );

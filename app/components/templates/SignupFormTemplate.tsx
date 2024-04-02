@@ -1,24 +1,25 @@
 'use client';
+import styles from './templates.module.css';
 
 import React, { useState } from 'react';
 import Form from '../molecules/Form';
 import Button from '../atoms/Button';
 import Image from '../atoms/Image';
-import User, { createUser, deleteAllUsers } from '@/app/service/useUserApi';
-
-import styles from './templates.module.css';
+import User, { createUser } from '@/app/service/useUserApi';
 import { limit } from '@/app/utils/text';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const LIST = ['email', 'password', 'name'];
 
 const SignupFornTemplate = () => {
+  const router = useRouter();
   const [signUser, setSignUser] = useState<User>({
     email: '',
     password: '',
     name: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
-
   const userProperties = [signUser.email, signUser.password, signUser.name];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +34,8 @@ const SignupFornTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createUser(signUser);
+    let res = await createUser(signUser);
+    if (res) router.push('/login');
   };
 
   return (
@@ -47,6 +49,7 @@ const SignupFornTemplate = () => {
         formType={'signup'}
         userProps={userProperties}
         changeFunc={handleInputChange}
+        required={true}
       />
       <div className={styles['image-section']}>
         <Image uploadImg={handleImageUpload} />
@@ -54,6 +57,9 @@ const SignupFornTemplate = () => {
       </div>
       <div className={styles.button}>
         <Button value='Signup' />
+      </div>
+      <div className={styles.link}>
+        <Link href={'/login'}>Login</Link>
       </div>
     </form>
   );
