@@ -1,14 +1,12 @@
-import React from 'react'
-import ChangeModeBtn from './ChangeModeBtn'
+import React from 'react';
+import ChangeModeBtn from './ChangeModeBtn';
 
 const ThemeModeSelector = () => {
+  return (
+    <div>
+      <ChangeModeBtn />
+    </div>
+  );
+};
 
-return (
-<div>
-    <ChangeModeBtn />
-</div>
-)
-
-}
-
-export default ThemeModeSelector
+export default ThemeModeSelector;

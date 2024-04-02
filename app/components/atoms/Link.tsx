@@ -1,13 +1,11 @@
-import React, { LinkHTMLAttributes } from 'react'
+import React, { LinkHTMLAttributes } from 'react';
 
-interface LinkProps extends LinkHTMLAttributes<HTMLLinkElement>{}
+interface LinkProps extends LinkHTMLAttributes<HTMLLinkElement> {}
 
 const Link = (linkProps: LinkProps, text: string) => {
   const { href } = linkProps;
 
-  return (
-    <a href={href}>{text}</a>
-  )
-}
+  return <a href={href}>{text}</a>;
+};
 
-export default Link
+export default Link;
