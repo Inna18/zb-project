@@ -1,5 +1,3 @@
-import styles from '@/app/(pages)/globals.module.css';
-
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import NavbarTemplate from '@/app/components/templates/NavbarTemplate';
@@ -17,11 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={`${inter.className} ${styles.body}`}>
-        <NavbarTemplate />
-        {children}
-      </body>
-    </html>
+    <>
+      <NavbarTemplate />
+      {children}
+    </>
+    
   );
 }
