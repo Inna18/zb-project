@@ -66,3 +66,24 @@
   color: #e58025;
   cursor: pointer;
 }
+
+/* dropdown */
+.dropdown-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  padding: 5px 10px;
+  width: 100px;
+  top: 40px;
+  right: -28px;
+  background-color: #f5efeb;
+  border: 1px solid #f5efeb;
+  border-radius: 4px;
+  box-shadow: 0 10px 10px rgb(36, 34, 32, 0.3);
+}
+.dropdown-section li {
+  list-style-type: none;
+  margin: 10px 0;
+  padding: 0;
+}

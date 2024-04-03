@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
@@ -14,7 +13,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div className={`${inter.className}`}>{children}</div>
-  );
+  return <div className={`${inter.className}`}>{children}</div>;
 }

@@ -15,3 +15,6 @@
   text-underline-offset: 4px;
   color: inherit;
 }
+.link {
+  position: relative;
+}
