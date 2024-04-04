@@ -12,83 +12,26 @@ export default interface User {
 const BASE_QUERY = `*[_type == 'user']`;
 
 async function getUsers() {
-  const query = `${BASE_QUERY}{
-    _id,
-    email,
-    password, 
-    name, 
-    address, 
-    phoneNumber,
-    profileImg {alt, 'image': asset->url},
-  }`;
-
-  try {
-    const response = await fetch(
-      `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v1/data/query/${process.env.NEXT_PUBLIC_SANITY_DATASET}?query=${query}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SANITY_AUTH_TOKEN}`,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error('Failed to fetch users');
-    }
-    const data = response.json();
-    console.log('All user fetched: ', data);
-    return data;
-  } catch (e) {
-    console.log('Error: ', e);
-    return null;
-  }
+  let res = await client.fetch(BASE_QUERY);
+  console.log("User list: ", res)
+  return res;
 }
 
 async function getUserByEmail(emailProp: string) {
-  // FIX: params not accepted in url, find method to fix...
-
-  try {
-    const response = await fetch(
-      `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v1/data/query/${process.env.NEXT_PUBLIC_SANITY_DATASET}?query=${BASE_QUERY}&$email="${emailProp}"&$name="Admin"`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SANITY_AUTH_TOKEN}`,
-        },
-      }
-    );
-    if (!response.ok) {
-      throw new Error('Failed to fetch user');
-    }
-    const data = response.json();
-    console.log('User fetched: ', data);
-  } catch (e) {
-    console.log('Error: ', e);
-  }
+  const query = `*[_type == 'user' && email == '${emailProp}'][0]`;
+  let res = await client.fetch(query);
+  console.log("User by email: ", res);
+  return res;
 }
 
 async function getUserByEmailAndPassword(
   emailProp: string,
   passwordProp: string
 ) {
-  // FIX: params not accepted in url, find method to fix...
-  let userList = await getUsers();
-  let isExists = false;
-
-  if (userList.result.length > 0) {
-    isExists = userList.result.find(
-      (el: User) => el.email === emailProp && el.password === passwordProp
-    );
-  }
-
-  if (isExists) {
-    return isExists;
-  } else {
-    console.log('User credentials are not valid');
-    return null;
-  }
+  const query = `*[_type == 'user' && email == '${emailProp}' && password == '${passwordProp}'][0]`;
+  let res = await client.fetch(query);
+  console.log("User by email & password: ", res);
+  return res;
 }
 
 async function createUser(user: User) {
@@ -112,76 +55,22 @@ async function createUser(user: User) {
         }
       : undefined,
   };
-  let userList = await getUsers(); // FIX: fix getUserByEmail and use this method
-  let isExists = false;
-
-  if (userList.result.length > 0) {
-    isExists = userList.result.find((el: User) => el.email === user.email);
-  }
-  if (!isExists) {
-    try {
-      const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v1/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SANITY_AUTH_TOKEN}`,
-          },
-          body: JSON.stringify({
-            mutations: [
-              {
-                create: sanityUser,
-              },
-            ],
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error('Failed to create new user');
-      }
-      const data = await response.json();
-      console.log('New user created');
-      return data;
-    } catch (e) {
-      console.log('Error: ', e);
-      return null;
-    }
+  
+  let existsInDB = await getUserByEmail(user.email);
+  if (existsInDB === null) {
+    let res = await client.create(sanityUser)
+    console.log("User created: ", res.email)
+    return res;
   } else {
-    console.log('User with this email already exists');
+    console.log("User already exists")
     return null;
   }
 }
 
 async function deleteAllUsers() {
-  try {
-    const response = await fetch(
-      `https://${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}.api.sanity.io/v1/data/mutate/${process.env.NEXT_PUBLIC_SANITY_DATASET}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SANITY_AUTH_TOKEN}`,
-        },
-        body: JSON.stringify({
-          mutations: [
-            {
-              delete: {
-                query: BASE_QUERY,
-              },
-            },
-          ],
-        }),
-      }
-    );
-    if (!response.ok) {
-      throw new Error('Failed to delete all users');
-    }
-    const data = await response.json();
-    console.log('All users deleted');
-  } catch (e) {
-    console.log('Error: ', e);
-  }
+  let res = await client.delete({query: BASE_QUERY});
+  console.log("Delete result: ", res);
+  return res;
 }
 
 export {
