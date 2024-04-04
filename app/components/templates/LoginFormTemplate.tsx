@@ -5,9 +5,10 @@ import React, { useState } from 'react';
 import Form from '../molecules/Form';
 import Button from '../atoms/Button';
 import Checkbox from '../atoms/Checkbox';
-import User, { getUserByEmailAndPassword } from '@/app/service/useUserApi';
+import User from '@/app/service/useUserApi';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signIn } from "next-auth/react";
 
 const LIST = ['email', 'password'];
 
@@ -23,11 +24,14 @@ const LoginFormTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let res = await getUserByEmailAndPassword(
-      loginUser.email,
-      loginUser.password
-    );
-    if (res) router.push('/home');
+    
+    const res = await signIn('credentials', {
+      email: loginUser.email,
+      password: loginUser.password,
+      redirect: false
+    });
+    console.log(res)
+    if (res?.ok) router.push('/home');
   };
 
   return (
