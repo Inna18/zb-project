@@ -12,16 +12,16 @@ export default interface User {
 const BASE_QUERY = `*[_type == 'user']`;
 
 async function getUsers() {
-  let res = await client.fetch(BASE_QUERY);
-  console.log("User list: ", res)
-  return res;
+  const userList = await client.fetch(BASE_QUERY);
+  console.log('User list: ', userList);
+  return userList;
 }
 
 async function getUserByEmail(emailProp: string) {
   const query = `*[_type == 'user' && email == '${emailProp}'][0]`;
-  let res = await client.fetch(query);
-  console.log("User by email: ", res);
-  return res;
+  const userByEmail = await client.fetch(query);
+  console.log('User by email: ', userByEmail);
+  return userByEmail;
 }
 
 async function getUserByEmailAndPassword(
@@ -29,9 +29,9 @@ async function getUserByEmailAndPassword(
   passwordProp: string
 ) {
   const query = `*[_type == 'user' && email == '${emailProp}' && password == '${passwordProp}'][0]`;
-  let res = await client.fetch(query);
-  console.log("User by email & password: ", res);
-  return res;
+  const userByEmailAndPassword = await client.fetch(query);
+  console.log('User by email & password: ', userByEmailAndPassword);
+  return userByEmailAndPassword;
 }
 
 async function createUser(user: User) {
@@ -55,22 +55,22 @@ async function createUser(user: User) {
         }
       : undefined,
   };
-  
-  let existsInDB = await getUserByEmail(user.email);
-  if (existsInDB === null) {
-    let res = await client.create(sanityUser)
-    console.log("User created: ", res.email)
-    return res;
+
+  const inDB = await getUserByEmail(user.email);
+  if (inDB === null) {
+    const userCreated = await client.create(sanityUser);
+    console.log('User created: ', userCreated.email);
+    return userCreated;
   } else {
-    console.log("User already exists")
+    console.log('User already exists');
     return null;
   }
 }
 
 async function deleteAllUsers() {
-  let res = await client.delete({query: BASE_QUERY});
-  console.log("Delete result: ", res);
-  return res;
+  const isDelete = await client.delete({ query: BASE_QUERY });
+  console.log('Delete result: ', isDelete);
+  return isDelete;
 }
 
 export {

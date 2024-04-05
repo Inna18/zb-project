@@ -1,7 +1,7 @@
-import React from 'react';
-import LoginFormTemplate from '../../../components/templates/LoginFormTemplate';
-
 import styles from './page.module.css';
+
+import React from 'react';
+import LoginFormTemplate from '@/app/components/templates/LoginFormTemplate';
 
 const Login = () => {
   return (

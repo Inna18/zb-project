@@ -11,8 +11,8 @@ export default function Home() {
 
   useEffect(() => {
     push('/home');
- }, []);
-  
+  }, []);
+
   return (
     <>
       <style jsx global>
@@ -22,8 +22,7 @@ export default function Home() {
           }
         `}
       </style>
-      <main>
-      </main>
+      <main></main>
     </>
   );
 }

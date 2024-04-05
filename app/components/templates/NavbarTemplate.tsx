@@ -1,11 +1,10 @@
 'use client';
-
 import styles from './templates.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Links from '../molecules/Links';
+import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
-import Dropdown from '../atoms/Dropdown';
+import Dropdown from '@/app/components/atoms/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
@@ -14,20 +13,24 @@ const MY = ['login', 'signup', 'cart'];
 const NavbarTemplate = () => {
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [username, setUsername] = useState<string>('Guest')
+  const [username, setUsername] = useState<string>('Guest');
+
+  const changed = usePageChangeListener;
 
   useEffect(() => {
     setOpenUser(false);
     setOpenMenu(false);
-  }, [usePageChangeListener]);
+  }, [changed]);
 
-  const handleMouseLeave = () => {
+  const handleClose = () => {
     setOpenUser(false);
     setOpenMenu(false);
   };
 
+  const handleOpen = () => setOpenUser(true);
+
   return (
-    <div className={styles.navbar} onMouseLeave={handleMouseLeave}>
+    <div className={styles.navbar} onMouseLeave={handleClose}>
       <div>
         <Link href={'/home'}>LOGO</Link>
       </div>
@@ -41,8 +44,8 @@ const NavbarTemplate = () => {
       </div>
       <div className={styles.profile}>
         <div>Hello, </div>
-        <Link href={'#'} onMouseEnter={() => setOpenUser(true)}>
-          { username }
+        <Link href={'#'} onMouseEnter={handleOpen}>
+          {username}
         </Link>
         {openUser && (
           <Dropdown

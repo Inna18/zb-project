@@ -12,10 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className={`${inter.className}`}>
-      <SessionProvider>
-        {children}
-      </SessionProvider>
+      <SessionProvider>{children}</SessionProvider>
     </div>
-  )
-  
+  );
 }

@@ -2,13 +2,13 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import Form from '../molecules/Form';
-import Button from '../atoms/Button';
-import Checkbox from '../atoms/Checkbox';
+import Form from '@/app/components/molecules/Form';
+import Button from '@/app/components/atoms/Button';
+import Checkbox from '@/app/components/atoms/Checkbox';
 import User from '@/app/service/useUserApi';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signIn } from "next-auth/react";
+import { signIn } from 'next-auth/react';
 
 const LIST = ['email', 'password'];
 
@@ -24,14 +24,14 @@ const LoginFormTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const res = await signIn('credentials', {
+
+    const authUser = await signIn('credentials', {
       email: loginUser.email,
       password: loginUser.password,
-      redirect: false
+      redirect: false,
     });
-    console.log(res)
-    if (res?.ok) router.push('/home');
+    console.log('authUser: ', authUser);
+    if (authUser?.ok) router.push('/home');
   };
 
   return (
@@ -42,7 +42,6 @@ const LoginFormTemplate = () => {
       <div className={styles.title}>LOGIN</div>
       <Form
         list={LIST}
-        formType={'login'}
         userProps={userProperties}
         changeFunc={handleInputChange}
         required={true}

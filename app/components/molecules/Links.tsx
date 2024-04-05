@@ -3,10 +3,10 @@
 import styles from './molecules.module.css';
 
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import Dropdown from '@/app/components/atoms/Dropdown';
 import { usePathname } from 'next/navigation';
 import { capitalize } from '@/app/utils/text';
-import Dropdown from '../atoms/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 
 const SHOP = ['all', 'category A', 'category B'];
@@ -22,27 +22,35 @@ const Links = (linksProps: LinksProps) => {
   const pathname = usePathname();
   const { list, isMenu, openMenu, setOpenMenu } = linksProps;
 
+  const changed = usePageChangeListener;
+
   useEffect(() => {
     setOpenMenu(false);
-  }, [usePageChangeListener]);
+  }, [changed]);
+
+  const handleOpen = (link: string) => {
+    if (link !== 'shop') {
+      setOpenMenu(false);
+      return;
+    }
+    setOpenMenu(true);
+  };
 
   return (
     <div className={styles['links-section']}>
-      {list.map((el) => (
-        <span key={el} className={styles.link}>
+      {list.map((link) => (
+        <span key={link} className={styles.link}>
           <Link
-            key={el}
+            key={link}
             className={
-              isMenu ? `link ${pathname === `/${el}` ? 'active' : ''}` : ''
+              isMenu ? `link ${pathname === `/${link}` ? 'active' : ''}` : ''
             }
-            href={`/${el}`}
-            onMouseEnter={
-              el === 'shop' ? () => setOpenMenu(true) : () => setOpenMenu(false)
-            }
+            href={`/${link}`}
+            onMouseEnter={() => handleOpen(link)}
           >
-            {capitalize(el)}
+            {capitalize(link)}
           </Link>
-          {openMenu && el === 'shop' && (
+          {openMenu && link === 'shop' && (
             <Dropdown
               key={'menu'}
               list={SHOP}
