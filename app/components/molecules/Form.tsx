@@ -5,14 +5,17 @@ import Input from '@/app/components/atoms/Input';
 import { capitalize } from '@/app/utils/text';
 
 interface FormProps {
+  type?: string;
   required?: boolean;
   list: string[];
   userProps: (string | undefined)[];
-  changeFunc: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  changeFunc: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => void;
 }
 
 const Form = (formProps: FormProps) => {
-  const { required, list, userProps, changeFunc } = formProps;
+  const { required, list, userProps, changeFunc, type } = formProps;
 
   return (
     <div className={styles['input-list']}>
@@ -31,6 +34,20 @@ const Form = (formProps: FormProps) => {
           required={required}
         />
       ))}
+      {type === 'signup' && (
+        <div className={styles['role-select']}>
+          <label htmlFor=''>ROLE</label>
+          <select defaultValue={''} name='role' onChange={changeFunc}>
+            {' '}
+            {/* dropdownd으로 대체 고민 중, 속성이 조금 다르지만은..*/}
+            <option value='' disabled={true}>
+              Choose a role
+            </option>
+            <option value='admin'>ADMIN</option>
+            <option value='user'>USER</option>
+          </select>
+        </div>
+      )}
     </div>
   );
 };

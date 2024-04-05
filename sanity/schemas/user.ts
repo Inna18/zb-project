@@ -5,6 +5,7 @@ export default {
   fields: [
     { name: 'email', title: 'Email', type: 'string' },
     { name: 'password', title: 'Password', type: 'string' },
+    { name: 'role', title: 'Role', type: 'string' },
     { name: 'name', title: 'Name', type: 'string' },
     { name: 'address', title: 'Address', type: 'string' },
     { name: 'phoneNumber', title: 'Phone number', type: 'string' },

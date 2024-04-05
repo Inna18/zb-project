@@ -18,11 +18,19 @@ const SignupFormTemplate = () => {
     email: '',
     password: '',
     name: '',
+    role: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
-  const userProperties = [signUser.email, signUser.password, signUser.name];
+  const userProperties = [
+    signUser.email,
+    signUser.password,
+    signUser.name,
+    signUser.role,
+  ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setSignUser({ ...signUser, [name]: value });
   };
@@ -49,6 +57,7 @@ const SignupFormTemplate = () => {
         userProps={userProperties}
         changeFunc={handleInputChange}
         required={true}
+        type='signup'
       />
       <div className={styles['image-section']}>
         <Input

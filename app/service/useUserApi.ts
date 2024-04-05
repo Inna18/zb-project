@@ -4,6 +4,7 @@ export default interface User {
   email: string;
   password: string;
   name?: string;
+  role?: string;
   address?: string;
   phoneNumber?: string;
   profileImg?: File;
@@ -43,6 +44,7 @@ async function createUser(user: User) {
     email: user.email,
     password: user.password,
     name: user.name,
+    role: user.role,
     address: user.address,
     phoneNumber: user.phoneNumber,
     profileImg: uploadedImg

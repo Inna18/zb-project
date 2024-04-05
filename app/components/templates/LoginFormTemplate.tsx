@@ -17,7 +17,7 @@ const LoginFormTemplate = () => {
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
     const { name, value } = e.target;
     setLoginUser({ ...loginUser, [name]: value });
   };
