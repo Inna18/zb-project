@@ -1,31 +1,78 @@
-/* login form */
+/* login/signup form */
 .form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 460px;
-    background: #fff;
-    padding: 20px;
-    border: none;
-    border-radius: 28px;
-    box-shadow: 0 0 20px rgb(36, 34, 32, .3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 460px;
+  background: #fff;
+  padding: 20px;
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 0 20px rgb(36, 34, 32, 0.3);
 }
 .button {
-    margin-top: 40px;
+  margin-top: 40px;
 }
 .title {
-    font-size: 20px;
-    margin-bottom: 30px;
-    font-weight: 500;
+  font-size: 20px;
+  margin-bottom: 30px;
+  font-weight: 500;
+}
+.link a {
+  color: #8e8e8e;
+  font-size: 11px;
+  text-decoration: underline;
+}
+.link a:visited {
+  color: #8e8e8e;
+}
+.image-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  color: #8e8e8e;
+}
+.image-section div {
+  margin-left: 10px;
 }
 .form-login {
-    height: 360px;
+  height: 360px;
 }
 .login-checkbox {
-    align-self: start;
-    margin-right: 40px;
+  align-self: start;
+  margin-right: 40px;
 }
 .form-signup {
-    height: 400px;
+  height: 400px;
+}
+
+/* navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px;
+  background-color: #f5efeb;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  box-shadow: 0 4px 20px -2px rgb(36, 34, 32, 0.3);
+  font-size: 14px;
+}
+.navbar div a {
+  color: inherit;
+  text-decoration: none;
+}
+.profile {
+  position: relative;
+  display: flex;
+  height: inherit;
+}
+.profile div {
+  margin-right: 4px;
+}
+.profile a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
