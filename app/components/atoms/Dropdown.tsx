@@ -1,7 +1,7 @@
-import Link from 'next/link';
 import styles from './atoms.module.css';
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import Link from 'next/link';
 
 interface DropdownProps {
   list: string[];
@@ -18,9 +18,9 @@ const Dropdown = (dropdownProps: DropdownProps) => {
       onMouseLeave={() => setOpen(false)}
     >
       {open &&
-        list.map((el, idx) => (
+        list.map((selectElem, idx) => (
           <li key={idx}>
-            <Link href={`/${el}`}>{el}</Link>
+            <Link href={`/${selectElem}`}>{selectElem}</Link>
           </li>
         ))}
     </div>

@@ -50,10 +50,7 @@
   display: flex;
   justify-content: center;
 }
-.profile-img {
-  display: none;
-}
-.custom-img-upload {
+.image-upload {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,6 +62,9 @@
   border-radius: 12px;
   color: #e58025;
   cursor: pointer;
+}
+.image {
+  display: none;
 }
 
 /* dropdown */

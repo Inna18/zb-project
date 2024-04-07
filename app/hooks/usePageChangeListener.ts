@@ -12,5 +12,5 @@ export const usePageChangeListener = () => {
     setChanged(true);
   }, [router]);
 
-  return changed;
+  return { changed };
 };

@@ -2,27 +2,35 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import Form from '../molecules/Form';
-import Button from '../atoms/Button';
-import ImageUpload from '../atoms/ImageUpload';
+import Form from '@/app/components/molecules/Form';
+import Button from '@/app/components/atoms/Button';
 import User, { createUser } from '@/app/service/useUserApi';
 import { limit } from '@/app/utils/text';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Input from '@/app/components/atoms/Input';
 
 const LIST = ['email', 'password', 'name'];
 
-const SignupFornTemplate = () => {
+const SignupFormTemplate = () => {
   const router = useRouter();
   const [signUser, setSignUser] = useState<User>({
     email: '',
     password: '',
     name: '',
+    role: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
-  const userProperties = [signUser.email, signUser.password, signUser.name];
+  const userProperties = [
+    signUser.email,
+    signUser.password,
+    signUser.name,
+    signUser.role,
+  ];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setSignUser({ ...signUser, [name]: value });
   };
@@ -34,8 +42,8 @@ const SignupFornTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let res = await createUser(signUser);
-    if (res) router.push('/login');
+    const createdUser = await createUser(signUser);
+    if (createdUser) router.push('/login');
   };
 
   return (
@@ -46,13 +54,21 @@ const SignupFornTemplate = () => {
       <h2 className={styles.title}>SIGNUP</h2>
       <Form
         list={LIST}
-        formType={'signup'}
         userProps={userProperties}
         changeFunc={handleInputChange}
         required={true}
+        type='signup'
       />
       <div className={styles['image-section']}>
-        <ImageUpload uploadImg={handleImageUpload} />
+        <Input
+          type='file'
+          id='profile-img'
+          className='image'
+          labelText='Upload image'
+          hasLabel={true}
+          name='profileImg'
+          changeFunc={handleImageUpload}
+        />
         <div>{limit(imgName, 20)}</div>
       </div>
       <div className={styles.button}>
@@ -65,4 +81,4 @@ const SignupFornTemplate = () => {
   );
 };
 
-export default SignupFornTemplate;
+export default SignupFormTemplate;

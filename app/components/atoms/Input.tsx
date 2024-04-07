@@ -1,39 +1,34 @@
-import React, { InputHTMLAttributes } from 'react';
-
 import styles from './atoms.module.css';
+
+import React, { InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   changeFunc: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  hasLabel: boolean;
+  hasLabel?: boolean;
   labelText?: string;
 }
 
 const Input = (inputProps: InputProps) => {
-  const {
-    type,
-    id,
-    className,
-    placeholder,
-    value,
-    name,
-    changeFunc,
-    hasLabel,
-    labelText,
-    required,
-  } = inputProps;
+  const { type, id, className, changeFunc, hasLabel, labelText, ...rest } =
+    inputProps;
 
   return (
-    <div className={styles['input-section']}>
-      {hasLabel && <label htmlFor={id}>{labelText}</label>}
+    <div className={styles[`${className}-section`]}>
+      {hasLabel && (
+        <label
+          className={type === 'file' ? styles[`${className}-upload`] : ''}
+          htmlFor={id}
+        >
+          {labelText}
+        </label>
+      )}
       <input
+        {...rest}
         type={type}
         id={id}
-        className={`${styles.input} ${className}`}
-        placeholder={placeholder}
-        name={name}
-        value={value}
         onChange={changeFunc}
-        required={required}
+        accept={type === 'file' ? 'image/*' : ''}
+        className={styles[`${className}`]}
       />
     </div>
   );

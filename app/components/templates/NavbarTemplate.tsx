@@ -1,33 +1,48 @@
 'use client';
-
 import styles from './templates.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Links from '../molecules/Links';
+import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
-import Dropdown from '../atoms/Dropdown';
+import Dropdown from '@/app/components/atoms/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
+import { useSession } from 'next-auth/react';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 const MY = ['login', 'signup', 'cart'];
 
 const NavbarTemplate = () => {
+  const session = useSession();
+
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [username, setUsername] = useState<string>('Guest')
+  const [username, setUsername] = useState<string | null | undefined>('Guest');
+
+  const changed = usePageChangeListener;
 
   useEffect(() => {
     setOpenUser(false);
     setOpenMenu(false);
-  }, [usePageChangeListener]);
+  }, [changed]);
 
-  const handleMouseLeave = () => {
+  useEffect(() => {
+    console.log('sessionInfo: ', session);
+    if (session.status === 'authenticated') {
+      setUsername(session.data.user?.name);
+    } else {
+      setUsername('Guest');
+    }
+  }, [session]);
+
+  const handleOpen = () => setOpenUser(true);
+
+  const handleClose = () => {
     setOpenUser(false);
     setOpenMenu(false);
   };
 
   return (
-    <div className={styles.navbar} onMouseLeave={handleMouseLeave}>
+    <div className={styles.navbar} onMouseLeave={handleClose}>
       <div>
         <Link href={'/home'}>LOGO</Link>
       </div>
@@ -41,8 +56,8 @@ const NavbarTemplate = () => {
       </div>
       <div className={styles.profile}>
         <div>Hello, </div>
-        <Link href={'#'} onMouseEnter={() => setOpenUser(true)}>
-          { username }
+        <Link href={'#'} onMouseEnter={handleOpen}>
+          {username}
         </Link>
         {openUser && (
           <Dropdown

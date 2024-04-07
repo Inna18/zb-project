@@ -1,6 +1,6 @@
-import React, { ButtonHTMLAttributes } from 'react';
-
 import styles from './atoms.module.css';
+
+import React, { ButtonHTMLAttributes } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 

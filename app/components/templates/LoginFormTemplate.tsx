@@ -2,12 +2,13 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import Form from '../molecules/Form';
-import Button from '../atoms/Button';
-import Checkbox from '../atoms/Checkbox';
-import User, { getUserByEmailAndPassword } from '@/app/service/useUserApi';
+import Form from '@/app/components/molecules/Form';
+import Button from '@/app/components/atoms/Button';
+import Checkbox from '@/app/components/atoms/Checkbox';
+import User from '@/app/service/useUserApi';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 
 const LIST = ['email', 'password'];
 
@@ -16,18 +17,23 @@ const LoginFormTemplate = () => {
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setLoginUser({ ...loginUser, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let res = await getUserByEmailAndPassword(
-      loginUser.email,
-      loginUser.password
-    );
-    if (res) router.push('/home');
+
+    const authUser = await signIn('credentials', {
+      email: loginUser.email,
+      password: loginUser.password,
+      redirect: false,
+    });
+    console.log('authUser: ', authUser);
+    if (authUser?.ok) router.push('/home');
   };
 
   return (
@@ -38,7 +44,6 @@ const LoginFormTemplate = () => {
       <div className={styles.title}>LOGIN</div>
       <Form
         list={LIST}
-        formType={'login'}
         userProps={userProperties}
         changeFunc={handleInputChange}
         required={true}
