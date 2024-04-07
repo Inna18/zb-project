@@ -41,3 +41,9 @@
 .role-select select:nth-child(1) {
   color: rgb(99, 96, 93, 0.3);
 }
+
+/* error */
+.error {
+  font-size: 10px;
+  color: #e58025;
+}

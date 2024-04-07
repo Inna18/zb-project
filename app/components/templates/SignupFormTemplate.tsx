@@ -9,6 +9,7 @@ import { limit } from '@/app/utils/text';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/app/components/atoms/Input';
+import { useFormValidator } from "@/app/hooks/useFormValidator"
 
 const LIST = ['email', 'password', 'name'];
 
@@ -27,6 +28,7 @@ const SignupFormTemplate = () => {
     signUser.name,
     signUser.role,
   ];
+  const { validateForm, emailError, passwordError } = useFormValidator();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -42,8 +44,10 @@ const SignupFormTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const createdUser = await createUser(signUser);
-    if (createdUser) router.push('/login');
+    if (validateForm(signUser.email, signUser.password) == true) {
+      const createdUser = await createUser(signUser);
+      if (createdUser) router.push('/login');
+    } 
   };
 
   return (
@@ -56,8 +60,9 @@ const SignupFormTemplate = () => {
         list={LIST}
         userProps={userProperties}
         changeFunc={handleInputChange}
-        required={true}
         type='signup'
+        emailError={emailError}
+        passwordError={passwordError}
       />
       <div className={styles['image-section']}>
         <Input
