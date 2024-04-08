@@ -6,16 +6,16 @@ import Link from 'next/link';
 interface DropdownProps {
   list: string[];
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleOpen: (param: boolean) => void;
 }
 
 const Dropdown = (dropdownProps: DropdownProps) => {
-  const { list, open, setOpen } = dropdownProps;
+  const { list, open, handleOpen } = dropdownProps;
 
   return (
     <div
       className={styles['dropdown-section']}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={() => handleOpen(false)}
     >
       {open &&
         list.map((selectElem, idx) => (

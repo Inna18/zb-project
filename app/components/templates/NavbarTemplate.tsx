@@ -34,7 +34,13 @@ const NavbarTemplate = () => {
     }
   }, [session]);
 
-  const handleOpen = () => setOpenUser(true);
+  const handleOpenMenu = (e: boolean) => {
+    setOpenMenu(e)
+  }
+
+  const handleOpenUser = (e: boolean) => {
+    setOpenUser(e);
+  }
 
   const handleClose = () => {
     setOpenUser(false);
@@ -51,12 +57,12 @@ const NavbarTemplate = () => {
           list={MENU_LIST}
           isMenu={true}
           openMenu={openMenu}
-          setOpenMenu={setOpenMenu}
+          handleOpenMenu={handleOpenMenu}
         />
       </div>
       <div className={styles.profile}>
         <div>Hello, </div>
-        <Link href={'#'} onMouseEnter={handleOpen}>
+        <Link href={'#'} onMouseEnter={() => handleOpenUser(true)}>
           {username}
         </Link>
         {openUser && (
@@ -65,7 +71,7 @@ const NavbarTemplate = () => {
               key={'user'}
               list={MY}
               open={openUser}
-              setOpen={setOpenUser}
+              handleOpen={handleOpenUser}
             />
           </div>
         )}

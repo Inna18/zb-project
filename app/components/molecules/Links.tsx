@@ -15,25 +15,25 @@ interface LinksProps {
   list: string[];
   isMenu: boolean;
   openMenu: boolean;
-  setOpenMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  handleOpenMenu: (param: boolean) => void;
 }
 
 const Links = (linksProps: LinksProps) => {
   const pathname = usePathname();
-  const { list, isMenu, openMenu, setOpenMenu } = linksProps;
+  const { list, isMenu, openMenu, handleOpenMenu } = linksProps;
 
   const changed = usePageChangeListener;
 
   useEffect(() => {
-    setOpenMenu(false);
+    handleOpenMenu(false);
   }, [changed]);
 
   const handleOpen = (link: string) => {
     if (link !== 'shop') {
-      setOpenMenu(false);
+      handleOpenMenu(false);
       return;
     }
-    setOpenMenu(true);
+    handleOpenMenu(true);
   };
 
   return (
@@ -56,7 +56,7 @@ const Links = (linksProps: LinksProps) => {
                 key={'menu'}
                 list={SHOP}
                 open={openMenu}
-                setOpen={setOpenMenu}
+                handleOpen={handleOpenMenu}
               />
             </div>
           )}
