@@ -4,7 +4,7 @@ import styles from './templates.module.css';
 import React, { useEffect, useState } from 'react';
 import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
-import Dropdown from '@/app/components/atoms/Dropdown';
+import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { useSession } from 'next-auth/react';
 
@@ -60,12 +60,14 @@ const NavbarTemplate = () => {
           {username}
         </Link>
         {openUser && (
-          <Dropdown
-            key={'user'}
-            list={MY}
-            open={openUser}
-            setOpen={setOpenUser}
-          />
+          <div className={styles['dropdown-section']}>
+            <Dropdown
+              key={'user'}
+              list={MY}
+              open={openUser}
+              setOpen={setOpenUser}
+            />
+          </div>
         )}
       </div>
     </div>

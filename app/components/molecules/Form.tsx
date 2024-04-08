@@ -1,8 +1,9 @@
 import styles from './molecules.module.css';
 
 import React from 'react';
-import Input from '@/app/components/atoms/Input';
+import Input from '@/app/components/atoms/input/Input';
 import { capitalize } from '@/app/utils/text';
+import Select from '../atoms/select/Select';
 
 interface FormProps {
   type?: string;
@@ -45,18 +46,7 @@ const Form = (formProps: FormProps) => {
         </div>
       ))}
       {type === 'signup' && (
-        <div className={styles['role-select']}>
-          <label htmlFor=''>ROLE</label>
-          <select defaultValue={''} name='role' onChange={changeFunc} required={true}>
-            {' '}
-            {/* dropdownd으로 대체 고민 중, 속성이 조금 다르지만은..*/}
-            <option value='' disabled={true}>
-              Choose a role
-            </option>
-            <option value='admin'>ADMIN</option>
-            <option value='user'>USER</option>
-          </select>
-        </div>
+        <Select className={'role-select'} type={'role'} optionList={['admin', 'user']} changeFunc={changeFunc} hasLabel={true} />
       )}
     </div>
   );

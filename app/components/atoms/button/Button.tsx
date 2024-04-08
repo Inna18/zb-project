@@ -1,4 +1,4 @@
-import styles from './atoms.module.css';
+import styles from '../atoms.module.css';
 
 import React, { ButtonHTMLAttributes } from 'react';
 

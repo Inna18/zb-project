@@ -1,4 +1,4 @@
-import styles from './atoms.module.css';
+import styles from '../atoms.module.css';
 
 import React from 'react';
 import Link from 'next/link';

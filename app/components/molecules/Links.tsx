@@ -4,7 +4,7 @@ import styles from './molecules.module.css';
 
 import Link from 'next/link';
 import React, { useEffect } from 'react';
-import Dropdown from '@/app/components/atoms/Dropdown';
+import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePathname } from 'next/navigation';
 import { capitalize } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
@@ -51,12 +51,14 @@ const Links = (linksProps: LinksProps) => {
             {capitalize(link)}
           </Link>
           {openMenu && link === 'shop' && (
-            <Dropdown
-              key={'menu'}
-              list={SHOP}
-              open={openMenu}
-              setOpen={setOpenMenu}
-            />
+            <div className={styles['dropdown-section']}>
+              <Dropdown
+                key={'menu'}
+                list={SHOP}
+                open={openMenu}
+                setOpen={setOpenMenu}
+              />
+            </div>
           )}
         </span>
       ))}

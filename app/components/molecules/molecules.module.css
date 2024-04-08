@@ -19,31 +19,15 @@
   position: relative;
 }
 
-/* role-select-box */
-.role-select {
-  display: grid;
-  grid-template-columns: 1fr 4fr;
-  grid-gap: 10px;
-  align-items: center;
-  font-size: 12px;
-  color: rgb(36, 34, 32, 0.7);
-}
-.role-select select {
-  width: 308px;
-  height: 34px;
-  border-radius: 4px;
-  border: 1px solid rgb(99, 96, 93, 0.4);
-}
-.role-select select {
-  -webkit-appearance: menulist-button;
-  color: rgb(36, 34, 32, 0.7);
-}
-.role-select select:nth-child(1) {
-  color: rgb(99, 96, 93, 0.3);
-}
-
 /* error */
 .error {
   font-size: 10px;
   color: #e58025;
+}
+
+/* dropdown */
+.dropdown-section {
+  position: absolute;
+  top: 40px;
+  right: -28px;
 }
