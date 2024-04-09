@@ -83,3 +83,36 @@
   top: 40px;
   right: -28px;
 }
+
+/* footer */
+.footer {
+  font-size: 10px;
+  padding: 10px;
+  background-color: #f5efeb;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 4px 20px 4px rgb(36, 34, 32, 0.3);
+}
+.footer-section {
+  display: grid;
+  grid-auto-flow: column;
+}
+.footer-section ul {
+  list-style-type: circle;
+  padding: 0 18px;
+}
+.footer-section ul li {
+  padding: 4px 0;
+}
+
+/* icon */
+.icons-section {
+  display: flex;
+}
+.icons-section div:nth-child(1) {
+  margin-right: 6px;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+}

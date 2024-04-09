@@ -3,6 +3,7 @@
 import { Inter } from 'next/font/google';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import Footer from './components/templates/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 

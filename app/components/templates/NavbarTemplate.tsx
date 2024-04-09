@@ -7,16 +7,15 @@ import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { useSession } from 'next-auth/react';
-
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
-const MY = ['login', 'signup', 'cart'];
 
 const NavbarTemplate = () => {
   const session = useSession();
 
+  const [profileMenu, setProfileMenu] = useState<string[]>([])
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [username, setUsername] = useState<string | null | undefined>('Guest');
+  const [username, setUsername] = useState<string | null | undefined>('');
 
   const changed = usePageChangeListener;
 
@@ -29,8 +28,10 @@ const NavbarTemplate = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
+      setProfileMenu(['logout', 'my page', 'cart'])
     } else {
       setUsername('Guest');
+      setProfileMenu(['login', 'signup', 'cart'])
     }
   }, [session]);
 
@@ -69,7 +70,7 @@ const NavbarTemplate = () => {
           <div className={styles['dropdown-section']}>
             <Dropdown
               key={'user'}
-              list={MY}
+              list={profileMenu}
               open={openUser}
               handleOpen={handleOpenUser}
             />
