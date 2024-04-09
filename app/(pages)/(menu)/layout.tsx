@@ -2,7 +2,7 @@
 import styles from "../../page.module.css"
 
 import { Inter } from 'next/font/google';
-import NavbarTemplate from '@/app/components/templates/NavbarTemplate';
+import Navbar from '@/app/components/templates/Navbar';
 import { SessionProvider } from 'next-auth/react';
 import Footer from '@/app/components/templates/Footer';
 
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <div className={styles.container}>
       <SessionProvider>
-        <NavbarTemplate />
+        <Navbar />
         {children}
         <Footer />
       </SessionProvider>

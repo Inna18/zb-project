@@ -13,7 +13,7 @@ import { useFormValidator } from "@/app/hooks/useFormValidator"
 
 const LIST = ['email', 'password', 'name'];
 
-const SignupFormTemplate = () => {
+const SignupForm = () => {
   const router = useRouter();
   const [signUser, setSignUser] = useState<User>({
     email: '',
@@ -86,4 +86,4 @@ const SignupFormTemplate = () => {
   );
 };
 
-export default SignupFormTemplate;
+export default SignupForm;

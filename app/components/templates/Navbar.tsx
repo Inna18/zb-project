@@ -9,7 +9,7 @@ import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { useSession } from 'next-auth/react';
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 
-const NavbarTemplate = () => {
+const Navbar = () => {
   const session = useSession();
 
   const [profileMenu, setProfileMenu] = useState<string[]>([])
@@ -28,7 +28,7 @@ const NavbarTemplate = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      setProfileMenu(['logout', 'my page', 'cart'])
+      setProfileMenu(['logout', 'myPage', 'cart'])
     } else {
       setUsername('Guest');
       setProfileMenu(['login', 'signup', 'cart'])
@@ -81,4 +81,4 @@ const NavbarTemplate = () => {
   );
 };
 
-export default NavbarTemplate;
+export default Navbar;

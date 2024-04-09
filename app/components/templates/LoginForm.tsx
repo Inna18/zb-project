@@ -13,7 +13,7 @@ import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password'];
 
-const LoginFormTemplate = () => {
+const LoginForm = () => {
   const router = useRouter();
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
@@ -73,4 +73,4 @@ const LoginFormTemplate = () => {
   );
 };
 
-export default LoginFormTemplate;
+export default LoginForm;
