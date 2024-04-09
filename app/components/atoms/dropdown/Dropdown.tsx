@@ -2,15 +2,19 @@ import styles from '../atoms.module.css';
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface DropdownProps {
   list: string[];
   open: boolean;
   handleOpen: (param: boolean) => void;
+  handlePath: (param: string) => URL;
+  handleLogout?: () => void | undefined;
 }
 
 const Dropdown = (dropdownProps: DropdownProps) => {
-  const { list, open, handleOpen } = dropdownProps;
+  const router = useRouter();
+  const { list, open, handleOpen, handlePath, handleLogout } = dropdownProps;
 
   return (
     <div
@@ -20,7 +24,10 @@ const Dropdown = (dropdownProps: DropdownProps) => {
       {open &&
         list.map((selectElem, idx) => (
           <li key={idx}>
-            <Link href={`/${selectElem}`}>{selectElem}</Link>
+            <Link href={handlePath(selectElem)} 
+                  onClick={selectElem=='logout'&&handleLogout?()=>handleLogout():undefined}>
+              {selectElem}
+            </Link>
           </li>
         ))}
     </div>

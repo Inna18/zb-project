@@ -6,11 +6,14 @@ import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 
 const Navbar = () => {
   const session = useSession();
+  const router = useRouter();
 
   const [profileMenu, setProfileMenu] = useState<string[]>([])
   const [openUser, setOpenUser] = useState(false);
@@ -48,6 +51,17 @@ const Navbar = () => {
     setOpenMenu(false);
   };
 
+  const handlePath = (selectedElem: string) => {
+    if (selectedElem === 'logout') {
+      return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/home`);
+    } 
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
+  }
+
+  const handleLogout = () => {
+    signOut();
+  }
+
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
       <div>
@@ -73,7 +87,8 @@ const Navbar = () => {
               list={profileMenu}
               open={openUser}
               handleOpen={handleOpenUser}
-            />
+              handlePath={handlePath} 
+              handleLogout={handleLogout} />
           </div>
         )}
       </div>

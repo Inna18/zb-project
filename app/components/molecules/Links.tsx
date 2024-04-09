@@ -36,6 +36,10 @@ const Links = (linksProps: LinksProps) => {
     handleOpenMenu(true);
   };
 
+  const handlePath = (selectedElem: string) => {
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
+  }
+
   return (
     <div className={styles['links-section']}>
       {list.map((link) => (
@@ -57,6 +61,7 @@ const Links = (linksProps: LinksProps) => {
                 list={SHOP}
                 open={openMenu}
                 handleOpen={handleOpenMenu}
+                handlePath={handlePath}
               />
             </div>
           )}
