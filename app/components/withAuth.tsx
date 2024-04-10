@@ -1,19 +1,19 @@
 'use client';
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'
 
 const authRoutes = ['/myPage', '/cart', '/logout'];
 const noAuthRoutes = ['/login', '/signup'];
 
-export default function withAuth(Component: any) {
+export default function withAuth(Component: React.ElementType) {
     return function withAuth(props: any) {
+        const router = useRouter();
         const session = useSession();
-        console.log("session: ", session)
 
         useEffect(() => {
             if (session.status === 'unauthenticated') {
-                redirect("/");
+                router.replace('/')
             }
         }, [session]);
 
@@ -22,7 +22,6 @@ export default function withAuth(Component: any) {
         }
 
         return <Component {...props}/>
-        
     }
 }
 

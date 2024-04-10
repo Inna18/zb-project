@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 interface DropdownProps {
   list: string[];
   open: boolean;
-  handleOpen: (param: boolean) => void;
+  handleOpen: ((param: boolean) => void) | undefined;
   handlePath: (param: string) => URL;
   handleLogout?: () => void | undefined;
 }
@@ -19,7 +19,7 @@ const Dropdown = (dropdownProps: DropdownProps) => {
   return (
     <div
       className={styles['dropdown-section']}
-      onMouseLeave={() => handleOpen(false)}
+      onMouseLeave={handleOpen?() => handleOpen(false):undefined}
     >
       {open &&
         list.map((selectElem, idx) => (

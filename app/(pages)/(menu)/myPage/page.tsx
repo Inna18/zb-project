@@ -1,11 +1,11 @@
-import UserPage from '@/app/components/templates/UserPage';
+import UserPageTemplate from '@/app/components/templates/UserPageTemplate';
 
 import React from 'react'
 
 const MyPage = () => {
   return (
     <div>
-      <UserPage />
+      <UserPageTemplate />
     </div>
   )
 }

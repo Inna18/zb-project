@@ -14,8 +14,8 @@ const SHOP = ['all', 'category A', 'category B'];
 interface LinksProps {
   list: string[];
   isMenu: boolean;
-  openMenu: boolean;
-  handleOpenMenu: (param: boolean) => void;
+  openMenu?: boolean;
+  handleOpenMenu?: (param: boolean) => void;
 }
 
 const Links = (linksProps: LinksProps) => {
@@ -25,15 +25,15 @@ const Links = (linksProps: LinksProps) => {
   const changed = usePageChangeListener;
 
   useEffect(() => {
-    handleOpenMenu(false);
+    if (handleOpenMenu) handleOpenMenu(false);
   }, [changed]);
 
   const handleOpen = (link: string) => {
     if (link !== 'shop') {
-      handleOpenMenu(false);
+      if (handleOpenMenu) handleOpenMenu(false);
       return;
     }
-    handleOpenMenu(true);
+    if (handleOpenMenu) handleOpenMenu(true);
   };
 
   const handlePath = (selectedElem: string) => {
@@ -47,7 +47,7 @@ const Links = (linksProps: LinksProps) => {
           <Link
             key={link}
             className={
-              isMenu ? `link ${pathname === `/${link}` ? 'active' : ''}` : ''
+              isMenu && pathname === `/${link}` ? styles.active : ''
             }
             href={`/${link}`}
             onMouseEnter={() => handleOpen(link)}

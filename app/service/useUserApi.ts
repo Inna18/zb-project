@@ -7,10 +7,18 @@ export default interface User {
   role?: string;
   address?: string;
   phoneNumber?: string;
-  profileImg?: File;
+  profileImg?: string;
 }
 
-const BASE_QUERY = `*[_type == 'user']`;
+const BASE_QUERY = `*[_type == 'user']{
+  email,
+  password,
+  name, 
+  role,
+  address,
+  phoneNumber,
+  "profileImg": profileImg.asset->url
+}`;
 
 async function getUsers() {
   const userList = await client.fetch(BASE_QUERY);
@@ -18,10 +26,17 @@ async function getUsers() {
   return userList;
 }
 
-async function getUserByEmail(emailProp: string) {
-  const query = `*[_type == 'user' && email == '${emailProp}'][0]`;
+async function getUserByEmail(emailProp: string|null|undefined) {
+  const query = `*[_type == 'user' && email == '${emailProp}'][0]{
+    email,
+    password,
+    name, 
+    role,
+    address,
+    phoneNumber,
+    "profileImg": profileImg.asset->url
+  }`;
   const userByEmail = await client.fetch(query);
-  console.log('User by email: ', userByEmail);
   return userByEmail;
 }
 
@@ -29,7 +44,15 @@ async function getUserByEmailAndPassword(
   emailProp: string,
   passwordProp: string
 ) {
-  const query = `*[_type == 'user' && email == '${emailProp}' && password == '${passwordProp}'][0]`;
+  const query = `*[_type == 'user' && email == '${emailProp}' && password == '${passwordProp}'][0]{
+    email,
+    password,
+    name, 
+    role,
+    address,
+    phoneNumber,
+    "profileImg": profileImg.asset->url
+  }`;
   const userByEmailAndPassword = await client.fetch(query);
   console.log('User by email & password: ', userByEmailAndPassword);
   return userByEmailAndPassword;
