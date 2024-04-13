@@ -1,7 +1,7 @@
 'use client';
 import styles from './templates.module.css';
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import withAuth from '../withAuth';
 import ProfileOrganism from '../organisms/ProfileOrganism';
 import OrdersOrganism from '../organisms/OrdersOrganism';
@@ -15,14 +15,21 @@ const UserPageTemplate = () => {
 
   const handleActiveTab = (tab: string) => {
     setActiveTab(tab);
-  }
+  };
 
   return (
     <div className={styles.container}>
       <div className={styles.title}>My Page</div>
       <div className={styles['link-section']}>
-        {LIST.map(tab => (
-          <Link key={tab} onClick={() => handleActiveTab(tab)} href={''} className={activeTab===tab?styles.active:''}>{capitalize(tab)}</Link>
+        {LIST.map((tab) => (
+          <Link
+            key={tab}
+            onClick={() => handleActiveTab(tab)}
+            href={''}
+            className={activeTab === tab ? styles.active : ''}
+          >
+            {capitalize(tab)}
+          </Link>
         ))}
       </div>
       <div className={styles['mypage-tabs']}>
@@ -30,7 +37,7 @@ const UserPageTemplate = () => {
         {activeTab === 'orders' && <OrdersOrganism />}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default withAuth(UserPageTemplate);

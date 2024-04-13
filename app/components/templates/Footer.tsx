@@ -1,16 +1,34 @@
-import styles from "./templates.module.css";
-import instagramIcn from '@/public/instagram.svg'
-import youtubeIcn from '@/public/youtube.svg'
+import styles from './templates.module.css';
+import instagramIcn from '@/public/instagram.svg';
+import youtubeIcn from '@/public/youtube.svg';
 
-import React, { useEffect, useState } from 'react'
-import Organization, { getOrganization } from "@/app/service/useOrganizationApi"
-import Image from 'next/image'
-
+import React, { useEffect, useState } from 'react';
+import Organization, {
+  getOrganization,
+} from '@/app/service/useOrganizationApi';
+import Image from 'next/image';
 
 const Footer = () => {
-const [organization, setOrganization] = useState<Organization>({
-    name: '', address: '', businessNumber: '', ceo: '', phoneNumber: '', email: '' ,instagramUrl: '', youTubeUrl: '' });
-const { name, address, businessNumber, ceo, phoneNumber, email, instagramUrl, youTubeUrl } = organization;
+  const [organization, setOrganization] = useState<Organization>({
+    name: '',
+    address: '',
+    businessNumber: '',
+    ceo: '',
+    phoneNumber: '',
+    email: '',
+    instagramUrl: '',
+    youTubeUrl: '',
+  });
+  const {
+    name,
+    address,
+    businessNumber,
+    ceo,
+    phoneNumber,
+    email,
+    instagramUrl,
+    youTubeUrl,
+  } = organization;
 
   useEffect(() => {
     _getOrganizationInfo();
@@ -19,18 +37,18 @@ const { name, address, businessNumber, ceo, phoneNumber, email, instagramUrl, yo
   const _getOrganizationInfo = async () => {
     const organization = await getOrganization();
     setOrganization(organization);
-  }
+  };
   return (
     <div className={styles.footer}>
       <div className={styles['footer-section']}>
         <div>
-          <h4>{ name }</h4>
+          <h4>{name}</h4>
           <ul>
-            <li>ADDRESS: { address }</li>
-            <li>BUSINESS NUMBER: { businessNumber }</li>
-            <li>CEO: { ceo }</li>
-            <li>C/S NUMBER: { phoneNumber }</li>
-            <li>EMAIL: { email }</li>
+            <li>ADDRESS: {address}</li>
+            <li>BUSINESS NUMBER: {businessNumber}</li>
+            <li>CEO: {ceo}</li>
+            <li>C/S NUMBER: {phoneNumber}</li>
+            <li>EMAIL: {email}</li>
           </ul>
         </div>
         <div>
@@ -52,16 +70,24 @@ const { name, address, businessNumber, ceo, phoneNumber, email, instagramUrl, yo
           <h4>SNS</h4>
           <div className={styles['icons-section']}>
             <div>
-              <Image className={styles.icon} src={instagramIcn} alt={'insta-icon'} />
+              <Image
+                className={styles.icon}
+                src={instagramIcn}
+                alt={'insta-icon'}
+              />
             </div>
             <div>
-              <Image className={styles.icon} src={youtubeIcn} alt={'youtube-icon'} />
+              <Image
+                className={styles.icon}
+                src={youtubeIcn}
+                alt={'youtube-icon'}
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

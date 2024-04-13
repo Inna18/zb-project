@@ -1,5 +1,5 @@
 'use client';
-import styles from "../../page.module.css"
+import styles from '../../page.module.css';
 
 import { Inter } from 'next/font/google';
 import Navbar from '@/app/components/templates/Navbar';

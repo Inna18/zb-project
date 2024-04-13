@@ -1,7 +1,7 @@
 import { client } from '@/sanity/lib/client';
 
 export default interface User {
-  _id?: string,
+  _id?: string;
   email: string;
   password: string;
   name?: string;
@@ -27,7 +27,7 @@ async function getUsers() {
   return userList;
 }
 
-async function getUserByEmail(emailProp: string|null|undefined) {
+async function getUserByEmail(emailProp: string | null | undefined) {
   const query = `*[_type == 'user' && email == '${emailProp}'][0]{
     _id,
     email,
@@ -95,17 +95,16 @@ async function createUser(user: User) {
 }
 
 async function updateUser(id: string | undefined, updateUser: User) {
-
-  const updatedUser = await client.patch(id!!)
-  .set({
-    password: updateUser.password,
-    name: updateUser.name,
-    address: updateUser.address,
-    phoneNumber: updateUser.phoneNumber
-  })
-  .commit();
-  console.log(updateUser)
-  
+  const updatedUser = await client
+    .patch(id!!)
+    .set({
+      password: updateUser.password,
+      name: updateUser.name,
+      address: updateUser.address,
+      phoneNumber: updateUser.phoneNumber,
+    })
+    .commit();
+  console.log(updateUser);
 }
 
 async function deleteAllUsers() {

@@ -18,7 +18,8 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
 }
-.profile-details .titles div, .profile-details .values div {
+.profile-details .titles div,
+.profile-details .values div {
   margin: 26px 0;
 }
 .profile-details .updates div {

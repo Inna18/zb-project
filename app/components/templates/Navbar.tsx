@@ -15,7 +15,7 @@ const Navbar = () => {
   const session = useSession();
   const router = useRouter();
 
-  const [profileMenu, setProfileMenu] = useState<string[]>([])
+  const [profileMenu, setProfileMenu] = useState<string[]>([]);
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [username, setUsername] = useState<string | null | undefined>('');
@@ -31,20 +31,20 @@ const Navbar = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      setProfileMenu(['logout', 'myPage', 'cart'])
+      setProfileMenu(['logout', 'myPage', 'cart']);
     } else {
       setUsername('Guest');
-      setProfileMenu(['login', 'signup', 'cart'])
+      setProfileMenu(['login', 'signup', 'cart']);
     }
   }, [session]);
 
   const handleOpenMenu = (e: boolean) => {
-    setOpenMenu(e)
-  }
+    setOpenMenu(e);
+  };
 
   const handleOpenUser = (e: boolean) => {
     setOpenUser(e);
-  }
+  };
 
   const handleClose = () => {
     setOpenUser(false);
@@ -54,13 +54,13 @@ const Navbar = () => {
   const handlePath = (selectedElem: string) => {
     if (selectedElem === 'logout') {
       return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/home`);
-    } 
-    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
-  }
+    }
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`);
+  };
 
   const handleLogout = () => {
     signOut();
-  }
+  };
 
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
@@ -87,8 +87,9 @@ const Navbar = () => {
               list={profileMenu}
               open={openUser}
               handleOpen={handleOpenUser}
-              handlePath={handlePath} 
-              handleLogout={handleLogout} />
+              handlePath={handlePath}
+              handleLogout={handleLogout}
+            />
           </div>
         )}
       </div>

@@ -37,9 +37,8 @@ const LoginForm = () => {
       });
       console.log('authUser: ', authUser);
       if (authUser?.ok) router.push('/home');
-    } 
+    }
   };
-
 
   return (
     <form

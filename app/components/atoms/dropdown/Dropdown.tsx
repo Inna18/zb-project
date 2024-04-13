@@ -19,13 +19,19 @@ const Dropdown = (dropdownProps: DropdownProps) => {
   return (
     <div
       className={styles['dropdown-section']}
-      onMouseLeave={handleOpen?() => handleOpen(false):undefined}
+      onMouseLeave={handleOpen ? () => handleOpen(false) : undefined}
     >
       {open &&
         list.map((selectElem, idx) => (
           <li key={idx}>
-            <Link href={handlePath(selectElem)} 
-                  onClick={selectElem=='logout'&&handleLogout?()=>handleLogout():undefined}>
+            <Link
+              href={handlePath(selectElem)}
+              onClick={
+                selectElem == 'logout' && handleLogout
+                  ? () => handleLogout()
+                  : undefined
+              }
+            >
               {selectElem}
             </Link>
           </li>

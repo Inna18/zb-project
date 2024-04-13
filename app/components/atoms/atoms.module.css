@@ -105,10 +105,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   padding: 5px 10px;
   width: 100px;
-  
+
   background-color: #f5efeb;
   border: 1px solid #f5efeb;
   border-radius: 4px;

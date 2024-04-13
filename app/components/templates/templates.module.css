@@ -131,12 +131,12 @@
   text-decoration: none;
   color: rgb(36, 34, 32, 0.3);
   font-size: 14px;
-} 
+}
 .link-section a:nth-child(1) {
   border-right: 1px solid rgb(36, 34, 32, 0.3);
   padding-right: 20px;
 }
-.link-section .active, 
+.link-section .active,
 .link-section a:hover {
   text-decoration: underline;
   text-underline-offset: 4px;

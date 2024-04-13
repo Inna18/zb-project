@@ -18,6 +18,6 @@ export const NavbarDropdown: Story = {
   args: {
     list: ['menu1', 'menu2', 'menu3'],
     open: true,
-    setOpen: () => {}
+    setOpen: () => {},
   },
 };

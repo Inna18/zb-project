@@ -1,13 +1,9 @@
 'use client';
 
-import React from 'react'
+import React from 'react';
 
 const CartTemp = () => {
-  return (
-    <div>
-      Cart
-    </div>
-  )
-}
+  return <div>Cart</div>;
+};
 
 export default CartTemp;

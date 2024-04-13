@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const OrdersOrganism = () => {
-  return (
-    <div>
-      Orders
-    </div>
-  )
-}
+  return <div>Orders</div>;
+};
 
 export default OrdersOrganism;

@@ -9,7 +9,7 @@ import { limit } from '@/app/utils/text';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/app/components/atoms/input/Input';
-import { useFormValidator } from "@/app/hooks/useFormValidator"
+import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password', 'name'];
 
@@ -47,7 +47,7 @@ const SignupForm = () => {
     if (validateForm(signUser.email, signUser.password) == true) {
       const createdUser = await createUser(signUser);
       if (createdUser) router.push('/login');
-    } 
+    }
   };
 
   return (
