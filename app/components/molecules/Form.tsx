@@ -46,7 +46,7 @@ const Form = (formProps: FormProps) => {
         </div>
       ))}
       {type === 'signup' && (
-        <Select className={'role-select'} type={'role'} optionList={['admin', 'user']} changeFunc={changeFunc} hasLabel={true} />
+        <Select className={'role-select'} type={'role'} optionList={['ADMIN', 'USER']} changeFunc={changeFunc} hasLabel={true} />
       )}
     </div>
   );

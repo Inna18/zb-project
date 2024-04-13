@@ -9,6 +9,16 @@
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
 }
+.button2 {
+  width: 80px;
+  height: 40px;
+  background-color: #fff;
+  border: 1px solid #e58025;
+  border-radius: 12px;
+  color: #e58025;
+  cursor: pointer;
+  box-shadow: 0 0 5px #e58025;
+}
 
 /* input */
 .input-section {
