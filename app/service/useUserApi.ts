@@ -95,6 +95,9 @@ async function createUser(user: User) {
 }
 
 async function updateUser(id: string | undefined, updateUser: User) {
+  const uploadedImg = updateUser.profileImg
+    ? await client.assets.upload('image', updateUser.profileImg)
+    : null;
   const updatedUser = await client
     .patch(id!!)
     .set({
@@ -102,6 +105,15 @@ async function updateUser(id: string | undefined, updateUser: User) {
       name: updateUser.name,
       address: updateUser.address,
       phoneNumber: updateUser.phoneNumber,
+      profileImg: uploadedImg
+      ? {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: uploadedImg?._id,
+          },
+        }
+      : undefined
     })
     .commit();
   console.log(updateUser);

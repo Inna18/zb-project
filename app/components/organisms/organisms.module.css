@@ -2,6 +2,9 @@
 .image-section {
   width: 60%;
 }
+.space div{
+  margin-top: 8px;
+}
 .profile-section {
   display: flex;
   flex-direction: column;

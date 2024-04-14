@@ -12,6 +12,7 @@ import emptyUser from '../../../public/user-empty.svg';
 import Image from 'next/image';
 import Button from '../atoms/button/Button';
 import Input from '../atoms/input/Input';
+import { limit } from '@/app/utils/text';
 
 const LIST = [
   'email',
@@ -26,7 +27,6 @@ const LIST = [
 const ProfileOrganism = () => {
   const session = useSession();
   const [show, setShow] = useState<string>('view');
-
   const [userInfo, setUserInfo] = useState<User>({
     _id: '',
     email: '',
@@ -34,15 +34,16 @@ const ProfileOrganism = () => {
     name: '',
     role: '',
     address: '',
-    phoneNumber: '',
+    phoneNumber: ''
   });
+  const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
     [userInfo?.email, 'email'],
     [userInfo?.role, 'role'],
     [userInfo?.password, 'password'],
     [userInfo?.name, 'name'],
     [userInfo?.address, 'address'],
-    [userInfo?.phoneNumber, 'phoneNumber'],
+    [userInfo?.phoneNumber, 'phoneNumber']
   ];
 
   useEffect(() => {
@@ -62,8 +63,10 @@ const ProfileOrganism = () => {
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const handleUserUpdate = () => setShow('update');
-
+  const handleUserUpdate = () => {
+    setImgName(userInfo?.profileImg);
+    setShow('update');
+  }
   const handleUserCancel = () => setShow('view');
 
   const handleUserSave = async () => {
@@ -78,11 +81,16 @@ const ProfileOrganism = () => {
 
   const handleHidePassword = (password: string) => '*'.repeat(password.length);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInfo({ ...userInfo, profileImg: e.currentTarget.files?.[0] });
+    setImgName(e.currentTarget.files?.[0]?.name);
+  };
+
   return (
     <>
       <div className={styles['profile-section']}>
         <div className={styles['image-section']}>
-          {userInfo?.profileImg && (
+          {userInfo?.profileImg && show === 'view' && (
             <Image
               src={userInfo.profileImg}
               alt={'user-profile'}
@@ -90,13 +98,27 @@ const ProfileOrganism = () => {
               height={100}
             />
           )}
-          {!userInfo?.profileImg && (
+          {!userInfo?.profileImg && show === 'view' && (
             <Image
               src={emptyUser}
               alt={'user-empty'}
               width={100}
               height={100}
             />
+          )}
+          {show === 'update' && (
+            <div className={styles.space}>
+              <span>{limit(imgName, 30)}</span>
+              <Input
+                type='file'
+                id='profile-img'
+                className='image'
+                labelText='Update image'
+                hasLabel={true}
+                name='profileImg'
+                changeFunc={handleImageUpload}
+              />
+            </div>
           )}
         </div>
         <div className={styles['profile-details']}>

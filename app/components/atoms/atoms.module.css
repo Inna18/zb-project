@@ -56,9 +56,7 @@
 
 /* image */
 .image-section {
-  width: 100%;
   display: flex;
-  justify-content: center;
 }
 .image-upload {
   display: flex;
