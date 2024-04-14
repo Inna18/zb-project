@@ -1,12 +1,12 @@
 import styles from './page.module.css';
 
 import React from 'react';
-import LoginFormTemplate from '@/app/components/templates/LoginFormTemplate';
+import LoginForm from '@/app/components/templates/LoginForm';
 
 const Login = () => {
   return (
     <div className={styles['login-page']}>
-      <LoginFormTemplate />
+      <LoginForm />
     </div>
   );
 };

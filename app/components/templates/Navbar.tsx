@@ -4,19 +4,21 @@ import styles from './templates.module.css';
 import React, { useEffect, useState } from 'react';
 import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
-import Dropdown from '@/app/components/atoms/Dropdown';
+import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
-const MY = ['login', 'signup', 'cart'];
 
-const NavbarTemplate = () => {
+const Navbar = () => {
   const session = useSession();
+  const router = useRouter();
 
+  const [profileMenu, setProfileMenu] = useState<string[]>([])
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
-  const [username, setUsername] = useState<string | null | undefined>('Guest');
+  const [username, setUsername] = useState<string | null | undefined>('');
 
   const changed = usePageChangeListener;
 
@@ -29,17 +31,36 @@ const NavbarTemplate = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
+      setProfileMenu(['logout', 'myPage', 'cart'])
     } else {
       setUsername('Guest');
+      setProfileMenu(['login', 'signup', 'cart'])
     }
   }, [session]);
 
-  const handleOpen = () => setOpenUser(true);
+  const handleOpenMenu = (e: boolean) => {
+    setOpenMenu(e)
+  }
+
+  const handleOpenUser = (e: boolean) => {
+    setOpenUser(e);
+  }
 
   const handleClose = () => {
     setOpenUser(false);
     setOpenMenu(false);
   };
+
+  const handlePath = (selectedElem: string) => {
+    if (selectedElem === 'logout') {
+      return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/home`);
+    } 
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
+  }
+
+  const handleLogout = () => {
+    signOut();
+  }
 
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
@@ -51,25 +72,28 @@ const NavbarTemplate = () => {
           list={MENU_LIST}
           isMenu={true}
           openMenu={openMenu}
-          setOpenMenu={setOpenMenu}
+          handleOpenMenu={handleOpenMenu}
         />
       </div>
       <div className={styles.profile}>
         <div>Hello, </div>
-        <Link href={'#'} onMouseEnter={handleOpen}>
+        <Link href={'#'} onMouseEnter={() => handleOpenUser(true)}>
           {username}
         </Link>
         {openUser && (
-          <Dropdown
-            key={'user'}
-            list={MY}
-            open={openUser}
-            setOpen={setOpenUser}
-          />
+          <div className={styles['dropdown-section']}>
+            <Dropdown
+              key={'user'}
+              list={profileMenu}
+              open={openUser}
+              handleOpen={handleOpenUser}
+              handlePath={handlePath} 
+              handleLogout={handleLogout} />
+          </div>
         )}
       </div>
     </div>
   );
 };
 
-export default NavbarTemplate;
+export default Navbar;

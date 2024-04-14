@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google';
 import type { Meta, StoryObj } from '@storybook/react';
-import Input from '../../app/components/atoms/Input';
+import Input from './Input';
 
 const meta = {
   title: 'Atoms/Input',

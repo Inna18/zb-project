@@ -1,6 +1,12 @@
 .main {
   min-height: 100vh;
 }
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .light {
   min-height: 100vh;
   background-color: #ccc;

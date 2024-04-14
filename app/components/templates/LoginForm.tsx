@@ -3,19 +3,21 @@ import styles from './templates.module.css';
 
 import React, { useState } from 'react';
 import Form from '@/app/components/molecules/Form';
-import Button from '@/app/components/atoms/Button';
-import Checkbox from '@/app/components/atoms/Checkbox';
+import Button from '@/app/components/atoms/button/Button';
+import Checkbox from '@/app/components/atoms/checkbox/Checkbox';
 import User from '@/app/service/useUserApi';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { signIn } from 'next-auth/react';
+import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password'];
 
-const LoginFormTemplate = () => {
+const LoginForm = () => {
   const router = useRouter();
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
+  const { validateForm, emailError, passwordError } = useFormValidator();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -27,14 +29,17 @@ const LoginFormTemplate = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const authUser = await signIn('credentials', {
-      email: loginUser.email,
-      password: loginUser.password,
-      redirect: false,
-    });
-    console.log('authUser: ', authUser);
-    if (authUser?.ok) router.push('/home');
+    if (validateForm(loginUser.email, loginUser.password) == true) {
+      const authUser = await signIn('credentials', {
+        email: loginUser.email,
+        password: loginUser.password,
+        redirect: false,
+      });
+      console.log('authUser: ', authUser);
+      if (authUser?.ok) router.push('/home');
+    } 
   };
+
 
   return (
     <form
@@ -46,7 +51,9 @@ const LoginFormTemplate = () => {
         list={LIST}
         userProps={userProperties}
         changeFunc={handleInputChange}
-        required={true}
+        type='login'
+        emailError={emailError}
+        passwordError={passwordError}
       />
       <div>
         <Checkbox
@@ -66,4 +73,4 @@ const LoginFormTemplate = () => {
   );
 };
 
-export default LoginFormTemplate;
+export default LoginForm;
