@@ -7,21 +7,36 @@ import ProfileOrganism from '../organisms/ProfileOrganism';
 import OrdersOrganism from '../organisms/OrdersOrganism';
 import { capitalize } from '@/app/utils/text';
 import Link from 'next/link';
-
-const LIST = ['profile', 'orders'];
+import { useSession } from 'next-auth/react';
+import User, { getUserByEmail } from '@/app/service/useUserApi';
 
 const UserPageTemplate = () => {
+  const session = useSession();
+  const [list, setList] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>('profile');
 
   const handleActiveTab = (tab: string) => {
     setActiveTab(tab);
   };
 
+  const handleCurrentUser = async() => {
+    const user = await getUserByEmail(session?.data?.user?.email);
+    if (user?.role === 'ADMIN') setList(['profile', 'products']);
+    else setList(['profile', 'orders']);
+  }
+
+  useEffect(() => {
+    async function getCurrentUser() {
+      await handleCurrentUser();
+    }
+    getCurrentUser();
+  }, [session]);
+
   return (
     <div className={styles.container}>
       <div className={styles.title}>My Page</div>
       <div className={styles['link-section']}>
-        {LIST.map((tab) => (
+        {list?.map((tab) => (
           <Link
             key={tab}
             onClick={() => handleActiveTab(tab)}

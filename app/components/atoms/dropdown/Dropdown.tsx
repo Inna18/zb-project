@@ -16,21 +16,27 @@ const Dropdown = (dropdownProps: DropdownProps) => {
   const router = useRouter();
   const { list, open, handleOpen, handlePath, handleLogout } = dropdownProps;
 
+  const handleDropOpen = () => {
+    if (handleOpen) return () => handleOpen(false)
+    else return undefined
+  }
+
+  const handleDropLogout = (selectedElem: string) => {
+    if (selectedElem === 'logout' && handleLogout) return () => handleLogout();
+    else return undefined;
+  }
+
   return (
     <div
       className={styles['dropdown-section']}
-      onMouseLeave={handleOpen ? () => handleOpen(false) : undefined}
+      onMouseLeave={handleDropOpen}
     >
       {open &&
         list.map((selectElem, idx) => (
           <li key={idx}>
             <Link
               href={handlePath(selectElem)}
-              onClick={
-                selectElem == 'logout' && handleLogout
-                  ? () => handleLogout()
-                  : undefined
-              }
+              onClick={handleDropLogout(selectElem)}
             >
               {selectElem}
             </Link>

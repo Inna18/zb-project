@@ -44,7 +44,7 @@ const SignupForm = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateForm(signUser.email, signUser.password) == true) {
+    if (validateForm(signUser.email, signUser.password)) {
       const createdUser = await createUser(signUser);
       if (createdUser) router.push('/login');
     }
