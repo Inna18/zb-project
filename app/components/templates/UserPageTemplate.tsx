@@ -19,11 +19,11 @@ const UserPageTemplate = () => {
     setActiveTab(tab);
   };
 
-  const handleCurrentUser = async() => {
+  const handleCurrentUser = async () => {
     const user = await getUserByEmail(session?.data?.user?.email);
     if (user?.role === 'ADMIN') setList(['profile', 'products']);
     else setList(['profile', 'orders']);
-  }
+  };
 
   useEffect(() => {
     async function getCurrentUser() {

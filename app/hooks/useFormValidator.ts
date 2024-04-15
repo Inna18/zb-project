@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { emailValidation } from '../utils/validation';
 import { passwordValidation } from '../utils/validation';
-import { authConstants } from "@/app/constants/auth";
+import { authConstants } from '@/app/constants/auth';
 
 export const useFormValidator = () => {
   const [emailError, setEmailError] = useState<string | null>(null);

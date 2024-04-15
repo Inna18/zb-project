@@ -34,7 +34,7 @@ const ProfileOrganism = () => {
     name: '',
     role: '',
     address: '',
-    phoneNumber: ''
+    phoneNumber: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
@@ -43,7 +43,7 @@ const ProfileOrganism = () => {
     [userInfo?.password, 'password'],
     [userInfo?.name, 'name'],
     [userInfo?.address, 'address'],
-    [userInfo?.phoneNumber, 'phoneNumber']
+    [userInfo?.phoneNumber, 'phoneNumber'],
   ];
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const ProfileOrganism = () => {
   const handleUserUpdate = () => {
     setImgName(userInfo?.profileImg);
     setShow('update');
-  }
+  };
   const handleUserCancel = () => setShow('view');
 
   const handleUserSave = async () => {

@@ -106,14 +106,14 @@ async function updateUser(id: string | undefined, updateUser: User) {
       address: updateUser.address,
       phoneNumber: updateUser.phoneNumber,
       profileImg: uploadedImg
-      ? {
-          _type: 'image',
-          asset: {
-            _type: 'reference',
-            _ref: uploadedImg?._id,
-          },
-        }
-      : undefined
+        ? {
+            _type: 'image',
+            asset: {
+              _type: 'reference',
+              _ref: uploadedImg?._id,
+            },
+          }
+        : undefined,
     })
     .commit();
   console.log(updateUser);

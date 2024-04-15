@@ -17,20 +17,17 @@ const Dropdown = (dropdownProps: DropdownProps) => {
   const { list, open, handleOpen, handlePath, handleLogout } = dropdownProps;
 
   const handleDropOpen = () => {
-    if (handleOpen) return () => handleOpen(false)
-    else return undefined
-  }
+    if (handleOpen) return () => handleOpen(false);
+    else return undefined;
+  };
 
   const handleDropLogout = (selectedElem: string) => {
     if (selectedElem === 'logout' && handleLogout) return () => handleLogout();
     else return undefined;
-  }
+  };
 
   return (
-    <div
-      className={styles['dropdown-section']}
-      onMouseLeave={handleDropOpen}
-    >
+    <div className={styles['dropdown-section']} onMouseLeave={handleDropOpen}>
       {open &&
         list.map((selectElem, idx) => (
           <li key={idx}>

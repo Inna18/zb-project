@@ -19,7 +19,7 @@ const SignupForm = () => {
     email: '',
     password: '',
     name: '',
-    role: ''
+    role: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
