@@ -18,7 +18,7 @@ interface LinksProps {
   handleOpenMenu?: (param: boolean) => void;
 }
 
-const Links = (linksProps: LinksProps) => {
+const LinksMolecules = (linksProps: LinksProps) => {
   const pathname = usePathname();
   const { list, isMenu, openMenu, handleOpenMenu } = linksProps;
 
@@ -69,4 +69,4 @@ const Links = (linksProps: LinksProps) => {
   );
 };
 
-export default Links;
+export default LinksMolecules;

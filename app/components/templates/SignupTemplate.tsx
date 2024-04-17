@@ -2,7 +2,7 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import Form from '@/app/components/molecules/Form';
+import FormMolecule from '@/app/components/molecules/FormMolecule';
 import Button from '@/app/components/atoms/button/Button';
 import User, { createUser } from '@/app/service/useUserApi';
 import { limit } from '@/app/utils/text';
@@ -13,7 +13,7 @@ import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password', 'name'];
 
-const SignupForm = () => {
+const SignupTemplate = () => {
   const router = useRouter();
   const [signUser, setSignUser] = useState<User>({
     email: '',
@@ -56,7 +56,7 @@ const SignupForm = () => {
       onSubmit={handleSubmit}
     >
       <h2 className={styles.title}>SIGNUP</h2>
-      <Form
+      <FormMolecule
         list={LIST}
         userProps={userProperties}
         changeFunc={handleInputChange}
@@ -86,4 +86,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default SignupTemplate;

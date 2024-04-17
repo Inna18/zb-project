@@ -13,6 +13,7 @@ import Image from 'next/image';
 import Button from '../atoms/button/Button';
 import Input from '../atoms/input/Input';
 import { limit } from '@/app/utils/text';
+import Spinner from '../atoms/spinner/Spinner';
 
 const LIST = [
   'email',
@@ -26,6 +27,7 @@ const LIST = [
 
 const ProfileOrganism = () => {
   const session = useSession();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [show, setShow] = useState<string>('view');
   const [userInfo, setUserInfo] = useState<User>({
     _id: '',
@@ -51,9 +53,11 @@ const ProfileOrganism = () => {
   }, [session]);
 
   const _getUserInfo = async () => {
+    setIsLoading(true);
     const userFromDB = await getUserByEmail(session?.data?.user?.email);
     console.log('userFromDB: ', userFromDB);
     setUserInfo(userFromDB);
+    setIsLoading(false);
   };
 
   const handleInputChange = (
@@ -88,96 +92,101 @@ const ProfileOrganism = () => {
 
   return (
     <>
-      <div className={styles['profile-section']}>
-        <div className={styles['image-section']}>
-          {userInfo?.profileImg && show === 'view' && (
-            <Image
-              src={userInfo.profileImg}
-              alt={'user-profile'}
-              width={100}
-              height={100}
-            />
-          )}
-          {!userInfo?.profileImg && show === 'view' && (
-            <Image
-              src={emptyUser}
-              alt={'user-empty'}
-              width={100}
-              height={100}
-            />
-          )}
-          {show === 'update' && (
-            <div className={styles.space}>
-              <span>{limit(imgName, 30)}</span>
-              <Input
-                type='file'
-                id='profile-img'
-                className='image'
-                labelText='Update image'
-                hasLabel={true}
-                name='profileImg'
-                changeFunc={handleImageUpload}
-              />
-            </div>
-          )}
-        </div>
-        <div className={styles['profile-details']}>
-          <div className={styles.titles}>
-            <div>EMAIL: </div>
-            <div>ROLE: </div>
-            <div>PASSWORD: </div>
-            <div>NAME: </div>
-            <div>ADDRESS: </div>
-            <div>PHONE NUMBER: </div>
-          </div>
-          {userInfo && show === 'view' && (
-            <div className={styles.values}>
-              <div>{userInfo.email}</div>
-              <div>{userInfo.role}</div>
-              <div>{handleHidePassword(userInfo.password)}</div>
-              <div>{userInfo.name}</div>
-              {userInfo.address && <div>{userInfo.address}</div>}
-              {!userInfo.address && (
-                <div className={styles['grid-empty']}>empty</div>
+      {isLoading && <Spinner />}
+      {!isLoading && (
+        <>
+          <div className={styles['profile-section']}>
+            <div className={styles['image-section']}>
+              {userInfo?.profileImg && show === 'view' && (
+                <Image
+                  src={userInfo.profileImg}
+                  alt={'user-profile'}
+                  width={100}
+                  height={100}
+                />
               )}
-              <div>{userInfo.phoneNumber}</div>
-            </div>
-          )}
-          {userInfo && show === 'update' && (
-            <div className={styles.updates}>
-              {userProperties?.map((property) => (
-                <div key={property[1]}>
+              {!userInfo?.profileImg && show === 'view' && (
+                <Image
+                  src={emptyUser}
+                  alt={'user-empty'}
+                  width={100}
+                  height={100}
+                />
+              )}
+              {show === 'update' && (
+                <div className={styles.space}>
+                  <span>{limit(imgName, 30)}</span>
                   <Input
-                    type={handleCheckType(property[1]!)}
-                    changeFunc={handleInputChange}
-                    hasLabel={false}
-                    value={property[0]}
-                    maxLength={20}
-                    className='input'
-                    name={property[1]}
-                    disabled={handleCheckDisabled(property[1])}
+                    type='file'
+                    id='profile-img'
+                    className='image'
+                    labelText='Update image'
+                    hasLabel={true}
+                    name='profileImg'
+                    changeFunc={handleImageUpload}
                   />
                 </div>
-              ))}
+              )}
             </div>
-          )}
-        </div>
-      </div>
-      <div className={styles['button-section']}>
-        {show === 'view' && (
-          <Button value={'Update'} handleClick={handleUserUpdate} />
-        )}
-        {show === 'update' && (
-          <>
-            <Button value={'Save'} handleClick={handleUserSave} />
-            <Button
-              value={'Cancel'}
-              handleClick={handleUserCancel}
-              className='button2'
-            />
-          </>
-        )}
-      </div>
+            <div className={styles['profile-details']}>
+              <div className={styles.titles}>
+                <div>EMAIL: </div>
+                <div>ROLE: </div>
+                <div>PASSWORD: </div>
+                <div>NAME: </div>
+                <div>ADDRESS: </div>
+                <div>PHONE NUMBER: </div>
+              </div>
+              {userInfo && show === 'view' && (
+                <div className={styles.values}>
+                  <div>{userInfo.email}</div>
+                  <div>{userInfo.role}</div>
+                  <div>{handleHidePassword(userInfo.password)}</div>
+                  <div>{userInfo.name}</div>
+                  {userInfo.address && <div>{userInfo.address}</div>}
+                  {!userInfo.address && (
+                    <div className={styles['grid-empty']}>empty</div>
+                  )}
+                  <div>{userInfo.phoneNumber}</div>
+                </div>
+              )}
+              {userInfo && show === 'update' && (
+                <div className={styles.updates}>
+                  {userProperties?.map((property) => (
+                    <div key={property[1]}>
+                      <Input
+                        type={handleCheckType(property[1]!)}
+                        changeFunc={handleInputChange}
+                        hasLabel={false}
+                        value={property[0]}
+                        maxLength={20}
+                        className='input'
+                        name={property[1]}
+                        disabled={handleCheckDisabled(property[1])}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className={styles['button-section']}>
+            {show === 'view' && (
+              <Button value={'Update'} handleClick={handleUserUpdate} />
+            )}
+            {show === 'update' && (
+              <>
+                <Button value={'Save'} handleClick={handleUserSave} />
+                <Button
+                  value={'Cancel'}
+                  handleClick={handleUserCancel}
+                  className='button2'
+                />
+              </>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-const CartTemp = () => {
+const CartTemplate = () => {
   return <div>Cart</div>;
 };
 
-export default CartTemp;
+export default CartTemplate;

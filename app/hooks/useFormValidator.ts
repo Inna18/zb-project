@@ -16,17 +16,22 @@ export const useFormValidator = () => {
       setEmailError('');
       setPasswordError('');
       return true;
-    } else if (!emailValid) {
+    }
+    if (!emailValid) {
       setEmailError(EMAIL_ERROR);
       setPasswordError('');
-    } else if (!passwordValid) {
+      return false;
+    }
+    if (!passwordValid) {
       setPasswordError(PASSWORD_ERROR);
       setEmailError('');
-    } else if (!emailValid && !passwordValid) {
+      return false;
+    }
+    if (!emailValid && !passwordValid) {
       setEmailError(EMAIL_ERROR);
       setPasswordError(PASSWORD_ERROR);
+      return false;
     }
-    return false;
   };
 
   return { validateForm, emailError, passwordError };

@@ -1,8 +1,8 @@
 'use client';
-import styles from './templates.module.css';
+import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Links from '@/app/components/molecules/Links';
+import LinksMolecule from '@/app/components/molecules/LinksMolecule';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 
-const Navbar = () => {
+const NavbarOrganism = () => {
   const session = useSession();
   const router = useRouter();
 
@@ -68,7 +68,7 @@ const Navbar = () => {
         <Link href={'/home'}>LOGO</Link>
       </div>
       <div>
-        <Links
+        <LinksMolecule
           list={MENU_LIST}
           isMenu={true}
           openMenu={openMenu}
@@ -97,4 +97,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarOrganism;

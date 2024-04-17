@@ -17,7 +17,7 @@ interface FormProps {
   passwordError?: string | null;
 }
 
-const Form = (formProps: FormProps) => {
+const FormMolecules = (formProps: FormProps) => {
   const {
     required,
     list,
@@ -66,4 +66,4 @@ const Form = (formProps: FormProps) => {
   );
 };
 
-export default Form;
+export default FormMolecules;

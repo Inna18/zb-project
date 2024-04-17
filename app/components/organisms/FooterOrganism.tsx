@@ -1,4 +1,4 @@
-import styles from './templates.module.css';
+import styles from './organisms.module.css';
 import instagramIcn from '@/public/instagram.svg';
 import youtubeIcn from '@/public/youtube.svg';
 
@@ -8,7 +8,7 @@ import Organization, {
 } from '@/app/service/useOrganizationApi';
 import Image from 'next/image';
 
-const Footer = () => {
+const FooterOrganism = () => {
   const [organization, setOrganization] = useState<Organization>({
     name: '',
     address: '',
@@ -90,4 +90,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default FooterOrganism;
