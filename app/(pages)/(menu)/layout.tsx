@@ -3,8 +3,8 @@ import styles from '../../page.module.css';
 
 import { Inter } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-import NavbarOrganism from '@/app/components/organisms/NavbarOrganism';
-import FooterOrganism from '@/app/components/organisms/FooterOrganism';
+import Navbar from '@/app/components/organisms/Navbar';
+import Footer from '@/app/components/organisms/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <div className={styles.container}>
       <SessionProvider>
-        <NavbarOrganism />
+        <Navbar />
         {children}
-        <FooterOrganism />
+        <Footer />
       </SessionProvider>
     </div>
   );

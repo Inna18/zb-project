@@ -8,7 +8,7 @@ import Organization, {
 } from '@/app/service/useOrganizationApi';
 import Image from 'next/image';
 
-const FooterOrganism = () => {
+const Footer = () => {
   const [organization, setOrganization] = useState<Organization>({
     name: '',
     address: '',
@@ -90,4 +90,4 @@ const FooterOrganism = () => {
   );
 };
 
-export default FooterOrganism;
+export default Footer;

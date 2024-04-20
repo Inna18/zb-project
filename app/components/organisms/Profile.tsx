@@ -25,7 +25,7 @@ const LIST = [
   'profileImg',
 ];
 
-const ProfileOrganism = () => {
+const Profile = () => {
   const session = useSession();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [show, setShow] = useState<string>('view');
@@ -172,14 +172,14 @@ const ProfileOrganism = () => {
           </div>
           <div className={styles['button-section']}>
             {show === 'view' && (
-              <Button value={'Update'} handleClick={handleUserUpdate} />
+              <Button value={'Update'} onClick={handleUserUpdate} />
             )}
             {show === 'update' && (
               <>
-                <Button value={'Save'} handleClick={handleUserSave} />
+                <Button value={'Save'} onClick={handleUserSave} />
                 <Button
                   value={'Cancel'}
-                  handleClick={handleUserCancel}
+                  onClick={handleUserCancel}
                   className='button2'
                 />
               </>
@@ -191,4 +191,4 @@ const ProfileOrganism = () => {
   );
 };
 
-export default ProfileOrganism;
+export default Profile;
