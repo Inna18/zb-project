@@ -2,7 +2,7 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import Form from '@/app/components/molecules/Form';
+import FormMolecule from '@/app/components/molecules/FormMolecule';
 import Button from '@/app/components/atoms/button/Button';
 import Checkbox from '@/app/components/atoms/checkbox/Checkbox';
 import User from '@/app/service/useUserApi';
@@ -13,7 +13,7 @@ import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password'];
 
-const LoginForm = () => {
+const LoginTemplate = () => {
   const router = useRouter();
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
@@ -37,9 +37,8 @@ const LoginForm = () => {
       });
       console.log('authUser: ', authUser);
       if (authUser?.ok) router.push('/home');
-    } 
+    }
   };
-
 
   return (
     <form
@@ -47,7 +46,7 @@ const LoginForm = () => {
       onSubmit={handleSubmit}
     >
       <div className={styles.title}>LOGIN</div>
-      <Form
+      <FormMolecule
         list={LIST}
         userProps={userProperties}
         changeFunc={handleInputChange}
@@ -73,4 +72,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default LoginTemplate;

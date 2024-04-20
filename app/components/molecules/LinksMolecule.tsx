@@ -18,7 +18,7 @@ interface LinksProps {
   handleOpenMenu?: (param: boolean) => void;
 }
 
-const Links = (linksProps: LinksProps) => {
+const LinksMolecules = (linksProps: LinksProps) => {
   const pathname = usePathname();
   const { list, isMenu, openMenu, handleOpenMenu } = linksProps;
 
@@ -37,8 +37,8 @@ const Links = (linksProps: LinksProps) => {
   };
 
   const handlePath = (selectedElem: string) => {
-    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
-  }
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`);
+  };
 
   return (
     <div className={styles['links-section']}>
@@ -46,9 +46,7 @@ const Links = (linksProps: LinksProps) => {
         <span key={link} className={styles.link}>
           <Link
             key={link}
-            className={
-              isMenu && pathname === `/${link}` ? styles.active : ''
-            }
+            className={isMenu && pathname === `/${link}` ? styles.active : ''}
             href={`/${link}`}
             onMouseEnter={() => handleOpen(link)}
           >
@@ -71,4 +69,4 @@ const Links = (linksProps: LinksProps) => {
   );
 };
 
-export default Links;
+export default LinksMolecules;

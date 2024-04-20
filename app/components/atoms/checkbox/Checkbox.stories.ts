@@ -19,6 +19,5 @@ export const CheckboxWithLabel: Story = {
     type: 'checkbox',
     hasLabel: true,
     labelText: 'Remember me',
-
   },
 };

@@ -1,12 +1,12 @@
 import styles from './page.module.css';
 
 import React from 'react';
-import SignupForm from '@/app/components/templates/SignupForm';
+import SignupTemplate from '@/app/components/templates/SignupTemplate';
 
 const Signup = () => {
   return (
     <div className={styles['signup-page']}>
-      <SignupForm />
+      <SignupTemplate />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { getUserByEmailAndPassword } from './useUserApi';
+import { getUserByEmail, getUserByEmailAndPassword } from './useUserApi';
 import { randomBytes, randomUUID } from 'crypto';
 
 export const authOptions: NextAuthOptions = {

@@ -1,8 +1,8 @@
 'use client';
-import styles from './templates.module.css';
+import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Links from '@/app/components/molecules/Links';
+import LinksMolecule from '@/app/components/molecules/LinksMolecule';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
@@ -11,11 +11,11 @@ import { useRouter } from 'next/navigation';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 
-const Navbar = () => {
+const NavbarOrganism = () => {
   const session = useSession();
   const router = useRouter();
 
-  const [profileMenu, setProfileMenu] = useState<string[]>([])
+  const [profileMenu, setProfileMenu] = useState<string[]>([]);
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [username, setUsername] = useState<string | null | undefined>('');
@@ -31,20 +31,20 @@ const Navbar = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      setProfileMenu(['logout', 'myPage', 'cart'])
+      setProfileMenu(['logout', 'myPage', 'cart']);
     } else {
       setUsername('Guest');
-      setProfileMenu(['login', 'signup', 'cart'])
+      setProfileMenu(['login', 'signup', 'cart']);
     }
   }, [session]);
 
   const handleOpenMenu = (e: boolean) => {
-    setOpenMenu(e)
-  }
+    setOpenMenu(e);
+  };
 
   const handleOpenUser = (e: boolean) => {
     setOpenUser(e);
-  }
+  };
 
   const handleClose = () => {
     setOpenUser(false);
@@ -54,13 +54,13 @@ const Navbar = () => {
   const handlePath = (selectedElem: string) => {
     if (selectedElem === 'logout') {
       return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/home`);
-    } 
-    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`)
-  }
+    }
+    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`);
+  };
 
   const handleLogout = () => {
     signOut();
-  }
+  };
 
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
@@ -68,7 +68,7 @@ const Navbar = () => {
         <Link href={'/home'}>LOGO</Link>
       </div>
       <div>
-        <Links
+        <LinksMolecule
           list={MENU_LIST}
           isMenu={true}
           openMenu={openMenu}
@@ -87,8 +87,9 @@ const Navbar = () => {
               list={profileMenu}
               open={openUser}
               handleOpen={handleOpenUser}
-              handlePath={handlePath} 
-              handleLogout={handleLogout} />
+              handlePath={handlePath}
+              handleLogout={handleLogout}
+            />
           </div>
         )}
       </div>
@@ -96,4 +97,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarOrganism;

@@ -9,8 +9,16 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = (inputProps: InputProps) => {
-  const { type, id, className, changeFunc, hasLabel, labelText, ...rest } =
-    inputProps;
+  const {
+    type,
+    id,
+    className,
+    changeFunc,
+    hasLabel,
+    labelText,
+    value,
+    ...rest
+  } = inputProps;
 
   return (
     <div className={styles[`${className}-section`]}>
@@ -24,6 +32,7 @@ const Input = (inputProps: InputProps) => {
       )}
       <input
         {...rest}
+        value={value || ''}
         type={type}
         id={id}
         onChange={changeFunc}

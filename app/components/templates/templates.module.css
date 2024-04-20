@@ -55,75 +55,6 @@
   height: 500px;
 }
 
-/* navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px;
-  background-color: #f5efeb;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  box-shadow: 0 4px 20px -2px rgb(36, 34, 32, 0.3);
-  font-size: 14px;
-}
-.navbar div a {
-  color: inherit;
-  text-decoration: none;
-}
-.profile {
-  position: relative;
-  display: flex;
-  height: inherit;
-}
-.profile div {
-  margin-right: 4px;
-}
-.profile a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-/* dropdown */
-.dropdown-section {
-  position: absolute;
-  top: 40px;
-  right: -28px;
-}
-
-/* footer */
-.footer {
-  font-size: 10px;
-  padding: 10px;
-  background-color: #f5efeb;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0 4px 20px 4px rgb(36, 34, 32, 0.3);
-}
-.footer-section {
-  display: grid;
-  grid-auto-flow: column;
-}
-.footer-section ul {
-  list-style-type: circle;
-  padding: 0 18px;
-}
-.footer-section ul li {
-  padding: 4px 0;
-}
-
-/* icon */
-.icons-section {
-  display: flex;
-}
-.icons-section div:nth-child(1) {
-  margin-right: 6px;
-}
-.icon {
-  width: 20px;
-  height: 20px;
-}
-
 /* user page */
 .link-section a {
   margin: 0 10px;
@@ -131,12 +62,12 @@
   text-decoration: none;
   color: rgb(36, 34, 32, 0.3);
   font-size: 14px;
-} 
+}
 .link-section a:nth-child(1) {
   border-right: 1px solid rgb(36, 34, 32, 0.3);
   padding-right: 20px;
 }
-.link-section .active, 
+.link-section .active,
 .link-section a:hover {
   text-decoration: underline;
   text-underline-offset: 4px;

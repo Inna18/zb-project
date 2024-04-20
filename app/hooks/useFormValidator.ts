@@ -1,31 +1,38 @@
-import { useState } from "react";
-import { emailValidation } from "../utils/validation"
-import { passwordValidation } from "../utils/validation"
+import { useState } from 'react';
+import { emailValidation } from '../utils/validation';
+import { passwordValidation } from '../utils/validation';
+import { authConstants } from '@/app/constants/auth';
 
 export const useFormValidator = () => {
-  const [emailError, setEmailError] = useState<string|null>(null);
-  const [passwordError, setPasswordError] = useState<string|null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const validateForm = (email: string, password: string) => {
     const emailValid = emailValidation(email);
     const passwordValid = passwordValidation(password);
+    const { EMAIL_ERROR, PASSWORD_ERROR } = authConstants();
 
     if (emailValid && passwordValid) {
       setEmailError('');
       setPasswordError('');
       return true;
-    } else if (!emailValid) {
-      setEmailError("Check check the email address format.")
-      setPasswordError('');
-    } else if (!passwordValid) {
-      setPasswordError("Password should contain 1 letter, 1 number, 1 special character, 1~8 total.")
-      setEmailError('');
-    } else if (!emailValid && !passwordValid) {
-      setEmailError("Check check the email address format.")
-      setPasswordError("Password should contain 1 letter, 1 number, 1 special character, 1~8 total.")
     }
-    return false;
-  }
+    if (!emailValid) {
+      setEmailError(EMAIL_ERROR);
+      setPasswordError('');
+      return false;
+    }
+    if (!passwordValid) {
+      setPasswordError(PASSWORD_ERROR);
+      setEmailError('');
+      return false;
+    }
+    if (!emailValid && !passwordValid) {
+      setEmailError(EMAIL_ERROR);
+      setPasswordError(PASSWORD_ERROR);
+      return false;
+    }
+  };
 
-  return {validateForm, emailError, passwordError}
-}
+  return { validateForm, emailError, passwordError };
+};

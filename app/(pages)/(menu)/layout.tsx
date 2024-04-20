@@ -1,10 +1,10 @@
 'use client';
-import styles from "../../page.module.css"
+import styles from '../../page.module.css';
 
 import { Inter } from 'next/font/google';
-import Navbar from '@/app/components/templates/Navbar';
 import { SessionProvider } from 'next-auth/react';
-import Footer from '@/app/components/templates/Footer';
+import NavbarOrganism from '@/app/components/organisms/NavbarOrganism';
+import FooterOrganism from '@/app/components/organisms/FooterOrganism';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +16,9 @@ export default function RootLayout({
   return (
     <div className={styles.container}>
       <SessionProvider>
-        <Navbar />
+        <NavbarOrganism />
         {children}
-        <Footer />
+        <FooterOrganism />
       </SessionProvider>
     </div>
   );

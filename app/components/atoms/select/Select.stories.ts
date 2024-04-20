@@ -20,6 +20,6 @@ export const FromSelect: Story = {
     type: 'role',
     optionList: ['admin', 'user'],
     changeFunc: () => {},
-    hasLabel: true
+    hasLabel: true,
   },
 };
