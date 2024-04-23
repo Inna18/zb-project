@@ -39,8 +39,9 @@ const SignupTemplate = () => {
     signUser.role,
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
-  
-  const { mutate, isSuccess, isPending, isError, status } = useUserCreate(signUser);
+
+  const { mutate, isSuccess, isPending, isError, status } =
+    useUserCreate(signUser);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -77,7 +78,7 @@ const SignupTemplate = () => {
       });
       setShowModal(true);
     }
-  }, [status])
+  }, [status]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -90,49 +91,49 @@ const SignupTemplate = () => {
 
   return (
     <>
-    {isPending && <Spinner />}   
-    <form
-      className={`${styles.form} ${styles['form-signup']}`}
-      onSubmit={handleSubmit}
-    >
-      <h2 className={styles.title}>SIGNUP</h2>
-      <Form
-        list={LIST}
-        userProps={userProperties}
-        changeFunc={handleInputChange}
-        type='signup'
-        emailError={emailError}
-        passwordError={passwordError}
-      />
-      <div className={styles['image-section']}>
-        <Input
-          type='file'
-          id='profile-img'
-          className='image'
-          labelText='Upload image'
-          hasLabel={true}
-          name='profileImg'
-          changeFunc={handleImageUpload}
+      {isPending && <Spinner />}
+      <form
+        className={`${styles.form} ${styles['form-signup']}`}
+        onSubmit={handleSubmit}
+      >
+        <h2 className={styles.title}>SIGNUP</h2>
+        <Form
+          list={LIST}
+          userProps={userProperties}
+          changeFunc={handleInputChange}
+          type='signup'
+          emailError={emailError}
+          passwordError={passwordError}
         />
-        <div>{limit(imgName, 20)}</div>
-      </div>
-      <div className={styles.button}>
-        <Button value='Signup' />
-      </div>
-      <div className={styles.link}>
-        <Link href={'/login'}>Login</Link>
-      </div>
+        <div className={styles['image-section']}>
+          <Input
+            type='file'
+            id='profile-img'
+            className='image'
+            labelText='Upload image'
+            hasLabel={true}
+            name='profileImg'
+            changeFunc={handleImageUpload}
+          />
+          <div>{limit(imgName, 20)}</div>
+        </div>
+        <div className={styles.button}>
+          <Button value='Signup' />
+        </div>
+        <div className={styles.link}>
+          <Link href={'/login'}>Login</Link>
+        </div>
 
-      <Modal
-        selector='portal'
-        title={modalDetails.title}
-        content={modalDetails.content}
-        type={modalDetails.type}
-        show={showModal}
-        onClose={() => setShowModal(false)}
-        onOk={handleMove}
-      />
-    </form>
+        <Modal
+          selector='portal'
+          title={modalDetails.title}
+          content={modalDetails.content}
+          type={modalDetails.type}
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onOk={handleMove}
+        />
+      </form>
     </>
   );
 };

@@ -90,7 +90,7 @@ async function createUser(user: User) {
     return userCreated;
   } else {
     console.log('User already exists');
-    throw new Error('User already exists')
+    throw new Error('User already exists');
   }
 }
 
