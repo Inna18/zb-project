@@ -3,16 +3,13 @@
 import { SessionProvider } from 'next-auth/react';
 import { Inter } from 'next/font/google';
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const inter = Inter({ subsets: ['latin'] });
 
 // Create a client
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -23,6 +20,7 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
       <div className={`${inter.className}`}>
         <SessionProvider>{children}</SessionProvider>
+        <div id='portal'></div>
       </div>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

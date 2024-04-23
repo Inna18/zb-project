@@ -29,7 +29,7 @@ const Input = (inputProps: InputProps) => {
       if (showPassword) return 'text';
       else return 'password';
     } else return type;
-  }
+  };
 
   return (
     <div className={styles[`${className}-section`]}>
@@ -41,35 +41,37 @@ const Input = (inputProps: InputProps) => {
           {labelText}
         </label>
       )}
-      <input
-        {...rest}
-        value={value || ''}
-        type={checkType()}
-        id={id}
-        onChange={changeFunc}
-        accept={type === 'file' ? 'image/*' : ''}
-        className={styles[`${className}`]}
-      />
-      {type === 'password' && (
-        <span>
-          {value && showPassword === false && (
-            <Image
-            className={styles.icon}
-            src={eyeOpened}
-            alt={'eye-opened'}
-            onClick={() => setShowPassword(true)}
-          />
-          )}
-          {value && showPassword === true && (
-            <Image
-            className={styles.icon}
-            src={eyeClosed}
-            alt={'eye-opened'}
-            onClick={() => setShowPassword(false)}
-          />
-          )}
-        </span>
-      )}
+      <span>
+        <input
+          {...rest}
+          value={value || ''}
+          type={checkType()}
+          id={id}
+          onChange={changeFunc}
+          accept={type === 'file' ? 'image/*' : ''}
+          className={styles[`${className}`]}
+        />
+        {type === 'password' && (
+          <span>
+            {value && showPassword === false && (
+              <Image
+                className={styles.icon}
+                src={eyeOpened}
+                alt={'eye-opened'}
+                onClick={() => setShowPassword(true)}
+              />
+            )}
+            {value && showPassword === true && (
+              <Image
+                className={styles.icon}
+                src={eyeClosed}
+                alt={'eye-opened'}
+                onClick={() => setShowPassword(false)}
+              />
+            )}
+          </span>
+        )}
+      </span>
     </div>
   );
 };

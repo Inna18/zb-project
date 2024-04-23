@@ -2,10 +2,10 @@
 import styles from './organisms.module.css';
 
 import React, { useState } from 'react';
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from '@tanstack/react-query';
 import User from '@/app/service/useUserApi';
-import { useUserByEmail } from "@/app/queries/queryHooks/user/useUserByEmail"
-import { useUserUpdate } from "@/app/queries/queryHooks/user/useUserUpdate"
+import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
+import { useUserUpdate } from '@/app/queries/queryHooks/user/useUserUpdate';
 import { useSession } from 'next-auth/react';
 import emptyUser from '../../../public/icons/user-empty.svg';
 import Image from 'next/image';
@@ -36,7 +36,11 @@ const Profile = () => {
     [updatedUser?.address, 'address'],
     [updatedUser?.phoneNumber, 'phoneNumber'],
   ];
-  const { isPending, isError, data: user } = useUserByEmail(session?.data?.user?.email);
+  const {
+    isPending,
+    isError,
+    data: user,
+  } = useUserByEmail(session?.data?.user?.email);
   const mutation = useUserUpdate(updatedUser?._id, updatedUser);
 
   const handleInputChange = (
@@ -49,13 +53,13 @@ const Profile = () => {
   const handleUserUpdate = () => {
     setImgName(user?.profileImg);
     setShow('update');
-    setUpdatedUser({...user, profileImg: ''});
+    setUpdatedUser({ ...user, profileImg: '' });
   };
   const handleUserCancel = () => setShow('view');
 
   const handleUserSave = () => {
     // const result = await updateUser(updatedUser._id, updatedUser);
-    
+
     // const mutation = useMutation({ mutationFn: async () => await updateUser(updatedUser._id, updatedUser) })
     mutation.mutate();
   };

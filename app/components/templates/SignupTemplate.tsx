@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/app/components/atoms/input/Input';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
+import Modal from '../atoms/modal/Modal';
 
 const LIST = ['email', 'password', 'name'];
 
@@ -22,6 +23,12 @@ const SignupTemplate = () => {
     role: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalDetails, setModalDetails] = useState({
+    title: '',
+    content: '',
+    type: '',
+  });
   const userProperties = [
     signUser.email,
     signUser.password,
@@ -46,9 +53,32 @@ const SignupTemplate = () => {
     e.preventDefault();
     if (validateForm(signUser.email, signUser.password)) {
       const createdUser = await createUser(signUser);
-      if (createdUser) router.push('/login');
+      if (createdUser) {
+        setModalDetails((prevState) => {
+          return {
+            ...prevState,
+            type: 'confirm',
+            title: 'Confirm',
+            content: 'Sign-up was successfull. Navigate to Login page?',
+          };
+        });
+        setShowModal(true);
+      }
+      if (!createdUser) {
+        setModalDetails((prevState) => {
+          return {
+            ...prevState,
+            type: 'alert',
+            title: 'Alert',
+            content: 'User already exists.',
+          };
+        });
+        setShowModal(true);
+      }
     }
   };
+
+  const handleMove = () => router.push('/login');
 
   return (
     <form
@@ -82,6 +112,16 @@ const SignupTemplate = () => {
       <div className={styles.link}>
         <Link href={'/login'}>Login</Link>
       </div>
+
+      <Modal
+        selector='portal'
+        title={modalDetails.title}
+        content={modalDetails.content}
+        type={modalDetails.type}
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        onOk={handleMove}
+      />
     </form>
   );
 };
