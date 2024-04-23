@@ -2,12 +2,12 @@
 import styles from './organisms.module.css';
 
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import User, { updateUser } from '@/app/service/useUserApi';
+import { useQueryClient } from "@tanstack/react-query";
+import User from '@/app/service/useUserApi';
 import { useUserByEmail } from "@/app/queries/queryHooks/user/useUserByEmail"
 import { useUserUpdate } from "@/app/queries/queryHooks/user/useUserUpdate"
 import { useSession } from 'next-auth/react';
-import emptyUser from '../../../public/user-empty.svg';
+import emptyUser from '../../../public/icons/user-empty.svg';
 import Image from 'next/image';
 import Button from '../atoms/button/Button';
 import Input from '../atoms/input/Input';

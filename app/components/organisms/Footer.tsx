@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
-import instagramIcn from '@/public/instagram.svg';
-import youtubeIcn from '@/public/youtube.svg';
+import instagramIcn from '@/public/icons/instagram.svg';
+import youtubeIcn from '@/public/icons/youtube.svg';
 
 import React, { useEffect, useState } from 'react';
 import Organization, {

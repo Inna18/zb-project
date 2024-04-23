@@ -29,6 +29,7 @@
 
 /* input */
 .input-section {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 4fr;
   grid-gap: 10px;
@@ -45,6 +46,14 @@
 }
 .input::placeholder {
   color: rgb(99, 96, 93, 0.3);
+}
+.icon {
+  position: absolute;
+  width: 18px;
+  top: 40%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 
 /* checkbox */
