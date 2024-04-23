@@ -1,12 +1,11 @@
 'use client';
 import styles from './organisms.module.css';
 
-import React, { useEffect, useState } from 'react';
-import User, {
-  createUser,
-  getUserByEmail,
-  updateUser,
-} from '@/app/service/useUserApi';
+import React, { useState } from 'react';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import User, { updateUser } from '@/app/service/useUserApi';
+import { useUserByEmail } from "@/app/queries/queryHooks/user/useUserByEmail"
+import { useUserUpdate } from "@/app/queries/queryHooks/user/useUserUpdate"
 import { useSession } from 'next-auth/react';
 import emptyUser from '../../../public/user-empty.svg';
 import Image from 'next/image';
@@ -15,21 +14,11 @@ import Input from '../atoms/input/Input';
 import { limit } from '@/app/utils/text';
 import Spinner from '../atoms/spinner/Spinner';
 
-const LIST = [
-  'email',
-  'password',
-  'role',
-  'name',
-  'address',
-  'phoneNumber',
-  'profileImg',
-];
-
 const Profile = () => {
   const session = useSession();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const queryClient = useQueryClient();
   const [show, setShow] = useState<string>('view');
-  const [userInfo, setUserInfo] = useState<User>({
+  const [updatedUser, setUpdatedUser] = useState<User>({
     _id: '',
     email: '',
     password: '',
@@ -40,41 +29,35 @@ const Profile = () => {
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
-    [userInfo?.email, 'email'],
-    [userInfo?.role, 'role'],
-    [userInfo?.password, 'password'],
-    [userInfo?.name, 'name'],
-    [userInfo?.address, 'address'],
-    [userInfo?.phoneNumber, 'phoneNumber'],
+    [updatedUser?.email, 'email'],
+    [updatedUser?.role, 'role'],
+    [updatedUser?.password, 'password'],
+    [updatedUser?.name, 'name'],
+    [updatedUser?.address, 'address'],
+    [updatedUser?.phoneNumber, 'phoneNumber'],
   ];
-
-  useEffect(() => {
-    _getUserInfo();
-  }, [session]);
-
-  const _getUserInfo = async () => {
-    setIsLoading(true);
-    const userFromDB = await getUserByEmail(session?.data?.user?.email);
-    console.log('userFromDB: ', userFromDB);
-    setUserInfo(userFromDB);
-    setIsLoading(false);
-  };
+  const { isPending, isError, data: user } = useUserByEmail(session?.data?.user?.email);
+  const mutation = useUserUpdate(updatedUser?._id, updatedUser);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setUserInfo({ ...userInfo, [name]: value });
+    setUpdatedUser({ ...updatedUser, [name]: value });
   };
 
   const handleUserUpdate = () => {
-    setImgName(userInfo?.profileImg);
+    setImgName(user?.profileImg);
     setShow('update');
+    setUpdatedUser({...user, profileImg: ''});
   };
   const handleUserCancel = () => setShow('view');
 
-  const handleUserSave = async () => {
-    const result = await updateUser(userInfo._id, userInfo);
+  const handleUserSave = () => {
+    // const result = await updateUser(updatedUser._id, updatedUser);
+    
+    // const mutation = useMutation({ mutationFn: async () => await updateUser(updatedUser._id, updatedUser) })
+    mutation.mutate();
   };
 
   const handleCheckDisabled = (name: string | undefined) =>
@@ -86,26 +69,26 @@ const Profile = () => {
   const handleHidePassword = (password: string) => '*'.repeat(password.length);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInfo({ ...userInfo, profileImg: e.currentTarget.files?.[0] });
+    setUpdatedUser({ ...user, profileImg: e.currentTarget.files?.[0] });
     setImgName(e.currentTarget.files?.[0]?.name);
   };
 
   return (
     <>
-      {isLoading && <Spinner />}
-      {!isLoading && (
+      {isPending && <Spinner />}
+      {!isPending && (
         <>
           <div className={styles['profile-section']}>
             <div className={styles['image-section']}>
-              {userInfo?.profileImg && show === 'view' && (
+              {user?.profileImg && show === 'view' && (
                 <Image
-                  src={userInfo.profileImg}
+                  src={user.profileImg}
                   alt={'user-profile'}
                   width={100}
                   height={100}
                 />
               )}
-              {!userInfo?.profileImg && show === 'view' && (
+              {!user?.profileImg && show === 'view' && (
                 <Image
                   src={emptyUser}
                   alt={'user-empty'}
@@ -137,20 +120,20 @@ const Profile = () => {
                 <div>ADDRESS: </div>
                 <div>PHONE NUMBER: </div>
               </div>
-              {userInfo && show === 'view' && (
+              {user && show === 'view' && (
                 <div className={styles.values}>
-                  <div>{userInfo.email}</div>
-                  <div>{userInfo.role}</div>
-                  <div>{handleHidePassword(userInfo.password)}</div>
-                  <div>{userInfo.name}</div>
-                  {userInfo.address && <div>{userInfo.address}</div>}
-                  {!userInfo.address && (
+                  <div>{user.email}</div>
+                  <div>{user.role}</div>
+                  <div>{handleHidePassword(user.password)}</div>
+                  <div>{user.name}</div>
+                  {user.address && <div>{user.address}</div>}
+                  {!user.address && (
                     <div className={styles['grid-empty']}>empty</div>
                   )}
-                  <div>{userInfo.phoneNumber}</div>
+                  <div>{user.phoneNumber}</div>
                 </div>
               )}
-              {userInfo && show === 'update' && (
+              {user && show === 'update' && (
                 <div className={styles.updates}>
                   {userProperties?.map((property) => (
                     <div key={property[1]}>
