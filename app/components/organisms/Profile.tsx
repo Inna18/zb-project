@@ -37,7 +37,7 @@ const Profile = () => {
     [updatedUser?.phoneNumber, 'phoneNumber'],
   ];
   const {
-    isPending,
+    isLoading,
     isError,
     data: user,
   } = useUserByEmail(session?.data?.user?.email);
@@ -58,9 +58,6 @@ const Profile = () => {
   const handleUserCancel = () => setShow('view');
 
   const handleUserSave = () => {
-    // const result = await updateUser(updatedUser._id, updatedUser);
-
-    // const mutation = useMutation({ mutationFn: async () => await updateUser(updatedUser._id, updatedUser) })
     mutation.mutate();
   };
 
@@ -79,8 +76,8 @@ const Profile = () => {
 
   return (
     <>
-      {isPending && <Spinner />}
-      {!isPending && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
           <div className={styles['profile-section']}>
             <div className={styles['image-section']}>

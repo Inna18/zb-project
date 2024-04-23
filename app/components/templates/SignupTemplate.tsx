@@ -1,7 +1,7 @@
 'use client';
 import styles from './templates.module.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
 import User, { createUser } from '@/app/service/useUserApi';
@@ -11,6 +11,9 @@ import Link from 'next/link';
 import Input from '@/app/components/atoms/input/Input';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
 import Modal from '../atoms/modal/Modal';
+
+import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
+import Spinner from '../atoms/spinner/Spinner';
 
 const LIST = ['email', 'password', 'name'];
 
@@ -36,6 +39,8 @@ const SignupTemplate = () => {
     signUser.role,
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
+  
+  const { mutate, isSuccess, isPending, isError, status } = useUserCreate(signUser);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -49,38 +54,43 @@ const SignupTemplate = () => {
     setImgName(e.currentTarget.files?.[0]?.name);
   };
 
+  useEffect(() => {
+    if (isSuccess) {
+      setModalDetails((prevState) => {
+        return {
+          ...prevState,
+          type: 'confirm',
+          title: 'Confirm',
+          content: 'Sign-up was successfull. Navigate to Login page?',
+        };
+      });
+      setShowModal(true);
+    }
+    if (isError) {
+      setModalDetails((prevState) => {
+        return {
+          ...prevState,
+          type: 'alert',
+          title: 'Alert',
+          content: 'User already exists.',
+        };
+      });
+      setShowModal(true);
+    }
+  }, [status])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm(signUser.email, signUser.password)) {
-      const createdUser = await createUser(signUser);
-      if (createdUser) {
-        setModalDetails((prevState) => {
-          return {
-            ...prevState,
-            type: 'confirm',
-            title: 'Confirm',
-            content: 'Sign-up was successfull. Navigate to Login page?',
-          };
-        });
-        setShowModal(true);
-      }
-      if (!createdUser) {
-        setModalDetails((prevState) => {
-          return {
-            ...prevState,
-            type: 'alert',
-            title: 'Alert',
-            content: 'User already exists.',
-          };
-        });
-        setShowModal(true);
-      }
+      mutate();
     }
   };
 
   const handleMove = () => router.push('/login');
 
   return (
+    <>
+    {isPending && <Spinner />}   
     <form
       className={`${styles.form} ${styles['form-signup']}`}
       onSubmit={handleSubmit}
@@ -123,6 +133,7 @@ const SignupTemplate = () => {
         onOk={handleMove}
       />
     </form>
+    </>
   );
 };
 

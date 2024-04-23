@@ -20,14 +20,16 @@ export default function RootLayout({
 }>) {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className={styles.container}>
-        <SessionProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </SessionProvider>
+      <div>
+        <div className={styles.container}>
+          <SessionProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </SessionProvider>
+        </div>
+        <div id='portal'></div>
       </div>
-      <div id='portal'></div>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
