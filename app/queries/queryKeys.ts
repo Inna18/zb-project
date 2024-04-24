@@ -1,3 +1,4 @@
+import Organization from '../service/useOrganizationApi';
 import User from '../service/useUserApi';
 
 export const USER_KEYS = {
@@ -8,4 +9,8 @@ export const USER_KEYS = {
 
 export const ORGANIZATION_KEYS = {
   get: () => ['organization'],
+  update: (updateOrganization: Organization) => [
+    'organization',
+    updateOrganization,
+  ],
 };

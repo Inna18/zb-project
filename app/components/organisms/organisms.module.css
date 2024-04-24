@@ -1,32 +1,38 @@
 /* profile */
 .image-section {
-  width: 60%;
+  width: 80%;
+  margin: 26px 20px;
 }
 .space div {
   margin-top: 8px;
 }
-.profile-section {
+.profile-section,
+.organization-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   color: rgb(36, 34, 32, 0.7);
   background: #fff;
+  margin: 30px 0;
   padding: 30px;
   font-size: 14px;
 }
 .profile-details {
-  width: 60%;
+  width: 70%;
   height: 260px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr 1fr;
 }
 .profile-details .titles div,
-.profile-details .values div {
+.organization-details .titles div,
+.profile-details .values div,
+.organization-details .values div {
   margin: 26px 0;
 }
-.profile-details .updates div {
-  margin: 10px 0;
+.profile-details .updates div,
+.organization-details .updates div {
+  margin: 12px 0;
 }
 .button-section {
   display: flex;
@@ -38,6 +44,14 @@
 }
 .grid-empty {
   color: #fff;
+}
+
+/* organization */
+.organization-details {
+  height: 260px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr 2fr;
+  column-gap: 20px;
 }
 
 /* navbar */
@@ -107,4 +121,10 @@
   position: absolute;
   top: 40px;
   right: -28px;
+}
+
+/* error */
+.error {
+  font-size: 10px;
+  color: #e58025;
 }

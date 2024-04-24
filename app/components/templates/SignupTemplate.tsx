@@ -40,7 +40,7 @@ const SignupTemplate = () => {
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
 
-  const { mutate, isSuccess, isPending, isError, status } =
+  const { mutate, isSuccess, isLoading, isError, status } =
     useUserCreate(signUser);
 
   const handleInputChange = (
@@ -82,16 +82,14 @@ const SignupTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateForm(signUser.email, signUser.password)) {
-      mutate();
-    }
+    if (validateForm(signUser.email, signUser.password)) mutate();
   };
 
   const handleMove = () => router.push('/login');
 
   return (
     <>
-      {isPending && <Spinner />}
+      {isLoading && <Spinner />}
       <form
         className={`${styles.form} ${styles['form-signup']}`}
         onSubmit={handleSubmit}

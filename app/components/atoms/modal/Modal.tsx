@@ -36,11 +36,7 @@ const Modal = (modalProps: ModalProps) => {
               </div>
               <div className={styles['modal-btn']}>
                 {type === 'confirm' && <Button value='Ok' onClick={onOk} />}
-                <Button
-                  value={'Cancel'}
-                  onClick={onClose}
-                  className='button2'
-                />
+                <Button value={'Close'} onClick={onClose} className='button2' />
               </div>
             </div>
           </div>

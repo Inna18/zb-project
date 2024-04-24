@@ -1,17 +1,21 @@
 'use client';
 import styles from './organisms.module.css';
+import emptyUser from '../../../public/icons/user-empty.svg';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Button from '../atoms/button/Button';
+import Input from '../atoms/input/Input';
+import Spinner from '../atoms/spinner/Spinner';
+import Modal from '../atoms/modal/Modal';
+
 import User from '@/app/service/useUserApi';
 import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
 import { useUserUpdate } from '@/app/queries/queryHooks/user/useUserUpdate';
 import { useSession } from 'next-auth/react';
-import emptyUser from '../../../public/icons/user-empty.svg';
-import Image from 'next/image';
-import Button from '../atoms/button/Button';
-import Input from '../atoms/input/Input';
 import { limit } from '@/app/utils/text';
-import Spinner from '../atoms/spinner/Spinner';
+import { passwordValidation } from '@/app/utils/validation';
+import { authConstants } from '@/app/constants/auth';
 
 const Profile = () => {
   const session = useSession();
@@ -34,12 +38,53 @@ const Profile = () => {
     [updatedUser?.address, 'address'],
     [updatedUser?.phoneNumber, 'phoneNumber'],
   ];
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalDetails, setModalDetails] = useState({
+    title: '',
+    content: '',
+    type: '',
+  });
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const { PASSWORD_ERROR } = authConstants();
+
   const {
-    isLoading,
-    isError,
+    isLoading: loadingGet,
+    isError: errorGet,
     data: user,
   } = useUserByEmail(session?.data?.user?.email);
-  const mutation = useUserUpdate(updatedUser?._id, updatedUser);
+  const {
+    mutate,
+    isSuccess,
+    isLoading: loadingUpdate,
+    isError: errorUpdate,
+    status,
+  } = useUserUpdate(updatedUser?._id, updatedUser);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModalDetails((prevState) => {
+        return {
+          ...prevState,
+          type: 'alert',
+          title: 'Alert',
+          content: 'Profile details updated.',
+        };
+      });
+      setShowModal(true);
+    }
+    if (errorUpdate) {
+      setModalDetails((prevState) => {
+        return {
+          ...prevState,
+          type: 'alert',
+          title: 'Alert',
+          content: 'Profile details update error.',
+        };
+      });
+      setShowModal(true);
+    }
+  }, [status]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -55,8 +100,12 @@ const Profile = () => {
   };
   const handleUserCancel = () => setShow('view');
 
-  const handleUserSave = () => {
-    mutation.mutate();
+  const handleUserSave = (e: React.FormEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    let valid = passwordValidation(updatedUser.password);
+    setPasswordValid(valid);
+    if (valid) mutate();
+    else setPasswordError(PASSWORD_ERROR);
   };
 
   const handleCheckDisabled = (name: string | undefined) =>
@@ -72,52 +121,57 @@ const Profile = () => {
     setImgName(e.currentTarget.files?.[0]?.name);
   };
 
+  const handleMove = () => {
+    setShowModal(false);
+    setShow('view');
+  };
+
   return (
     <>
-      {isLoading && <Spinner />}
-      {!isLoading && (
+      {loadingGet && <Spinner />}
+      {!loadingGet && (
         <>
           <div className={styles['profile-section']}>
-            <div className={styles['image-section']}>
-              {user?.profileImg && show === 'view' && (
-                <Image
-                  src={user.profileImg}
-                  alt={'user-profile'}
-                  width={100}
-                  height={100}
-                />
-              )}
-              {!user?.profileImg && show === 'view' && (
-                <Image
-                  src={emptyUser}
-                  alt={'user-empty'}
-                  width={100}
-                  height={100}
-                />
-              )}
-              {show === 'update' && (
-                <div className={styles.space}>
-                  <span>{limit(imgName, 30)}</span>
-                  <Input
-                    type='file'
-                    id='profile-img'
-                    className='image'
-                    labelText='Update image'
-                    hasLabel={true}
-                    name='profileImg'
-                    changeFunc={handleImageUpload}
-                  />
-                </div>
-              )}
-            </div>
             <div className={styles['profile-details']}>
+              <div className={styles['image-section']}>
+                {user?.profileImg && show === 'view' && (
+                  <Image
+                    src={user.profileImg}
+                    alt={'user-profile'}
+                    width={100}
+                    height={100}
+                  />
+                )}
+                {!user?.profileImg && show === 'view' && (
+                  <Image
+                    src={emptyUser}
+                    alt={'user-empty'}
+                    width={100}
+                    height={100}
+                  />
+                )}
+                {show === 'update' && (
+                  <div className={styles.space}>
+                    <span>{limit(imgName, 20)}</span>
+                    <Input
+                      type='file'
+                      id='profile-img'
+                      className='image'
+                      labelText='Update image'
+                      hasLabel={true}
+                      name='profileImg'
+                      changeFunc={handleImageUpload}
+                    />
+                  </div>
+                )}
+              </div>
               <div className={styles.titles}>
-                <div>EMAIL: </div>
-                <div>ROLE: </div>
-                <div>PASSWORD: </div>
-                <div>NAME: </div>
-                <div>ADDRESS: </div>
-                <div>PHONE NUMBER: </div>
+                <div>Email: </div>
+                <div>Role: </div>
+                <div>Password: </div>
+                <div>Name: </div>
+                <div>Address: </div>
+                <div>Phone Number: </div>
               </div>
               {user && show === 'view' && (
                 <div className={styles.values}>
@@ -141,11 +195,13 @@ const Profile = () => {
                         changeFunc={handleInputChange}
                         hasLabel={false}
                         value={property[0]}
-                        maxLength={20}
                         className='input'
                         name={property[1]}
                         disabled={handleCheckDisabled(property[1])}
                       />
+                      {property[1] === 'password' && !passwordValid && (
+                        <div className={styles.error}>{passwordError}</div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -158,7 +214,7 @@ const Profile = () => {
             )}
             {show === 'update' && (
               <>
-                <Button value={'Save'} onClick={handleUserSave} />
+                <Button type='submit' value={'Save'} onClick={handleUserSave} />
                 <Button
                   value={'Cancel'}
                   onClick={handleUserCancel}
@@ -169,6 +225,14 @@ const Profile = () => {
           </div>
         </>
       )}
+      <Modal
+        selector='portal'
+        title={modalDetails.title}
+        content={modalDetails.content}
+        type={modalDetails.type}
+        show={showModal}
+        onClose={handleMove}
+      />
     </>
   );
 };

@@ -2,13 +2,14 @@
 import styles from './templates.module.css';
 
 import React, { useEffect, useState } from 'react';
-import withAuth from '../withAuth';
 import Profile from '../organisms/Profile';
 import Orders from '../organisms/Orders';
-import { capitalize } from '@/app/utils/text';
 import Link from 'next/link';
+
+import { capitalize } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
-import User, { getUserByEmail } from '@/app/service/useUserApi';
+import withAuth from '../withAuth';
+import Organization from '../organisms/Organization';
 
 const UserPageTemplate = () => {
   const session = useSession();
@@ -20,16 +21,14 @@ const UserPageTemplate = () => {
   };
 
   const handleCurrentUser = async () => {
-    const user = await getUserByEmail(session?.data?.user?.email);
-    if (user?.role === 'ADMIN') setList(['profile', 'products']);
+    const user = session.data?.user;
+    if (user?.role === 'ADMIN')
+      setList(['profile', 'organization', 'categories', 'products']);
     else setList(['profile', 'orders']);
   };
 
   useEffect(() => {
-    async function getCurrentUser() {
-      await handleCurrentUser();
-    }
-    getCurrentUser();
+    handleCurrentUser();
   }, [session]);
 
   return (
@@ -50,6 +49,7 @@ const UserPageTemplate = () => {
       <div className={styles['mypage-tabs']}>
         {activeTab === 'profile' && <Profile />}
         {activeTab === 'orders' && <Orders />}
+        {activeTab === 'organization' && <Organization />}
       </div>
     </div>
   );
