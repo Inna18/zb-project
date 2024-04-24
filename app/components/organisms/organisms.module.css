@@ -7,7 +7,8 @@
   margin-top: 8px;
 }
 .profile-section,
-.organization-section {
+.organization-section,
+.categories-section {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -52,6 +53,14 @@
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 2fr;
   column-gap: 20px;
+}
+
+/* category */
+.category-add {
+  display: flex;
+}
+.category-add input:nth-child(1) {
+  margin-right: 20px;
 }
 
 /* navbar */

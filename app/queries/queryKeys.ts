@@ -1,5 +1,5 @@
 export const USER_KEYS = {
-  getByEmail: (email: string | null | undefined) => ['users', { email: email }]
+  getByEmail: (email: string | null | undefined) => ['users', { email: email }],
 };
 
 export const ORGANIZATION_KEYS = {
@@ -8,5 +8,5 @@ export const ORGANIZATION_KEYS = {
 
 export const CATEGORY_KEYS = {
   list: () => ['categories'],
-  get: (id: string) => ['categories', id]
-}
+  get: (id: string) => ['categories', id],
+};

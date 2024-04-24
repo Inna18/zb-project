@@ -10,6 +10,7 @@ import { capitalize } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
 import withAuth from '../withAuth';
 import Organization from '../organisms/Organization';
+import Categories from '../organisms/Categories';
 
 const UserPageTemplate = () => {
   const session = useSession();
@@ -50,6 +51,7 @@ const UserPageTemplate = () => {
         {activeTab === 'profile' && <Profile />}
         {activeTab === 'orders' && <Orders />}
         {activeTab === 'organization' && <Organization />}
+        {activeTab === 'categories' && <Categories />}
       </div>
     </div>
   );
