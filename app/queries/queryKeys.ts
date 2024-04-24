@@ -1,16 +1,12 @@
-import Organization from '../service/useOrganizationApi';
-import User from '../service/useUserApi';
-
 export const USER_KEYS = {
-  getByEmail: (email: string | null | undefined) => ['users', { email: email }],
-  create: (createUser: User) => ['users', createUser],
-  update: (updateUser: User) => ['users', updateUser],
+  getByEmail: (email: string | null | undefined) => ['users', { email: email }]
 };
 
 export const ORGANIZATION_KEYS = {
   get: () => ['organization'],
-  update: (updateOrganization: Organization) => [
-    'organization',
-    updateOrganization,
-  ],
 };
+
+export const CATEGORY_KEYS = {
+  list: () => ['categories'],
+  get: (id: string) => ['categories', id]
+}
