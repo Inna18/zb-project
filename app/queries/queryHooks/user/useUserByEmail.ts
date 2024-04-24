@@ -4,7 +4,7 @@ import { getUserByEmail } from '../../../service/useUserApi';
 
 export const useUserByEmail = (email: string | null | undefined) => {
   return useQuery({
-    queryKey: USER_KEYS.byEmail(email),
+    queryKey: USER_KEYS.getByEmail(email),
     queryFn: async () => await getUserByEmail(email),
   });
 };
