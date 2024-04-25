@@ -43,7 +43,7 @@ async function createCategory(category: Category) {
     const categoryCreated = await client.create(sanityCategory);
     console.log('Category created: ', categoryCreated);
     return categoryCreated;
-  } 
+  }
   if (inDB) {
     console.log('Category already exists');
     throw new Error('Category already exists');

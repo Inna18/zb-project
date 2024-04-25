@@ -50,7 +50,7 @@ const Organization = () => {
   const {
     mutate,
     isSuccess,
-    isLoading: loadingUpdate,
+    isPending: pendingUpdate,
     isError: errorUpdate,
     status,
   } = useOrganizationUpdate();
@@ -93,13 +93,13 @@ const Organization = () => {
   };
   const handleOrgCancel = () => setShow('view');
 
-  const handleOrgSave = () => { 
+  const handleOrgSave = () => {
     mutate(myOrganization, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['organization'] });
-      }
+      },
     });
-  }
+  };
 
   const handleCheckDisabled = (name: string | undefined) => name === 'name';
 
@@ -110,7 +110,7 @@ const Organization = () => {
 
   return (
     <>
-      {loadingGet && <Spinner />}
+      {(loadingGet || pendingUpdate) && <Spinner />}
       {!loadingGet && (
         <>
           <div className={styles['organization-section']}>

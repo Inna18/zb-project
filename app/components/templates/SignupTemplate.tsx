@@ -42,7 +42,7 @@ const SignupTemplate = () => {
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
 
-  const { mutate, isSuccess, isLoading, isError, status } = useUserCreate();
+  const { mutate, isSuccess, isPending, isError, status } = useUserCreate();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -99,7 +99,7 @@ const SignupTemplate = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {isPending && <Spinner />}
       <form
         className={`${styles.form} ${styles['form-signup']}`}
         onSubmit={handleSubmit}

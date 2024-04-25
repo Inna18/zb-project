@@ -30,7 +30,7 @@ const Profile = () => {
     name: '',
     role: '',
     address: '',
-    phoneNumber: ''
+    phoneNumber: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
@@ -59,14 +59,11 @@ const Profile = () => {
   const {
     mutate,
     isSuccess,
-    isLoading: loadingUpdate,
+    isPending: pendingUpdate,
     isError: errorUpdate,
     status,
   } = useUserUpdate();
-  const {
-    mutate: mutateImg, 
-    isLoading: loadingImg
-  } = useUserImageUpdate()
+  const { mutate: mutateImg, isPending: pendingImg } = useUserImageUpdate();
 
   useEffect(() => {
     if (isSuccess) {
@@ -94,13 +91,13 @@ const Profile = () => {
   }, [status]);
 
   useEffect(() => {
-    console.log("run")
+    console.log('run');
     mutateImg(updatedUser, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['users'] });
-      }
+      },
     });
-  }, [imgName])
+  }, [imgName]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -124,10 +121,9 @@ const Profile = () => {
       mutate(updatedUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
-        }
-      })
-    }
-    else setPasswordError(PASSWORD_ERROR);
+        },
+      });
+    } else setPasswordError(PASSWORD_ERROR);
   };
 
   const handleCheckDisabled = (name: string | undefined) =>
@@ -150,7 +146,7 @@ const Profile = () => {
 
   return (
     <>
-      {loadingGet && <Spinner />}
+      {(loadingGet || pendingUpdate || pendingImg) && <Spinner />}
       {!loadingGet && (
         <>
           <div className={styles['profile-section']}>

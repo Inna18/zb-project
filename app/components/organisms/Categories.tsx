@@ -1,5 +1,5 @@
 import styles from './organisms.module.css';
-import removeIcon from "@/public/icons/minus-solid.svg";
+import removeIcon from '@/public/icons/minus-solid.svg';
 
 import React, { useState } from 'react';
 import Input from '@/app/components/atoms/input/Input';
@@ -11,13 +11,14 @@ import { useCategoryCreate } from '@/app/queries/queryHooks/category/useCategory
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useCategoryDelete } from '@/app/queries/queryHooks/category/useCategoryDelete';
 import { useQueryClient } from '@tanstack/react-query';
+import Spinner from '../atoms/spinner/Spinner';
 
 const Categories = () => {
   const queryClient = useQueryClient();
   const [category, setCategory] = useState<Category>({ name: '' });
   const {
     mutate,
-    isLoading: loadingCreate,
+    isPending: pendingCreate,
     isError: errorCreate,
     data: addedCategory,
     status,
@@ -29,8 +30,8 @@ const Categories = () => {
   } = useCategoryList();
   const {
     mutate: mutateDelete,
-    isLoading: loadingDelete,
-    isError: errorDelete
+    isPending: pendingDelete,
+    isError: errorDelete,
   } = useCategoryDelete();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,21 +47,22 @@ const Categories = () => {
           return { ...prevState, name: '' };
         });
       },
-    })
+    });
   };
 
   const handleRemove = (id: string | undefined) => {
-    id 
-    ? mutateDelete(id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['categories'] });
-      },
-    }) 
-    : null;
-  }
+    id
+      ? mutateDelete(id, {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['categories'] });
+          },
+        })
+      : null;
+  };
 
   return (
     <>
+      {(loadingList || pendingCreate || pendingDelete) && <Spinner />}
       <div className={styles['categories-section']}>
         <div className={styles['category-add']}>
           <Input
