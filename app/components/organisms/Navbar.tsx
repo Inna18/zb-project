@@ -2,7 +2,7 @@
 import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
-import LinksMolecule from '@/app/components/molecules/LinksMolecule';
+import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 const MENU_LIST = ['home', 'shop', 'blog', 'about', 'contact'];
 
-const NavbarOrganism = () => {
+const Navbar = () => {
   const session = useSession();
   const router = useRouter();
 
@@ -68,7 +68,7 @@ const NavbarOrganism = () => {
         <Link href={'/home'}>LOGO</Link>
       </div>
       <div>
-        <LinksMolecule
+        <Links
           list={MENU_LIST}
           isMenu={true}
           openMenu={openMenu}
@@ -86,7 +86,7 @@ const NavbarOrganism = () => {
               key={'user'}
               list={profileMenu}
               open={openUser}
-              handleOpen={handleOpenUser}
+              handleClose={handleOpenUser}
               handlePath={handlePath}
               handleLogout={handleLogout}
             />
@@ -97,4 +97,4 @@ const NavbarOrganism = () => {
   );
 };
 
-export default NavbarOrganism;
+export default Navbar;

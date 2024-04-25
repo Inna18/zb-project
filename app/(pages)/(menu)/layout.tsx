@@ -3,10 +3,15 @@ import styles from '../../page.module.css';
 
 import { Inter } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-import NavbarOrganism from '@/app/components/organisms/NavbarOrganism';
-import FooterOrganism from '@/app/components/organisms/FooterOrganism';
+import Navbar from '@/app/components/organisms/Navbar';
+import Footer from '@/app/components/organisms/Footer';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Create a client
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -14,12 +19,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className={styles.container}>
-      <SessionProvider>
-        <NavbarOrganism />
-        {children}
-        <FooterOrganism />
-      </SessionProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div>
+        <div className={styles.container}>
+          <SessionProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </SessionProvider>
+        </div>
+        <div id='portal'></div>
+      </div>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }

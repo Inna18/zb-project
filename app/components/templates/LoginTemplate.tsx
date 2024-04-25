@@ -2,7 +2,7 @@
 import styles from './templates.module.css';
 
 import React, { useState } from 'react';
-import FormMolecule from '@/app/components/molecules/FormMolecule';
+import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
 import Checkbox from '@/app/components/atoms/checkbox/Checkbox';
 import User from '@/app/service/useUserApi';
@@ -46,7 +46,7 @@ const LoginTemplate = () => {
       onSubmit={handleSubmit}
     >
       <div className={styles.title}>LOGIN</div>
-      <FormMolecule
+      <Form
         list={LIST}
         userProps={userProperties}
         changeFunc={handleInputChange}

@@ -3,8 +3,8 @@ import styles from './templates.module.css';
 
 import React, { useEffect, useState } from 'react';
 import withAuth from '../withAuth';
-import ProfileOrganism from '../organisms/ProfileOrganism';
-import OrdersOrganism from '../organisms/OrdersOrganism';
+import Profile from '../organisms/Profile';
+import Orders from '../organisms/Orders';
 import { capitalize } from '@/app/utils/text';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -48,8 +48,8 @@ const UserPageTemplate = () => {
         ))}
       </div>
       <div className={styles['mypage-tabs']}>
-        {activeTab === 'profile' && <ProfileOrganism />}
-        {activeTab === 'orders' && <OrdersOrganism />}
+        {activeTab === 'profile' && <Profile />}
+        {activeTab === 'orders' && <Orders />}
       </div>
     </div>
   );

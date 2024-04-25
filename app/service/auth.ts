@@ -1,6 +1,6 @@
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { getUserByEmail, getUserByEmailAndPassword } from './useUserApi';
+import { getUserByEmailAndPassword } from './useUserApi';
 import { randomBytes, randomUUID } from 'crypto';
 
 export const authOptions: NextAuthOptions = {
@@ -9,6 +9,18 @@ export const authOptions: NextAuthOptions = {
     maxAge: 60 * 60,
     generateSessionToken: () => {
       return randomUUID?.() ?? randomBytes(32).toString('hex');
+    },
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.role = token.role;
+      return session;
     },
   },
   providers: [

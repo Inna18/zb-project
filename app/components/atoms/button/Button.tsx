@@ -2,18 +2,13 @@ import styles from '../atoms.module.css';
 
 import React, { ButtonHTMLAttributes } from 'react';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  handleClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-}
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 const Button = (btnProps: ButtonProps) => {
-  const { className, value, handleClick } = btnProps;
+  const { className, value, ...rest } = btnProps;
 
   return (
-    <button
-      className={`${styles.button} ${styles[`${className}`]}`}
-      onClick={handleClick ? handleClick : undefined}
-    >
+    <button className={`${styles.button} ${styles[`${className}`]}`} {...rest}>
       {value}
     </button>
   );
