@@ -9,8 +9,10 @@ import Modal from '@/app/components/atoms/modal/Modal';
 
 import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
 import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/useOrganizationUpdate';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Organization = () => {
+  const queryClient = useQueryClient();
   const {
     isLoading: loadingGet,
     isError,
@@ -51,7 +53,7 @@ const Organization = () => {
     isLoading: loadingUpdate,
     isError: errorUpdate,
     status,
-  } = useOrganizationUpdate(myOrganization._id, myOrganization);
+  } = useOrganizationUpdate();
 
   useEffect(() => {
     if (isSuccess) {
@@ -91,7 +93,13 @@ const Organization = () => {
   };
   const handleOrgCancel = () => setShow('view');
 
-  const handleOrgSave = () => mutate();
+  const handleOrgSave = () => { 
+    mutate(myOrganization, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['organization'] });
+      }
+    });
+  }
 
   const handleCheckDisabled = (name: string | undefined) => name === 'name';
 

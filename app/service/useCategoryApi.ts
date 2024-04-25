@@ -48,9 +48,9 @@ async function createCategory(category: Category) {
   }
 }
 
-async function deleteCategory(id: string) {
+async function deleteCategory(id: string | undefined) {
   const inDB = await getCategoryById(id);
-  if (!inDB) {
+  if (inDB) {
     const categoryDeleted = await client.delete(id);
     console.log('Category deleted');
   } else {

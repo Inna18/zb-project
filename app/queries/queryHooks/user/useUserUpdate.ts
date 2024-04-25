@@ -2,13 +2,9 @@ import User from '@/app/service/useUserApi';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { updateUser } from '@/app/service/useUserApi';
 
-export const useUserUpdate = (id: string | undefined, user: User) => {
-  const queryClient = useQueryClient();
+export const useUserUpdate = () => {
 
   return useMutation({
-    mutationFn: async () => await updateUser(id, user),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] });
-    },
+    mutationFn: async (user: User) => await updateUser(user._id, user)
   });
 };

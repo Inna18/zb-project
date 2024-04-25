@@ -14,11 +14,13 @@ import Spinner from '@/app/components/atoms/spinner/Spinner';
 import { limit } from '@/app/utils/text';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LIST = ['email', 'password', 'name'];
 
 const SignupTemplate = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [signUser, setSignUser] = useState<User>({
     email: '',
     password: '',
@@ -40,8 +42,7 @@ const SignupTemplate = () => {
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
 
-  const { mutate, isSuccess, isLoading, isError, status } =
-    useUserCreate(signUser);
+  const { mutate, isSuccess, isLoading, isError, status } = useUserCreate();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -82,7 +83,16 @@ const SignupTemplate = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateForm(signUser.email, signUser.password)) mutate();
+    if (validateForm(signUser.email, signUser.password)) {
+      mutate(signUser, {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries({ queryKey: ['users'] });
+        },
+        onError: () => {
+          console.log('User create error');
+        },
+      });
+    }
   };
 
   const handleMove = () => router.push('/login');

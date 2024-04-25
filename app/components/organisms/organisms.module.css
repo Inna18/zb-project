@@ -62,6 +62,25 @@
 .category-add input:nth-child(1) {
   margin-right: 20px;
 }
+.category-list {
+  width: 40%;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  row-gap: 10px;
+}
+.category-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: rgb(99, 96, 93, 0.1);
+  border-radius: 4px;
+}
+.category-card a {
+  cursor: pointer
+}
 
 /* navbar */
 .navbar {

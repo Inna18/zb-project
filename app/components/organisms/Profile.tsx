@@ -16,9 +16,11 @@ import { useSession } from 'next-auth/react';
 import { limit } from '@/app/utils/text';
 import { passwordValidation } from '@/app/utils/validation';
 import { authConstants } from '@/app/constants/auth';
+import { useQueryClient } from '@tanstack/react-query';
 
 const Profile = () => {
   const session = useSession();
+  const queryClient = useQueryClient();
   const [show, setShow] = useState<string>('view');
   const [updatedUser, setUpdatedUser] = useState<User>({
     _id: '',
@@ -59,7 +61,7 @@ const Profile = () => {
     isLoading: loadingUpdate,
     isError: errorUpdate,
     status,
-  } = useUserUpdate(updatedUser._id, updatedUser);
+  } = useUserUpdate();
 
   useEffect(() => {
     if (isSuccess) {
@@ -104,7 +106,13 @@ const Profile = () => {
     e.preventDefault();
     let valid = passwordValidation(updatedUser.password);
     setPasswordValid(valid);
-    if (valid) mutate();
+    if (valid) {
+      mutate(updatedUser, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['users'] });
+        }
+      })
+    }
     else setPasswordError(PASSWORD_ERROR);
   };
 
