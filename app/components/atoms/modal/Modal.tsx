@@ -1,8 +1,8 @@
-import styles from '../atoms.module.css';
+import styles from '@/app/components/atoms/atoms.module.css';
 
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import Button from '../button/Button';
+import Button from '@/app/components/atoms/button/Button';
 
 interface ModalProps {
   selector: string;

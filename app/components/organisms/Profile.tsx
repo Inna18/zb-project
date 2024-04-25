@@ -1,13 +1,13 @@
 'use client';
-import styles from './organisms.module.css';
-import emptyUser from '../../../public/icons/user-empty.svg';
+import styles from '@/app/components/organisms/organisms.module.css';
+import emptyUser from '@/public/icons/user-empty.svg';
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Button from '../atoms/button/Button';
-import Input from '../atoms/input/Input';
-import Spinner from '../atoms/spinner/Spinner';
-import Modal from '../atoms/modal/Modal';
+import Button from '@/app/components/atoms/button/Button';
+import Input from '@/app/components/atoms/input/Input';
+import Spinner from '@/app/components/atoms/spinner/Spinner';
+import Modal from '@/app/components/atoms/modal/Modal';
 
 import User from '@/app/service/useUserApi';
 import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
@@ -31,12 +31,12 @@ const Profile = () => {
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
-    [updatedUser?.email, 'email'],
-    [updatedUser?.role, 'role'],
-    [updatedUser?.password, 'password'],
-    [updatedUser?.name, 'name'],
-    [updatedUser?.address, 'address'],
-    [updatedUser?.phoneNumber, 'phoneNumber'],
+    [updatedUser.email, 'email'],
+    [updatedUser.role, 'role'],
+    [updatedUser.password, 'password'],
+    [updatedUser.name, 'name'],
+    [updatedUser.address, 'address'],
+    [updatedUser.phoneNumber, 'phoneNumber'],
   ];
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalDetails, setModalDetails] = useState({
@@ -59,7 +59,7 @@ const Profile = () => {
     isLoading: loadingUpdate,
     isError: errorUpdate,
     status,
-  } = useUserUpdate(updatedUser?._id, updatedUser);
+  } = useUserUpdate(updatedUser._id, updatedUser);
 
   useEffect(() => {
     if (isSuccess) {
@@ -94,7 +94,7 @@ const Profile = () => {
   };
 
   const handleUserUpdate = () => {
-    setImgName(user?.profileImg);
+    setImgName(user.profileImg);
     setShow('update');
     setUpdatedUser({ ...user, profileImg: '' });
   };
@@ -134,7 +134,7 @@ const Profile = () => {
           <div className={styles['profile-section']}>
             <div className={styles['profile-details']}>
               <div className={styles['image-section']}>
-                {user?.profileImg && show === 'view' && (
+                {user && user.profileImg && show === 'view' && (
                   <Image
                     src={user.profileImg}
                     alt={'user-profile'}
@@ -142,7 +142,7 @@ const Profile = () => {
                     height={100}
                   />
                 )}
-                {!user?.profileImg && show === 'view' && (
+                {!user.profileImg && show === 'view' && (
                   <Image
                     src={emptyUser}
                     alt={'user-empty'}
@@ -188,7 +188,7 @@ const Profile = () => {
               )}
               {user && show === 'update' && (
                 <div className={styles.updates}>
-                  {userProperties?.map((property) => (
+                  {userProperties.map((property) => (
                     <div key={property[1]}>
                       <Input
                         type={handleCheckType(property[1]!)}

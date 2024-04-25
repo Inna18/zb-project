@@ -2,15 +2,15 @@
 import styles from './templates.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Profile from '../organisms/Profile';
-import Orders from '../organisms/Orders';
+import Profile from '@/app/components/organisms/Profile';
+import Orders from '@/app/components/organisms/Orders';
 import Link from 'next/link';
+import Organization from '@/app/components/organisms/Organization';
+import Categories from '@/app/components/organisms/Categories';
+import withAuth from '@/app/components/withAuth';
 
 import { capitalize } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
-import withAuth from '../withAuth';
-import Organization from '../organisms/Organization';
-import Categories from '../organisms/Categories';
 
 const UserPageTemplate = () => {
   const session = useSession();
@@ -23,7 +23,7 @@ const UserPageTemplate = () => {
 
   const handleCurrentUser = async () => {
     const user = session.data?.user;
-    if (user?.role === 'ADMIN')
+    if (user && user.role === 'ADMIN')
       setList(['profile', 'organization', 'categories', 'products']);
     else setList(['profile', 'orders']);
   };
@@ -36,7 +36,7 @@ const UserPageTemplate = () => {
     <div className={styles.container}>
       <div className={styles.title}>My Page</div>
       <div className={styles['link-section']}>
-        {list?.map((tab) => (
+        {list.map((tab) => (
           <Link
             key={tab}
             onClick={() => handleActiveTab(tab)}

@@ -1,7 +1,7 @@
-import Organization from '../../../service/useOrganizationApi';
+import Organization from '@/app/service/useOrganizationApi';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateOrganization } from '../../../service/useOrganizationApi';
+import { updateOrganization } from '@/app/service/useOrganizationApi';
 
 export const useOrganizationUpdate = (
   id: string,
@@ -12,7 +12,7 @@ export const useOrganizationUpdate = (
   return useMutation({
     mutationFn: async () => await updateOrganization(id, updatedOrganization),
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ['organization'] });
     },
   });
 };

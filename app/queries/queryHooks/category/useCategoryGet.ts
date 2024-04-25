@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { CATEGORY_KEYS } from '../../queryKeys';
-import { getCategoryById } from '../../../service/useCategoryApi';
+import { CATEGORY_KEYS } from '@/app/queries/queryKeys';
+import { getCategoryById } from '@/app/service/useCategoryApi';
 
 export const useCategoryGet = (id: string) => {
   return useQuery({

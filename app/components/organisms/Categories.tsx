@@ -1,9 +1,9 @@
 import styles from './organisms.module.css';
 
 import React, { useState } from 'react';
-import Input from '../atoms/input/Input';
+import Input from '@/app/components/atoms/input/Input';
 import Category from '@/app/service/useCategoryApi';
-import Button from '../atoms/button/Button';
+import Button from '@/app/components/atoms/button/Button';
 
 import { useCategoryCreate } from '@/app/queries/queryHooks/category/useCategoryCreate';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';

@@ -1,8 +1,9 @@
 'use client';
+import styles from '@/app/page.module.css';
 
 import React from 'react';
+
 import { useThemeModeContext } from '@/app/hooks/useThemeModeContext';
-import styles from '@/app/page.module.css';
 
 const ChangeModeBtn = () => {
   const { mode, changeMode } = useThemeModeContext();

@@ -1,9 +1,9 @@
-import styles from './molecules.module.css';
+import styles from '@/app/components/molecules/molecules.module.css';
 
 import React from 'react';
 import Input from '@/app/components/atoms/input/Input';
 import { capitalize } from '@/app/utils/text';
-import Select from '../atoms/select/Select';
+import Select from '@/app/components/atoms/select/Select';
 
 interface FormProps {
   type?: string;

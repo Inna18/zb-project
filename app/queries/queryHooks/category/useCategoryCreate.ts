@@ -1,8 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import Category, {
-  createCategory,
-  getCategories,
-} from '../../../service/useCategoryApi';
+import Category, { createCategory } from '@/app/service/useCategoryApi';
 
 export const useCategoryCreate = (newCategory: Category) => {
   const queryClient = useQueryClient();
@@ -10,7 +7,7 @@ export const useCategoryCreate = (newCategory: Category) => {
   return useMutation({
     mutationFn: async () => await createCategory(newCategory),
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 };

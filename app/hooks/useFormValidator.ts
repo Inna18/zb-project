@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { emailValidation } from '../utils/validation';
-import { passwordValidation } from '../utils/validation';
+import { emailValidation } from '@/app/utils/validation';
+import { passwordValidation } from '@/app/utils/validation';
 import { authConstants } from '@/app/constants/auth';
 
 export const useFormValidator = () => {

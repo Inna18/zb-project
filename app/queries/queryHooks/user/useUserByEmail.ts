@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { USER_KEYS } from '../../queryKeys';
-import { getUserByEmail } from '../../../service/useUserApi';
+import { USER_KEYS } from '@/app/queries/queryKeys';
+import { getUserByEmail } from '@/app/service/useUserApi';
 
 export const useUserByEmail = (email: string | null | undefined) => {
   return useQuery({

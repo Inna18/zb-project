@@ -1,11 +1,11 @@
 import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Spinner from '../atoms/spinner/Spinner';
-import Button from '../atoms/button/Button';
+import Spinner from '@/app/components/atoms/spinner/Spinner';
+import Button from '@/app/components/atoms/button/Button';
 import OrganizationEntity from '@/app/service/useOrganizationApi';
-import Input from '../atoms/input/Input';
-import Modal from '../atoms/modal/Modal';
+import Input from '@/app/components/atoms/input/Input';
+import Modal from '@/app/components/atoms/modal/Modal';
 
 import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
 import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/useOrganizationUpdate';
@@ -29,14 +29,14 @@ const Organization = () => {
     youTubeUrl: '',
   });
   const orgProperties = [
-    [myOrganization?.name, 'name'],
-    [myOrganization?.address, 'address'],
-    [myOrganization?.businessNumber, 'businessNumber'],
-    [myOrganization?.ceo, 'ceo'],
-    [myOrganization?.phoneNumber, 'phoneNumber'],
-    [myOrganization?.email, 'email'],
-    [myOrganization?.instagramUrl, 'instagramUrl'],
-    [myOrganization?.youTubeUrl, 'youTubeUrl'],
+    [myOrganization.name, 'name'],
+    [myOrganization.address, 'address'],
+    [myOrganization.businessNumber, 'businessNumber'],
+    [myOrganization.ceo, 'ceo'],
+    [myOrganization.phoneNumber, 'phoneNumber'],
+    [myOrganization.email, 'email'],
+    [myOrganization.instagramUrl, 'instagramUrl'],
+    [myOrganization.youTubeUrl, 'youTubeUrl'],
   ];
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalDetails, setModalDetails] = useState({
@@ -51,7 +51,7 @@ const Organization = () => {
     isLoading: loadingUpdate,
     isError: errorUpdate,
     status,
-  } = useOrganizationUpdate(myOrganization?._id, myOrganization);
+  } = useOrganizationUpdate(myOrganization._id, myOrganization);
 
   useEffect(() => {
     if (isSuccess) {
@@ -123,7 +123,7 @@ const Organization = () => {
               )}
               {organization && show === 'update' && (
                 <div className={styles.updates}>
-                  {orgProperties?.slice(0, 4).map((property) => (
+                  {orgProperties.slice(0, 4).map((property) => (
                     <div key={property[1]} className={styles['input-gap']}>
                       <Input
                         type={property[1]}
@@ -154,7 +154,7 @@ const Organization = () => {
               )}
               {organization && show === 'update' && (
                 <div className={styles.updates}>
-                  {orgProperties?.slice(4, 9).map((property) => (
+                  {orgProperties.slice(4, 9).map((property) => (
                     <div key={property[1]} className={styles['input-gap']}>
                       <Input
                         type={property[1]}

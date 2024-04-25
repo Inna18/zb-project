@@ -1,7 +1,6 @@
-import User from '../../../service/useUserApi';
-import { USER_KEYS } from '../../queryKeys';
+import User from '@/app/service/useUserApi';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { updateUser } from '../../../service/useUserApi';
+import { updateUser } from '@/app/service/useUserApi';
 
 export const useUserUpdate = (id: string | undefined, user: User) => {
   const queryClient = useQueryClient();
@@ -9,7 +8,7 @@ export const useUserUpdate = (id: string | undefined, user: User) => {
   return useMutation({
     mutationFn: async () => await updateUser(id, user),
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };

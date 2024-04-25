@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteCategory } from '../../../service/useCategoryApi';
+import { deleteCategory } from '@/app/service/useCategoryApi';
 
 export const useCategoryDelete = (id: string) => {
   const queryClient = useQueryClient();
@@ -7,7 +7,7 @@ export const useCategoryDelete = (id: string) => {
   return useMutation({
     mutationFn: async () => await deleteCategory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
   });
 };

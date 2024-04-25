@@ -1,4 +1,4 @@
-import styles from '../atoms.module.css';
+import styles from '@/app/components/atoms/atoms.module.css';
 
 import React, { InputHTMLAttributes } from 'react';
 
