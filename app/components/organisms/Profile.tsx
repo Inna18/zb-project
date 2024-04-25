@@ -12,6 +12,7 @@ import Modal from '@/app/components/atoms/modal/Modal';
 import User from '@/app/service/useUserApi';
 import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
 import { useUserUpdate } from '@/app/queries/queryHooks/user/useUserUpdate';
+import { useUserImageUpdate } from '@/app/queries/queryHooks/user/useUserImageUpdate';
 import { useSession } from 'next-auth/react';
 import { limit } from '@/app/utils/text';
 import { passwordValidation } from '@/app/utils/validation';
@@ -29,7 +30,7 @@ const Profile = () => {
     name: '',
     role: '',
     address: '',
-    phoneNumber: '',
+    phoneNumber: ''
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
@@ -62,6 +63,10 @@ const Profile = () => {
     isError: errorUpdate,
     status,
   } = useUserUpdate();
+  const {
+    mutate: mutateImg, 
+    isLoading: loadingImg
+  } = useUserImageUpdate()
 
   useEffect(() => {
     if (isSuccess) {
@@ -87,6 +92,15 @@ const Profile = () => {
       setShowModal(true);
     }
   }, [status]);
+
+  useEffect(() => {
+    console.log("run")
+    mutateImg(updatedUser, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['users'] });
+      }
+    });
+  }, [imgName])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -160,6 +174,12 @@ const Profile = () => {
                 )}
                 {show === 'update' && (
                   <div className={styles.space}>
+                    <Image
+                      src={user.profileImg}
+                      alt={'user-profile'}
+                      width={100}
+                      height={100}
+                    />
                     <span>{limit(imgName, 20)}</span>
                     <Input
                       type='file'

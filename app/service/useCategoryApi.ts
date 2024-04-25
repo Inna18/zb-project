@@ -38,13 +38,19 @@ async function createCategory(category: Category) {
   };
 
   const inDB = await getCategoryByName(category.name);
-  if (!inDB) {
+  const total = await getCategories();
+  if (!inDB && total.length < 10) {
     const categoryCreated = await client.create(sanityCategory);
     console.log('Category created: ', categoryCreated);
     return categoryCreated;
-  } else {
+  } 
+  if (inDB) {
     console.log('Category already exists');
     throw new Error('Category already exists');
+  }
+  if (total.length >= 10) {
+    console.log('Only up to 10 categories can be created');
+    throw new Error('Only up to 10 categories can be created');
   }
 }
 

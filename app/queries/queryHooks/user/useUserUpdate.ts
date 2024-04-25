@@ -1,5 +1,5 @@
 import User from '@/app/service/useUserApi';
-import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { updateUser } from '@/app/service/useUserApi';
 
 export const useUserUpdate = () => {
