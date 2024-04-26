@@ -1,6 +1,8 @@
+import styles from '@/app/components/atoms/atoms.module.css';
+
 import React, { ChangeEvent, InputHTMLAttributes } from 'react';
-import styles from '../atoms.module.css';
-import { capitalize } from '../../../utils/text';
+
+import { capitalize } from '@/app/utils/text';
 
 interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
   type: string;

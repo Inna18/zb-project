@@ -1,4 +1,4 @@
-import styles from '../atoms.module.css';
+import styles from '@/app/components/atoms/atoms.module.css';
 import eyeOpened from '@/public/icons/eye-solid.svg';
 import eyeClosed from '@/public/icons/eye-slash-solid.svg';
 
@@ -25,10 +25,9 @@ const Input = (inputProps: InputProps) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const checkType = () => {
-    if (type === 'password') {
-      if (showPassword) return 'text';
-      else return 'password';
-    } else return type;
+    if (type === 'password' && showPassword) return 'text';
+    if (type === 'password' && !showPassword) return 'password';
+    if (type !== 'password') return type;
   };
 
   return (

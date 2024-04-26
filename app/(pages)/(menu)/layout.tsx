@@ -1,10 +1,10 @@
 'use client';
-import styles from '../../page.module.css';
+import styles from '@/app/page.module.css';
 
-import { Inter } from 'next/font/google';
-import { SessionProvider } from 'next-auth/react';
 import Navbar from '@/app/components/organisms/Navbar';
 import Footer from '@/app/components/organisms/Footer';
+import { Inter } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 

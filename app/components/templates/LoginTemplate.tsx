@@ -6,9 +6,10 @@ import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
 import Checkbox from '@/app/components/atoms/checkbox/Checkbox';
 import User from '@/app/service/useUserApi';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+
 import { useFormValidator } from '@/app/hooks/useFormValidator';
 
 const LIST = ['email', 'password'];

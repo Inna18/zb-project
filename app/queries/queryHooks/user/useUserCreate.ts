@@ -1,19 +1,9 @@
-import User from '../../../service/useUserApi';
-import { USER_KEYS } from '../../queryKeys';
+import User from '@/app/service/useUserApi';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { createUser } from '../../../service/useUserApi';
+import { createUser } from '@/app/service/useUserApi';
 
-export const useUserCreate = (user: User) => {
-  const queryClient = useQueryClient();
-
+export const useUserCreate = () => {
   return useMutation({
-    mutationKey: USER_KEYS.create(user),
-    mutationFn: async () => await createUser(user),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['users', createUser] });
-    },
-    onError: () => {
-      console.log('User create error');
-    },
+    mutationFn: async (user: User) => await createUser(user),
   });
 };

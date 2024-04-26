@@ -119,6 +119,27 @@ async function updateUser(id: string | undefined, updateUser: User) {
   console.log(updateUser);
 }
 
+async function updateUserImg(id: string | undefined, updateUser: User) {
+  const uploadedImg = updateUser.profileImg
+    ? await client.assets.upload('image', updateUser.profileImg)
+    : null;
+  const updatedUserImg = await client
+    .patch(id!!)
+    .set({
+      profileImg: uploadedImg
+        ? {
+            _type: 'image',
+            asset: {
+              _type: 'reference',
+              _ref: uploadedImg?._id,
+            },
+          }
+        : undefined,
+    })
+    .commit();
+  console.log(updatedUserImg);
+}
+
 async function deleteAllUsers() {
   const isDelete = await client.delete({ query: BASE_QUERY });
   console.log('Delete result: ', isDelete);
@@ -131,5 +152,6 @@ export {
   getUserByEmailAndPassword,
   createUser,
   updateUser,
+  updateUserImg,
   deleteAllUsers,
 };

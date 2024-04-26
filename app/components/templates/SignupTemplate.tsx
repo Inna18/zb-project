@@ -1,24 +1,26 @@
 'use client';
-import styles from './templates.module.css';
+import styles from '@/app/components/templates/templates.module.css';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
-import User, { createUser } from '@/app/service/useUserApi';
-import { limit } from '@/app/utils/text';
-import { useRouter } from 'next/navigation';
+import User from '@/app/service/useUserApi';
 import Link from 'next/link';
 import Input from '@/app/components/atoms/input/Input';
-import { useFormValidator } from '@/app/hooks/useFormValidator';
-import Modal from '../atoms/modal/Modal';
+import Modal from '@/app/components/atoms/modal/Modal';
+import Spinner from '@/app/components/atoms/spinner/Spinner';
 
+import { limit } from '@/app/utils/text';
+import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
-import Spinner from '../atoms/spinner/Spinner';
+import { useQueryClient } from '@tanstack/react-query';
 
 const LIST = ['email', 'password', 'name'];
 
 const SignupTemplate = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [signUser, setSignUser] = useState<User>({
     email: '',
     password: '',
@@ -40,8 +42,7 @@ const SignupTemplate = () => {
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
 
-  const { mutate, isSuccess, isPending, isError, status } =
-    useUserCreate(signUser);
+  const { mutate, isSuccess, isPending, isError, status } = useUserCreate();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -83,7 +84,14 @@ const SignupTemplate = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm(signUser.email, signUser.password)) {
-      mutate();
+      mutate(signUser, {
+        onSuccess: (data) => {
+          queryClient.invalidateQueries({ queryKey: ['users'] });
+        },
+        onError: () => {
+          console.log('User create error');
+        },
+      });
     }
   };
 
