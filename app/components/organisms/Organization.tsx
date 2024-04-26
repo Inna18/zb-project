@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Spinner from '@/app/components/atoms/spinner/Spinner';
 import Button from '@/app/components/atoms/button/Button';
 import OrganizationEntity from '@/app/service/useOrganizationApi';
@@ -10,14 +10,13 @@ import Modal from '@/app/components/atoms/modal/Modal';
 import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
 import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/useOrganizationUpdate';
 import { useQueryClient } from '@tanstack/react-query';
+import { useModal } from '@/app/hooks/useModal';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { commonConstants } from '@/app/constants/common';
 
 const Organization = () => {
   const queryClient = useQueryClient();
-  const {
-    isLoading: loadingGet,
-    isError,
-    data: organization,
-  } = useOrganizationGet();
+  const { isLoading, data: organization } = useOrganizationGet();
   const [show, setShow] = useState<string>('view');
   const [myOrganization, setMyOrganization] = useState<OrganizationEntity>({
     _id: '',
@@ -40,45 +39,12 @@ const Organization = () => {
     [myOrganization.instagramUrl, 'instagramUrl'],
     [myOrganization.youTubeUrl, 'youTubeUrl'],
   ];
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalDetails, setModalDetails] = useState({
-    title: '',
-    content: '',
-    type: '',
-  });
 
-  const {
-    mutate,
-    isSuccess,
-    isPending: pendingUpdate,
-    isError: errorUpdate,
-    status,
-  } = useOrganizationUpdate();
+  const { mutate } = useOrganizationUpdate();
 
-  useEffect(() => {
-    if (isSuccess) {
-      setModalDetails((prevState) => {
-        return {
-          ...prevState,
-          type: 'alert',
-          title: 'Alert',
-          content: 'Organization details updated.',
-        };
-      });
-      setShowModal(true);
-    }
-    if (errorUpdate) {
-      setModalDetails((prevState) => {
-        return {
-          ...prevState,
-          type: 'alert',
-          title: 'Alert',
-          content: 'Organization details update error.',
-        };
-      });
-      setShowModal(true);
-    }
-  }, [status]);
+  const { open, close, isOpen } = useModal();
+  const { ORGANIZATION_UPDATE_SUCCESS } = modalMsgConstants();
+  const { FIELD_EMPTY } = commonConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -91,41 +57,59 @@ const Organization = () => {
     setShow('update');
     setMyOrganization(organization);
   };
+
   const handleOrgCancel = () => setShow('view');
 
   const handleOrgSave = () => {
-    mutate(myOrganization, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['organization'] });
-      },
+    let check: boolean[] = [];
+    orgProperties.map((property) => {
+      check.push(property[0] !== '');
     });
+    if (!check.includes(false)) {
+      mutate(myOrganization, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['organization'] });
+          open();
+        },
+      });
+    }
   };
 
   const handleCheckDisabled = (name: string | undefined) => name === 'name';
 
   const handleMove = () => {
-    setShowModal(false);
+    close();
     setShow('view');
   };
 
   return (
     <>
-      {(loadingGet || pendingUpdate) && <Spinner />}
-      {!loadingGet && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
           <div className={styles['organization-section']}>
             <div className={styles['organization-details']}>
               <div className={styles.titles}>
-                <div>Company Name: </div>
-                <div>Address: </div>
-                <div>Business Name: </div>
-                <div>CEO: </div>
+                <div>
+                  Company Name:{' '}
+                  <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  Address: <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  Business Number:{' '}
+                  <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  CEO: <span className={styles['required-mark']}>*</span>
+                </div>
               </div>
               {organization && show === 'view' && (
                 <div className={styles.values}>
                   <div>{organization.name}</div>
-                  <div>{organization.businessNumber}</div>
                   <div>{organization.address}</div>
+                  <div>{organization.businessNumber}</div>
                   <div>{organization.ceo}</div>
                 </div>
               )}
@@ -142,15 +126,28 @@ const Organization = () => {
                         name={property[1]}
                         disabled={handleCheckDisabled(property[1])}
                       />
+                      {property[0] === '' && (
+                        <span className={styles.error}>{FIELD_EMPTY}</span>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
               <div className={styles.titles}>
-                <div>C/S Number: </div>
-                <div>Email: </div>
-                <div>Instagram Link: </div>
-                <div>YouTube Link: </div>
+                <div>
+                  C/S Number: <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  Email: <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  Instagram Link:{' '}
+                  <span className={styles['required-mark']}>*</span>
+                </div>
+                <div>
+                  YouTube Link:{' '}
+                  <span className={styles['required-mark']}>*</span>
+                </div>
               </div>
               {organization && show === 'view' && (
                 <div className={styles.values}>
@@ -173,6 +170,9 @@ const Organization = () => {
                         name={property[1]}
                         disabled={handleCheckDisabled(property[1])}
                       />
+                      {property[0] === '' && (
+                        <span className={styles.error}>{FIELD_EMPTY}</span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -195,11 +195,10 @@ const Organization = () => {
             )}
           </div>
           <Modal
-            selector='portal'
-            title={modalDetails.title}
-            content={modalDetails.content}
-            type={modalDetails.type}
-            show={showModal}
+            selector={'portal'}
+            show={isOpen}
+            type={'alert'}
+            content={ORGANIZATION_UPDATE_SUCCESS}
             onClose={handleMove}
           />
         </>

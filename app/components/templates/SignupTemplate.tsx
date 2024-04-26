@@ -1,20 +1,22 @@
 'use client';
 import styles from '@/app/components/templates/templates.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
 import User from '@/app/service/useUserApi';
 import Link from 'next/link';
 import Input from '@/app/components/atoms/input/Input';
-import Modal from '@/app/components/atoms/modal/Modal';
 import Spinner from '@/app/components/atoms/spinner/Spinner';
+import Modal from '../atoms/modal/Modal';
 
 import { limit } from '@/app/utils/text';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
 import { useQueryClient } from '@tanstack/react-query';
+import { useModal } from '@/app/hooks/useModal';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
 
 const LIST = ['email', 'password', 'name'];
 
@@ -28,12 +30,6 @@ const SignupTemplate = () => {
     role: '',
   });
   const [imgName, setImgName] = useState<string | undefined>('');
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [modalDetails, setModalDetails] = useState({
-    title: '',
-    content: '',
-    type: '',
-  });
   const userProperties = [
     signUser.email,
     signUser.password,
@@ -41,8 +37,9 @@ const SignupTemplate = () => {
     signUser.role,
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
-
-  const { mutate, isSuccess, isPending, isError, status } = useUserCreate();
+  const { mutate, isPending, status } = useUserCreate();
+  const { open, close, isOpen } = useModal();
+  const { USER_CREATE_SUCCESS, USER_CREATE_ERROR } = modalMsgConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -56,46 +53,27 @@ const SignupTemplate = () => {
     setImgName(e.currentTarget.files?.[0]?.name);
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      setModalDetails((prevState) => {
-        return {
-          ...prevState,
-          type: 'confirm',
-          title: 'Confirm',
-          content: 'Sign-up was successfull. Navigate to Login page?',
-        };
-      });
-      setShowModal(true);
-    }
-    if (isError) {
-      setModalDetails((prevState) => {
-        return {
-          ...prevState,
-          type: 'alert',
-          title: 'Alert',
-          content: 'User already exists.',
-        };
-      });
-      setShowModal(true);
-    }
-  }, [status]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm(signUser.email, signUser.password)) {
       mutate(signUser, {
-        onSuccess: (data) => {
+        onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
+          open();
         },
         onError: () => {
-          console.log('User create error');
+          open();
         },
       });
     }
   };
 
   const handleMove = () => router.push('/login');
+
+  const handleReset = () => {
+    close();
+    setSignUser({ email: '', password: '', name: '', role: '' });
+  };
 
   return (
     <>
@@ -131,17 +109,26 @@ const SignupTemplate = () => {
         <div className={styles.link}>
           <Link href={'/login'}>Login</Link>
         </div>
-
-        <Modal
-          selector='portal'
-          title={modalDetails.title}
-          content={modalDetails.content}
-          type={modalDetails.type}
-          show={showModal}
-          onClose={() => setShowModal(false)}
-          onOk={handleMove}
-        />
       </form>
+      {status === 'success' && (
+        <Modal
+          selector={'portal'}
+          show={isOpen}
+          type={'confirm'}
+          content={USER_CREATE_SUCCESS}
+          onOk={handleMove}
+          onClose={handleReset}
+        />
+      )}
+      {status === 'error' && (
+        <Modal
+          selector={'portal'}
+          show={isOpen}
+          type={'alert'}
+          content={USER_CREATE_ERROR}
+          onClose={close}
+        />
+      )}
     </>
   );
 };

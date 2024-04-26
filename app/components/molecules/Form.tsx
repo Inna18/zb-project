@@ -2,7 +2,7 @@ import styles from '@/app/components/molecules/molecules.module.css';
 
 import React from 'react';
 import Input from '@/app/components/atoms/input/Input';
-import { capitalize } from '@/app/utils/text';
+import { toUpper } from '@/app/utils/text';
 import Select from '@/app/components/atoms/select/Select';
 
 interface FormProps {
@@ -37,7 +37,7 @@ const Form = (formProps: FormProps) => {
             id={`login-${input}`}
             placeholder={`Insert ${input}`}
             hasLabel={true}
-            labelText={capitalize(input)}
+            labelText={toUpper(input)}
             name={input}
             value={userProps[idx]}
             className='input'

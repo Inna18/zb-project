@@ -9,7 +9,7 @@ import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import withAuth from '@/app/components/withAuth';
 
-import { capitalize } from '@/app/utils/text';
+import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
 
 const UserPageTemplate = () => {
@@ -43,7 +43,7 @@ const UserPageTemplate = () => {
             href={''}
             className={activeTab === tab ? styles.active : ''}
           >
-            {capitalize(tab)}
+            {toUpper(tab)}
           </Link>
         ))}
       </div>

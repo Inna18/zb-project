@@ -3,25 +3,22 @@ import styles from '@/app/components/atoms/atoms.module.css';
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '@/app/components/atoms/button/Button';
+import { capitalize, toUpper } from '@/app/utils/text';
 
 interface ModalProps {
   selector: string;
-  show?: boolean;
-  title?: string;
-  content?: string;
-  type?: string;
+  show: boolean;
+  type: string;
+  content: string;
   onOk?: () => void;
   onClose?: () => void;
 }
 
 const Modal = (modalProps: ModalProps) => {
-  const { selector, show, title, content, type, onOk, onClose } = modalProps;
+  const { selector, show, type, content, onOk, onClose } = modalProps;
 
   const portalRef = useRef<Element | null>(null);
-
-  useEffect(() => {
-    portalRef.current = document.getElementById(selector);
-  }, [selector]);
+  portalRef.current = document.getElementById(selector);
 
   return show && portalRef.current
     ? createPortal(
@@ -29,11 +26,9 @@ const Modal = (modalProps: ModalProps) => {
           <div className={styles['modal-wrapper']}>
             <div className={styles.modal}>
               <div className={styles['modal-header']}>
-                {title && <div>{title}</div>}
+                {type && capitalize(type)}
               </div>
-              <div className={styles['modal-body']}>
-                {content && <div>{content}</div>}
-              </div>
+              <div className={styles['modal-body']}>{content && content}</div>
               <div className={styles['modal-btn']}>
                 {type === 'confirm' && <Button value='Ok' onClick={onOk} />}
                 <Button value={'Close'} onClick={onClose} className='button2' />
