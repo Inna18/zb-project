@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import withAuth from '@/app/components/withAuth';
+import Products from '../organisms/Products';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
@@ -38,6 +39,8 @@ const UserPageTemplate = () => {
         return <Organization />;
       case 'categories':
         return <Categories />;
+      case 'products':
+        return <Products />;
       default:
         return null;
     }

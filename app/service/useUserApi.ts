@@ -121,7 +121,7 @@ async function updateUser(id: string | undefined, updateUser: User) {
 }
 
 async function deleteAllUsers() {
-  const isDelete = await client.delete({ query: BASE_QUERY });
+  const isDelete = await client.delete({ query: '*[_type== "user"][0...999]' });
   console.log('Delete result: ', isDelete);
   return isDelete;
 }

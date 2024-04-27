@@ -205,3 +205,9 @@
 .modal-btn button:nth-child(1) {
   margin-right: 10px;
 }
+
+/* editor */
+.editor {
+  height: 200px;
+  border: 1px solid;
+}
