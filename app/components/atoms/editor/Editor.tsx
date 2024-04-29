@@ -1,11 +1,11 @@
-import styles from "@/app/components/atoms/atoms.module.css";
+import styles from '@/app/components/atoms/atoms.module.css';
 
 import React from 'react';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image'
+import Image from '@tiptap/extension-image';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -13,7 +13,7 @@ const MenuBar = ({ editor }) => {
   }
 
   return (
-    <>
+    <div className={styles['editor-menu']}>
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
@@ -63,30 +63,6 @@ const MenuBar = ({ editor }) => {
         highlight
       </button>
       <button
-        onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        className={editor.isActive({ textAlign: 'left' }) ? 'is-active' : ''}
-      >
-        left
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('center').run()}
-        className={editor.isActive({ textAlign: 'center' }) ? 'is-active' : ''}
-      >
-        center
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        className={editor.isActive({ textAlign: 'right' }) ? 'is-active' : ''}
-      >
-        right
-      </button>
-      <button
-        onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-        className={editor.isActive({ textAlign: 'justify' }) ? 'is-active' : ''}
-      >
-        justify
-      </button>
-      <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={editor.isActive('bulletList') ? 'is-active' : ''}
       >
@@ -101,41 +77,43 @@ const MenuBar = ({ editor }) => {
       <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
         horizontal rule
       </button>
-    </>
+    </div>
   );
 };
-const Editor = () => {
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            TextAlign.configure({
-                types: ['heading, paragraph']
-            }),
-            Highlight,
-            Image
-        ],
-    });
 
-    const addImage = () => {
-        const url = window.prompt('URL');
+interface EditorProps {
+  onChange: (newContent: string) => void;
+}
 
-        if (url) {
-            if (editor) editor.chain().focus().setImage({ src: url }).run();
-        }
-        if (!editor) {
-            return null
-        }
-    }
+const Editor = (editorProps: EditorProps) => {
+  const { onChange } = editorProps;
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+
+      TextAlign.configure({
+        types: ['heading, paragraph'],
+      }),
+      Highlight,
+    ],
+    // editorProps: {
+    //   attributes: {
+    //     class: 'editor'
+    //   }
+    // },
+    onUpdate: ({ editor }) => {
+      onChange(editor.getHTML());
+    },
+  });
+
   return (
     <div>
-      <div>
-        <MenuBar editor={editor}/>
+      <MenuBar editor={editor} />
+      <div className={styles['editor-container']}>
+        <EditorContent className={styles.editor} editor={editor} />
       </div>
-      <div className={styles.editor}>
-        <EditorContent editor={editor} />
-      </div>
-        <button onClick={addImage}>Add Image</button>
-    </div>);
+    </div>
+  );
 };
 
 export default Editor;

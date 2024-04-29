@@ -84,5 +84,6 @@ input:checked + .sliderRound:before {
 }
 
 .overflow {
+  height: 100%;
   overflow: auto;
 }

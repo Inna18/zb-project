@@ -13,8 +13,13 @@ export default {
       name: 'content',
       title: 'Content',
       type: 'array',
+      of: [{ type: 'block' }],
+    },
+    {
+      name: 'productImages',
+      title: 'Product images',
+      type: 'array',
       of: [
-        { type: 'block' },
         {
           type: 'image',
           fields: [
@@ -22,27 +27,11 @@ export default {
               name: 'alt',
               title: 'Alt',
               type: 'string',
-            }
-          ]
-        }
-      ],
-    },
-    {
-      name: 'productImages',
-      title: 'Product images',
-      type: 'array',
-      of: [
-        { 
-          type: 'image',
-          fields: [
-          {
-            name: 'alt',
-            title: 'Alt',
-            type: 'string',
-          },
+            },
           ],
-         },
-       ],
+        },
+      ],
+      validation: (Rule: any) => Rule.max(4),
       options: { hotspot: true },
     },
   ],

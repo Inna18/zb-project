@@ -2,7 +2,7 @@
 import styles from '@/app/components/organisms/organisms.module.css';
 import emptyUser from '@/public/icons/user-empty.svg';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button from '@/app/components/atoms/button/Button';
 import Input from '@/app/components/atoms/input/Input';

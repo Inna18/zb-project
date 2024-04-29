@@ -207,7 +207,39 @@
 }
 
 /* editor */
-.editor {
+.editor-container {
   height: 200px;
   border: 1px solid;
+}
+.editor div {
+  height: 200px;
+  border: none;
+  outline: none;
+  overflow: auto;
+}
+.editor-menu {
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid rgb(99, 96, 93, 0.4);
+  display: flex;
+  align-items: center;
+}
+.editor-menu button {
+  height: 24px;
+  border: none;
+  border-right: 1px solid rgb(99, 96, 93, 0.4);
+  background-color: #fff;
+  font-size: 12px;
+  color: rgb(36, 34, 32, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+  text-transform: lowercase;
+}
+.editor-menu button:last-child {
+  border: none;
+}
+.editor-menu button:hover {
+  color: #e58025;
+  font-weight: 500;
 }

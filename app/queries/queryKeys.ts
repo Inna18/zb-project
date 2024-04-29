@@ -13,5 +13,5 @@ export const CATEGORY_KEYS = {
 
 export const PRODUCT_KEYS = {
   list: () => ['products'],
-  get: (id: string) => ['product', id],
-}
+  get: (id: string | undefined) => ['product', id],
+};
