@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import Spinner from '@/app/components/atoms/spinner/Spinner';
 import Button from '@/app/components/atoms/button/Button';
 import OrganizationEntity from '@/app/service/useOrganizationApi';
-import Input from '@/app/components/atoms/input/Input';
 import Modal from '@/app/components/atoms/modal/Modal';
+import Column from '../molecules/Column';
 
 import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
 import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/useOrganizationUpdate';
@@ -29,15 +29,35 @@ const Organization = () => {
     instagramUrl: '',
     youTubeUrl: '',
   });
-  const orgProperties = [
-    [myOrganization.name, 'name'],
-    [myOrganization.address, 'address'],
-    [myOrganization.businessNumber, 'businessNumber'],
-    [myOrganization.ceo, 'ceo'],
-    [myOrganization.phoneNumber, 'phoneNumber'],
-    [myOrganization.email, 'email'],
-    [myOrganization.instagramUrl, 'instagramUrl'],
-    [myOrganization.youTubeUrl, 'youTubeUrl'],
+  const orgProperties: string[][] = [
+    ['Company Name: ', organization.name, myOrganization.name, 'name'],
+    ['Address: ', organization.address, myOrganization.address, 'address'],
+    [
+      'Business Number: ',
+      organization.businessNumber,
+      myOrganization.businessNumber,
+      'businessNumber',
+    ],
+    ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo'],
+    [
+      'C/S Number: ',
+      organization.phoneNumber,
+      myOrganization.phoneNumber,
+      'phoneNumber',
+    ],
+    ['Email: ', organization.email, myOrganization.email, 'email'],
+    [
+      'Instagram Link: ',
+      organization.instagramUrl,
+      myOrganization.instagramUrl,
+      'instagramUrl',
+    ],
+    [
+      'YouTube Link: ',
+      organization.youTubeUrl,
+      myOrganization.youTubeUrl,
+      'youTubeUrl',
+    ],
   ];
 
   const { mutate } = useOrganizationUpdate();
@@ -89,93 +109,21 @@ const Organization = () => {
         <>
           <div className={styles['organization-section']}>
             <div className={styles['organization-details']}>
-              <div className={styles.titles}>
-                <div>
-                  Company Name:{' '}
-                  <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  Address: <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  Business Number:{' '}
-                  <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  CEO: <span className={styles['required-mark']}>*</span>
-                </div>
-              </div>
-              {organization && show === 'view' && (
-                <div className={styles.values}>
-                  <div>{organization.name}</div>
-                  <div>{organization.address}</div>
-                  <div>{organization.businessNumber}</div>
-                  <div>{organization.ceo}</div>
-                </div>
+              {organization && (
+                <Column
+                  list={orgProperties.slice(0, 4)}
+                  show={show}
+                  changeFunc={handleInputChange}
+                  checkDisabled={handleCheckDisabled}
+                />
               )}
-              {organization && show === 'update' && (
-                <div className={styles.updates}>
-                  {orgProperties.slice(0, 4).map((property) => (
-                    <div key={property[1]} className={styles['input-gap']}>
-                      <Input
-                        type={property[1]}
-                        changeFunc={handleInputChange}
-                        hasLabel={false}
-                        value={property[0]}
-                        className='input'
-                        name={property[1]}
-                        disabled={handleCheckDisabled(property[1])}
-                      />
-                      {property[0] === '' && (
-                        <span className={styles.error}>{FIELD_EMPTY}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-              <div className={styles.titles}>
-                <div>
-                  C/S Number: <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  Email: <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  Instagram Link:{' '}
-                  <span className={styles['required-mark']}>*</span>
-                </div>
-                <div>
-                  YouTube Link:{' '}
-                  <span className={styles['required-mark']}>*</span>
-                </div>
-              </div>
-              {organization && show === 'view' && (
-                <div className={styles.values}>
-                  <div>{organization.phoneNumber}</div>
-                  <div>{organization.email}</div>
-                  <div>{organization.instagramUrl}</div>
-                  <div>{organization.youTubeUrl}</div>
-                </div>
-              )}
-              {organization && show === 'update' && (
-                <div className={styles.updates}>
-                  {orgProperties.slice(4, 9).map((property) => (
-                    <div key={property[1]} className={styles['input-gap']}>
-                      <Input
-                        type={property[1]}
-                        changeFunc={handleInputChange}
-                        hasLabel={false}
-                        value={property[0]}
-                        className='input'
-                        name={property[1]}
-                        disabled={handleCheckDisabled(property[1])}
-                      />
-                      {property[0] === '' && (
-                        <span className={styles.error}>{FIELD_EMPTY}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+              {organization && (
+                <Column
+                  list={orgProperties.slice(4, 9)}
+                  show={show}
+                  changeFunc={handleInputChange}
+                  checkDisabled={handleCheckDisabled}
+                />
               )}
             </div>
           </div>

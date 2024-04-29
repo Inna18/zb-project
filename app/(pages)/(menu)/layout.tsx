@@ -24,9 +24,7 @@ export default function RootLayout({
         <div className={styles.container}>
           <SessionProvider>
             <Navbar />
-            <div className={styles.overflow}>
-              {children}
-            </div>
+            <div className={styles.overflow}>{children}</div>
             <Footer />
           </SessionProvider>
         </div>

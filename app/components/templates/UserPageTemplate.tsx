@@ -29,7 +29,7 @@ const UserPageTemplate = () => {
     else setList(['profile', 'orders']);
   };
 
-  const handleTab = (activeTab: string) => {
+  const tabRenderer = (activeTab: string) => {
     switch (activeTab) {
       case 'profile':
         return <Profile />;
@@ -65,7 +65,7 @@ const UserPageTemplate = () => {
           </Link>
         ))}
       </div>
-      <div className={styles['mypage-tabs']}>{handleTab(activeTab)}</div>
+      <div className={styles['mypage-tabs']}>{tabRenderer(activeTab)}</div>
     </div>
   );
 };

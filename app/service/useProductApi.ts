@@ -9,7 +9,7 @@ export default interface Product {
   quantity?: number;
   rating?: number;
   content?: any; // what is rich text type?
-  images?: any ;
+  images?: any;
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -24,9 +24,9 @@ const BASE_QUERY = `*[_type == 'product']{
 }`;
 
 async function getProductById(id: string) {
-    const query = `*[_type == 'user' && _id == '${id}'][0]`;
-    const productById = await client.fetch(query);
-    return productById;
+  const query = `*[_type == 'user' && _id == '${id}'][0]`;
+  const productById = await client.fetch(query);
+  return productById;
 }
 
 async function createProduct(product: Product) {
@@ -63,52 +63,52 @@ async function createProduct(product: Product) {
 }
 
 async function updateProduct(id: string, updateProduct: Product) {
-    const inDB = await getProductById(id);
-    if (inDB) {
-        let productImages;
-  if (updateProduct.images) {
-    updateProduct.images.map((image) => {
-      client.assets.upload('image', image);
-    });
-  }
-  const udpatedProduct = await client
-    .patch(id)
-    .set({
-        _type: 'product',
-    category: updateProduct.category,
-    brand: updateProduct.brand,
-    name: updateProduct.name,
-    price: updateProduct.price,
-    quantity: updateProduct.quantity,
-    rating: updateProduct.rating,
-    content: updateProduct.content,
-    productImages: productImages
-      ? productImages.map((productImage) => {
-          return {
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: productImage?._id,
-            },
-          };
-        })
-      : null,
-    })
-    .commit();
-    console.log("updated ", udpatedProduct)
-    } else {
-        const createdProduct = await createProduct(updateProduct);
-        console.log("created ", createProduct);
-        return createProduct;
+  const inDB = await getProductById(id);
+  if (inDB) {
+    let productImages;
+    if (updateProduct.images) {
+      updateProduct.images.map((image) => {
+        client.assets.upload('image', image);
+      });
     }
+    const udpatedProduct = await client
+      .patch(id)
+      .set({
+        _type: 'product',
+        category: updateProduct.category,
+        brand: updateProduct.brand,
+        name: updateProduct.name,
+        price: updateProduct.price,
+        quantity: updateProduct.quantity,
+        rating: updateProduct.rating,
+        content: updateProduct.content,
+        productImages: productImages
+          ? productImages.map((productImage) => {
+              return {
+                _type: 'image',
+                asset: {
+                  _type: 'reference',
+                  _ref: productImage?._id,
+                },
+              };
+            })
+          : null,
+      })
+      .commit();
+    console.log('updated ', udpatedProduct);
+  } else {
+    const createdProduct = await createProduct(updateProduct);
+    console.log('created ', createProduct);
+    return createProduct;
+  }
 }
 
 async function getProductImages(id: string | undefined) {
-    const query = `*[_type == 'product' && _id == '${id}'][0]{
+  const query = `*[_type == 'product' && _id == '${id}'][0]{
         "profileImg": profileImg.asset->url
       }`;
-      const productImages = await client.fetch(query);
-      return productImages;
+  const productImages = await client.fetch(query);
+  return productImages;
 }
 
 export { createProduct, updateProduct, getProductImages };
