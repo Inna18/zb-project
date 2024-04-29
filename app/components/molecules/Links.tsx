@@ -6,7 +6,7 @@ import Link from 'next/link';
 import React, { useEffect } from 'react';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePathname } from 'next/navigation';
-import { capitalize } from '@/app/utils/text';
+import { toUpper } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 
 const SHOP = ['all', 'category A', 'category B'];
@@ -50,7 +50,7 @@ const Links = (linksProps: LinksProps) => {
             href={`/${link}`}
             onMouseEnter={() => handleOpen(link)}
           >
-            {capitalize(link)}
+            {toUpper(link)}
           </Link>
           {openMenu && link === 'shop' && (
             <div className={styles['dropdown-section']}>

@@ -9,7 +9,7 @@ import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import withAuth from '@/app/components/withAuth';
 
-import { capitalize } from '@/app/utils/text';
+import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
 
 const UserPageTemplate = () => {
@@ -28,6 +28,21 @@ const UserPageTemplate = () => {
     else setList(['profile', 'orders']);
   };
 
+  const handleTab = (activeTab: string) => {
+    switch (activeTab) {
+      case 'profile':
+        return <Profile />;
+      case 'orders':
+        return <Orders />;
+      case 'organization':
+        return <Organization />;
+      case 'categories':
+        return <Categories />;
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     handleCurrentUser();
   }, [session]);
@@ -43,16 +58,11 @@ const UserPageTemplate = () => {
             href={''}
             className={activeTab === tab ? styles.active : ''}
           >
-            {capitalize(tab)}
+            {toUpper(tab)}
           </Link>
         ))}
       </div>
-      <div className={styles['mypage-tabs']}>
-        {activeTab === 'profile' && <Profile />}
-        {activeTab === 'orders' && <Orders />}
-        {activeTab === 'organization' && <Organization />}
-        {activeTab === 'categories' && <Categories />}
-      </div>
+      <div className={styles['mypage-tabs']}>{handleTab(activeTab)}</div>
     </div>
   );
 };
