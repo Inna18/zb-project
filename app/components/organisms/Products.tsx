@@ -1,7 +1,7 @@
 import styles from './organisms.module.css';
 
 import { Schema } from '@sanity/schema';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Editor from '../atoms/editor/Editor';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
@@ -9,13 +9,20 @@ import productSchema from '@/sanity/schemas/product';
 
 import Product from '@/app/service/useProductApi';
 import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
-import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
-import { useProductGetImages } from '@/app/queries/queryHooks/product/useProductGetImages';
 import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { limit } from '@/app/utils/text';
+import Modal from '../atoms/modal/Modal';
+import { useModal } from '@/app/hooks/useModal';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const Products = () => {
+interface ProductsProps {
+  renderSubMenu: (param: string) => void;
+}
+
+const Products = (productProps: ProductsProps) => {
+  const { renderSubMenu } = productProps;
+
   const queryClient = useQueryClient();
   const [product, setProduct] = useState<Product>({
     category: '',
@@ -35,13 +42,22 @@ const Products = () => {
   const productTitles = ['category', 'brand', 'name', 'price', 'quantity'];
   const [imgArr, setImgArr] = useState<File[]>([]);
   const [imgNames, setImgNames] = useState<string[]>([]);
+  const [modalType, setModalType] = useState<string>('');
+  const { open, close, isOpen } = useModal();
+  const { PRODUCT_IMAGE_LIMIT_ERROR, PRODUCT_CREATE_CANCEL } = modalMsgConstants();
 
   const { mutate } = useProductCreate();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    imgArr.push(e.currentTarget.files?.[0]!);
-    imgNames.push(e.currentTarget.files?.[0].name!);
-    setProduct({ ...product, images: imgArr });
+    if (imgArr.length >= 5) {
+      setModalType('error');
+      open();
+    }
+    else {
+      imgArr.push(e.currentTarget.files?.[0]!);
+      imgNames.push(e.currentTarget.files?.[0].name!);
+      setProduct({ ...product, images: imgArr });
+    }
   };
 
   const handleInputChange = (
@@ -72,8 +88,18 @@ const Products = () => {
     });
   };
 
+  const handleCancel = () => {
+    setModalType('cancel');
+    open();
+  }
+
+  const routeBack = () => {
+    close();
+    renderSubMenu('list');
+  }
+
   return (
-    <div className={styles['product-section']}>
+    <>
       <div className={styles['product-details']}>
         <div className={styles['product-images']}>
           <div className={styles['images-section']}>
@@ -95,21 +121,11 @@ const Products = () => {
           />
         </div>
         <div className={styles.titles}>
-          <div>
-            Category: <span className={styles['required-mark']}>*</span>
-          </div>
-          <div>
-            Brand: <span className={styles['required-mark']}>*</span>
-          </div>
-          <div>
-            Name: <span className={styles['required-mark']}>*</span>
-          </div>
-          <div>
-            Price: <span className={styles['required-mark']}>*</span>
-          </div>
-          <div>
-            Quantity: <span className={styles['required-mark']}>*</span>
-          </div>
+          <div>Category:</div>
+          <div>Brand:</div>
+          <div>Name:</div>
+          <div>Price:</div>
+          <div>Quantity:</div>
         </div>
         <div className={styles.updates}>
           {productTitles.map((title, idx) => (
@@ -133,8 +149,28 @@ const Products = () => {
       </div>
       <div className={styles['button-section']}>
         <Button value={'Save'} onClick={handleSave} />
+        <Button value={'Cancel'} className="button2" onClick={handleCancel} />
       </div>
-    </div>
+      {modalType === 'cancel' && (
+        <Modal
+          selector={'portal'}
+          show={isOpen}
+          type={'confirm'}
+          content={PRODUCT_CREATE_CANCEL}
+          onOk={routeBack}
+          onClose={close}
+        />
+      )}
+      {modalType === 'error' && (
+        <Modal
+          selector={'portal'}
+          show={isOpen}
+          type={'alert'}
+          content={PRODUCT_IMAGE_LIMIT_ERROR}
+          onClose={close}
+        />
+      )}
+    </>
   );
 };
 

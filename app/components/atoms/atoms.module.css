@@ -30,6 +30,17 @@
   box-shadow: 0 0 5px #e58025;
 }
 
+.button-long {
+  width: 100px;
+  height: 40px;
+  background-color: #e58025;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px #e58025;
+}
+
 /* input */
 .input-section {
   position: relative;
