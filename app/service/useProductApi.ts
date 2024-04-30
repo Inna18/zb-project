@@ -1,4 +1,5 @@
 import { client } from '@/sanity/lib/client';
+import { SanityImageAssetDocument } from 'next-sanity';
 
 export default interface Product {
   _id?: string;
@@ -30,12 +31,12 @@ async function getProductById(id: string) {
 }
 
 async function createProduct(product: Product) {
-  let productImages;
-  if (product.images) {
-    product.images.map((image) => {
-      client.assets.upload('image', image);
-    });
-  }
+  let productImages: SanityImageAssetDocument[] = [];
+  const promises = product.images.map(async (productImage: File) => {
+    return await client.assets.upload('image', productImage);
+  });
+  productImages = await Promise.all(promises);
+  
   const sanityProduct = {
     id: product._id,
     _type: 'product',
@@ -49,6 +50,7 @@ async function createProduct(product: Product) {
     productImages: productImages
       ? productImages.map((productImage) => {
           return {
+            _key: productImage?._id,
             _type: 'image',
             asset: {
               _type: 'reference',
@@ -60,47 +62,11 @@ async function createProduct(product: Product) {
   };
   const productCreated = await client.create(sanityProduct);
   console.log('Product created ', productCreated.name);
+  return productCreated;
 }
 
 async function updateProduct(id: string, updateProduct: Product) {
-  const inDB = await getProductById(id);
-  if (inDB) {
-    let productImages;
-    if (updateProduct.images) {
-      updateProduct.images.map((image) => {
-        client.assets.upload('image', image);
-      });
-    }
-    const udpatedProduct = await client
-      .patch(id)
-      .set({
-        _type: 'product',
-        category: updateProduct.category,
-        brand: updateProduct.brand,
-        name: updateProduct.name,
-        price: updateProduct.price,
-        quantity: updateProduct.quantity,
-        rating: updateProduct.rating,
-        content: updateProduct.content,
-        productImages: productImages
-          ? productImages.map((productImage) => {
-              return {
-                _type: 'image',
-                asset: {
-                  _type: 'reference',
-                  _ref: productImage?._id,
-                },
-              };
-            })
-          : null,
-      })
-      .commit();
-    console.log('updated ', udpatedProduct);
-  } else {
-    const createdProduct = await createProduct(updateProduct);
-    console.log('created ', createProduct);
-    return createProduct;
-  }
+  // TODO
 }
 
 async function getProductImages(id: string | undefined) {
@@ -108,6 +74,7 @@ async function getProductImages(id: string | undefined) {
         "profileImg": profileImg.asset->url
       }`;
   const productImages = await client.fetch(query);
+  console.log('Product images ', productImages);
   return productImages;
 }
 

@@ -5,6 +5,7 @@ export const toUpper = (text: string | undefined) => {
 
 export const limit = (text: string | undefined, limit: number) => {
   if (!text) return;
+  else if (text.length < limit) return text;
   return text.substring(0, limit) + '...';
 };
 

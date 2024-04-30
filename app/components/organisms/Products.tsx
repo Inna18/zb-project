@@ -13,6 +13,7 @@ import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpd
 import { useProductGetImages } from '@/app/queries/queryHooks/product/useProductGetImages';
 import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
+import { limit } from '@/app/utils/text';
 
 const Products = () => {
   const queryClient = useQueryClient();
@@ -32,15 +33,14 @@ const Products = () => {
     product.quantity,
   ];
   const productTitles = ['category', 'brand', 'name', 'price', 'quantity'];
+  const [imgArr, setImgArr] = useState<File[]>([]);
+  const [imgNames, setImgNames] = useState<string[]>([]);
 
   const { mutate } = useProductCreate();
-  const { mutate: mutateUpdate } = useProductUpdate();
-  const { data: images } = useProductGetImages(product._id);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let imgArr = [];
-    if (images) imgArr.push([...images]);
-    imgArr.push(e.currentTarget.files?.[0]);
+    imgArr.push(e.currentTarget.files?.[0]!);
+    imgNames.push(e.currentTarget.files?.[0].name!);
     setProduct({ ...product, images: imgArr });
   };
 
@@ -65,11 +65,11 @@ const Products = () => {
   };
 
   const handleSave = () => {
-    // mutateUpdate(product, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries({ queryKey: ['products'] });
-    //   },
-    // });
+    mutate(product, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+      },
+    });
   };
 
   return (
@@ -77,12 +77,12 @@ const Products = () => {
       <div className={styles['product-details']}>
         <div className={styles['product-images']}>
           <div className={styles['images-section']}>
-            {product && !product.images && (
+            {imgNames.length <= 0 && (
               <div className={styles.centered}>No Images</div>
             )}
-            {/* {images && images.map((image: string) => (
-              <span>{ image }</span>
-            ))} */}
+            {imgNames && imgNames.map(imgName => (
+              <div key={imgName}>{limit(imgName, 30)}</div>
+            ))}
           </div>
           <Input
             type='file'
