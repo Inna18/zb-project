@@ -1,7 +1,7 @@
 import styles from './organisms.module.css';
 
 import { Schema } from '@sanity/schema';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Editor from '../atoms/editor/Editor';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
@@ -44,7 +44,7 @@ const Products = (productProps: ProductsProps) => {
   const [imgNames, setImgNames] = useState<string[]>([]);
   const [modalType, setModalType] = useState<string>('');
   const { open, close, isOpen } = useModal();
-  const { PRODUCT_IMAGE_LIMIT_ERROR, PRODUCT_CREATE_CANCEL } = modalMsgConstants();
+  const { PRODUCT_IMAGE_LIMIT_ERROR, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants();
 
   const { mutate } = useProductCreate();
 
@@ -53,10 +53,12 @@ const Products = (productProps: ProductsProps) => {
       setModalType('error');
       open();
     }
-    else {
+    else if (e.currentTarget.files) {
+      setImgArr(prevState => { return [...prevState, e.currentTarget.files?.[0]!]})
       imgArr.push(e.currentTarget.files?.[0]!);
       imgNames.push(e.currentTarget.files?.[0].name!);
-      setProduct({ ...product, images: imgArr });
+      setProduct({ ...product, productImages: imgArr });
+      mutate(product);
     }
   };
 
@@ -84,6 +86,8 @@ const Products = (productProps: ProductsProps) => {
     mutate(product, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['products'] });
+        setModalType('success');
+        open();
       },
     });
   };
@@ -151,6 +155,15 @@ const Products = (productProps: ProductsProps) => {
         <Button value={'Save'} onClick={handleSave} />
         <Button value={'Cancel'} className="button2" onClick={handleCancel} />
       </div>
+      {modalType === 'success' && (
+        <Modal
+          selector={'portal'}
+          show={isOpen}
+          type={'alert'}
+          content={PRODUCT_CREATE_SUCCESS}
+          onClose={routeBack}
+        />
+      )}
       {modalType === 'cancel' && (
         <Modal
           selector={'portal'}

@@ -7,6 +7,8 @@ export const modalMsgConstants = () => {
     ORGANIZATION_UPDATE_SUCCESS: 'Organization details updated.',
     CATEGORY_LIMIT_ERROR: 'Only up to 10 categories can be created.',
     PRODUCT_IMAGE_LIMIT_ERROR: 'Only up to 5 images can be added.',
-    PRODUCT_CREATE_CANCEL: 'Return to Product List? All unsaved changes will be lost.'
+    PRODUCT_CREATE_SUCCESS: 'Product created successfully.',
+    PRODUCT_CREATE_CANCEL:
+      'Return to Product List? All unsaved changes will be lost.',
   };
 };

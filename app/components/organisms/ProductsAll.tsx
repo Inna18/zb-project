@@ -2,12 +2,10 @@ import styles from './organisms.module.css';
 import React, { useState } from 'react'
 import Button from '../atoms/button/Button';
 
-import { useRouter } from 'next/navigation';
 import ProductsList from './ProductsList';
 import Products from './Products';
 
 const ProductsAll = () => {
-    const router = useRouter();
     const [subMenu, setSubMenu] = useState<string>('list');
     
     const subMenuRenderer = (subMenuType: string) => {

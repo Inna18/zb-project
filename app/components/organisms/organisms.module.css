@@ -24,6 +24,25 @@
   padding: 30px;
   font-size: 14px;
 }
+.product-list {
+  width: 100%;
+}
+.product-card {
+  height: 80px;
+  padding: 10px;
+  margin: 10px;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  border: 1px solid;
+  border-radius: 4px;
+}
+.product-card .name {
+  font-size: 24px;
+  margin: 6px 0;
+}
+.product-card img {
+  height: inherit;
+}
 .profile-details {
   width: 80%;
   height: 260px;

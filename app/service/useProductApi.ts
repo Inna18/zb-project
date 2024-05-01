@@ -1,5 +1,6 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
+import { ImageResponse } from 'next/server';
 
 export default interface Product {
   _id?: string;
@@ -10,7 +11,7 @@ export default interface Product {
   quantity?: number;
   rating?: number;
   content?: any; // what is rich text type?
-  images?: any;
+  productImages?: any;
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -21,7 +22,7 @@ const BASE_QUERY = `*[_type == 'product']{
     quantity,
     rating,
     content,
-    "images": images.asset->url,
+    "productImages": productImages[].asset->url,
 }`;
 
 async function getProductById(id: string) {
@@ -30,13 +31,26 @@ async function getProductById(id: string) {
   return productById;
 }
 
+async function getProductList() {
+  const query = `*[_type == 'product']{
+    _id,
+    category,
+    brand,
+    name,
+    "productImages": productImages[].asset->url
+  }`;
+  const productList = await client.fetch(query);
+  console.log('Product list: ', productList);
+  return productList;
+}
+
 async function createProduct(product: Product) {
   let productImages: SanityImageAssetDocument[] = [];
-  const promises = product.images.map(async (productImage: File) => {
+  const promises = product.productImages.map(async (productImage: File) => {
     return await client.assets.upload('image', productImage);
   });
   productImages = await Promise.all(promises);
-  
+
   const sanityProduct = {
     id: product._id,
     _type: 'product',
@@ -71,11 +85,24 @@ async function updateProduct(id: string, updateProduct: Product) {
 
 async function getProductImages(id: string | undefined) {
   const query = `*[_type == 'product' && _id == '${id}'][0]{
-        "profileImg": profileImg.asset->url
+        "productImages": productImages.asset->url
       }`;
   const productImages = await client.fetch(query);
   console.log('Product images ', productImages);
   return productImages;
 }
 
-export { createProduct, updateProduct, getProductImages };
+async function deleteProducts() {
+  const deleteResult = await client.delete({
+    query: `*[_type == 'product'][0...999]`,
+  });
+  console.log(deleteResult);
+}
+
+export {
+  getProductList,
+  createProduct,
+  updateProduct,
+  getProductImages,
+  deleteProducts,
+};
