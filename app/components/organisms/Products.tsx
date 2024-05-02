@@ -30,7 +30,8 @@ const Products = (productProps: ProductsProps) => {
     name: '',
     price: '',
     quantity: 0,
-    content: []
+    content: [],
+    productImages: [],
   });
   const productValues = [
     product.category,
@@ -44,7 +45,11 @@ const Products = (productProps: ProductsProps) => {
   const [imgNames, setImgNames] = useState<string[]>([]);
   const [modalType, setModalType] = useState<string>('');
   const { open, close, isOpen } = useModal();
-  const { PRODUCT_IMAGE_LIMIT_ERROR, PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants();
+  const {
+    PRODUCT_IMAGE_LIMIT_ERROR,
+    PRODUCT_CREATE_SUCCESS,
+    PRODUCT_CREATE_CANCEL,
+  } = modalMsgConstants();
 
   const { mutate } = useProductCreate();
 
@@ -52,13 +57,14 @@ const Products = (productProps: ProductsProps) => {
     if (imgArr.length >= 5) {
       setModalType('error');
       open();
-    }
-    else if (e.currentTarget.files) {
-      setImgArr(prevState => { return [...prevState, e.currentTarget.files?.[0]!]})
-      imgArr.push(e.currentTarget.files?.[0]!);
-      imgNames.push(e.currentTarget.files?.[0].name!);
-      setProduct({ ...product, productImages: imgArr });
-      mutate(product);
+    } else {
+      let file = e.currentTarget.files;
+      setImgArr((prevState) => [...prevState, file?.[0]!]);
+      setImgNames((prevState) => [...prevState, file?.[0].name!]);
+      setProduct({
+        ...product,
+        productImages: [...product.productImages, ...imgArr],
+      });
     }
   };
 
@@ -95,12 +101,12 @@ const Products = (productProps: ProductsProps) => {
   const handleCancel = () => {
     setModalType('cancel');
     open();
-  }
+  };
 
   const routeBack = () => {
     close();
     renderSubMenu('list');
-  }
+  };
 
   return (
     <>
@@ -110,17 +116,18 @@ const Products = (productProps: ProductsProps) => {
             {imgNames.length <= 0 && (
               <div className={styles.centered}>No Images</div>
             )}
-            {imgNames && imgNames.map(imgName => (
-              <div key={imgName}>{limit(imgName, 30)}</div>
-            ))}
+            {imgNames &&
+              imgNames.map((imgName) => (
+                <div key={imgName}>{limit(imgName, 30)}</div>
+              ))}
           </div>
           <Input
             type='file'
-            id='profile-img'
+            id='product-img'
             className='image'
             labelText='Add Image'
             hasLabel={true}
-            name='profileImg'
+            name='productImg'
             changeFunc={handleImageUpload}
           />
         </div>
@@ -153,7 +160,7 @@ const Products = (productProps: ProductsProps) => {
       </div>
       <div className={styles['button-section']}>
         <Button value={'Save'} onClick={handleSave} />
-        <Button value={'Cancel'} className="button2" onClick={handleCancel} />
+        <Button value={'Cancel'} className='button2' onClick={handleCancel} />
       </div>
       {modalType === 'success' && (
         <Modal

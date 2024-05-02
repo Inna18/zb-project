@@ -26,7 +26,7 @@ const BASE_QUERY = `*[_type == 'product']{
 }`;
 
 async function getProductById(id: string) {
-  const query = `*[_type == 'user' && _id == '${id}'][0]`;
+  const query = `*[_type == 'product' && _id == '${id}'][0]`;
   const productById = await client.fetch(query);
   return productById;
 }
@@ -99,10 +99,22 @@ async function deleteProducts() {
   console.log(deleteResult);
 }
 
+async function deleteProductById(id: string) {
+  const inDB = await getProductById(id);
+  if (inDB) {
+    const productDeleted = await client.delete(id);
+    console.log(productDeleted);
+  } else {
+    console.log('No such Product');
+    throw new Error('No such Product');
+  }
+}
+
 export {
   getProductList,
   createProduct,
   updateProduct,
   getProductImages,
   deleteProducts,
+  deleteProductById,
 };

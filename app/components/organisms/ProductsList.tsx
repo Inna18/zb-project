@@ -2,15 +2,24 @@ import styles from './organisms.module.css';
 
 import Image from 'next/image';
 import Spinner from '../atoms/spinner/Spinner';
+import updateIcon from '@/public/icons/pen-to-square-solid.svg';
+import removeIcon from '@/public/icons/delete-left-solid.svg';
 
 import React from 'react';
 import { useProductList } from '@/app/queries/queryHooks/product/useProductList';
+import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { commonConstants } from '@/app/constants/common';
 import Product from '@/app/service/useProductApi';
 
 const ProductsList = () => {
   const { isLoading, data: productList } = useProductList();
   const { LIST_EMPTY } = commonConstants();
+  const { mutate: mutateDelete } = useProductDeleteById();
+  const handleUpdate = (id: string) => {};
+
+  const handleRemove = (id: string) => {
+    mutateDelete(id);
+  };
 
   return (
     <>
@@ -38,6 +47,22 @@ const ProductsList = () => {
                   <div className={styles.name}>{product.name}</div>
                   <div>{product.category}</div>
                   <div>{product.brand}</div>
+                </div>
+                <div className={styles['icons-section']}>
+                  <a onClick={() => handleUpdate(product._id!)}>
+                    <Image
+                      className={styles['icon-m']}
+                      src={updateIcon}
+                      alt={'update-icon'}
+                    />
+                  </a>
+                  <a onClick={() => handleRemove(product._id!)}>
+                    <Image
+                      className={styles['icon-m']}
+                      src={removeIcon}
+                      alt={'remove-icon'}
+                    />
+                  </a>
                 </div>
               </div>
             ))}
