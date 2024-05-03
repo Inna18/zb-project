@@ -7,7 +7,6 @@ export default {
     { name: 'brand', title: 'Brand', type: 'string' },
     { name: 'name', title: 'Name', type: 'string' },
     { name: 'price', title: 'Price', type: 'string' },
-    { name: 'inStock', title: 'InStock', type: 'boolean' },
     { name: 'quantity', title: 'Quantity', type: 'number' },
     { name: 'rating', title: 'Rating', type: 'number' },
     {
@@ -20,15 +19,20 @@ export default {
       name: 'productImages',
       title: 'Product images',
       type: 'array',
-      of: [{ type: 'image' }],
-      options: { hotspot: true },
-      fields: [
+      of: [
         {
-          name: 'alt',
-          title: 'Alt',
-          type: 'string',
+          type: 'image',
+          fields: [
+            {
+              name: 'alt',
+              title: 'Alt',
+              type: 'string',
+            },
+          ],
         },
       ],
+      validation: (Rule: any) => Rule.max(4),
+      options: { hotspot: true },
     },
   ],
 };

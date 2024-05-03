@@ -7,6 +7,7 @@ import Orders from '@/app/components/organisms/Orders';
 import Link from 'next/link';
 import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
+import ProductsAll from '../organisms/ProductsAll';
 import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
@@ -28,7 +29,7 @@ const UserPageTemplate = () => {
     else setList(['profile', 'orders']);
   };
 
-  const handleTab = (activeTab: string) => {
+  const tabRenderer = (activeTab: string) => {
     switch (activeTab) {
       case 'profile':
         return <Profile />;
@@ -38,6 +39,8 @@ const UserPageTemplate = () => {
         return <Organization />;
       case 'categories':
         return <Categories />;
+      case 'products':
+        return <ProductsAll />;
       default:
         return null;
     }
@@ -62,7 +65,7 @@ const UserPageTemplate = () => {
           </Link>
         ))}
       </div>
-      <div className={styles['mypage-tabs']}>{handleTab(activeTab)}</div>
+      <div className={styles['mypage-tabs']}>{tabRenderer(activeTab)}</div>
     </div>
   );
 };

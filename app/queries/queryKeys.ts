@@ -10,3 +10,8 @@ export const CATEGORY_KEYS = {
   list: () => ['categories'],
   get: (id: string) => ['categories', id],
 };
+
+export const PRODUCT_KEYS = {
+  list: () => ['products'],
+  get: (id: string | undefined) => ['product', id],
+};
