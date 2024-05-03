@@ -138,11 +138,8 @@ async function updateProductImages(id: string, images: File[]) {
 
 async function deleteProductImage(id: string, imageUrl: string) {
   const key = `image-${imageUrl.split('/').pop()?.replace('.', '-')}`;
-  const imagesToRemove = [`productImages[_key==\"${key}\"]`]
-  const updatedImages = await client
-    .patch(id)
-    .unset(imagesToRemove)
-    .commit();
+  const imagesToRemove = [`productImages[_key==\"${key}\"]`];
+  const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
   console.log(updatedImages);
 }
 

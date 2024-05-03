@@ -12,7 +12,7 @@ import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
 import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
 
-import {toHTML} from '@portabletext/to-html'
+import { toHTML } from '@portabletext/to-html';
 import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
@@ -25,6 +25,7 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
 import Select from '../atoms/select/Select';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
+import { generateUuid } from '@/app/utils/uuid';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -61,7 +62,7 @@ const Products = (productProps: ProductsProps) => {
   const [modalType, setModalType] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [countImages, setCountImages] = useState<number>(0);
-  const [categoryList, setCategoryList] = useState<string[]|null>(null);
+  const [categoryList, setCategoryList] = useState<string[] | null>(null);
   const { open, close, isOpen } = useModal();
   const {
     PRODUCT_IMAGE_LIMIT_ERROR,
@@ -79,9 +80,11 @@ const Products = (productProps: ProductsProps) => {
 
   useEffect(() => {
     if (!loadingCategories) {
-      setCategoryList(categories.map((category: {_id: '', name: ''}) => category.name));
+      setCategoryList(
+        categories.map((category: { _id: ''; name: '' }) => category.name)
+      );
     }
-  }, [loadingCategories])
+  }, [loadingCategories]);
 
   useEffect(() => {
     // if product is updated
@@ -191,7 +194,7 @@ const Products = (productProps: ProductsProps) => {
               <div className={styles['images-section']}>
                 {product.productImages &&
                   product.productImages.map((image: string, idx: number) => (
-                    <span>
+                    <span key={generateUuid()}>
                       <Image
                         key={image}
                         src={image}
@@ -199,12 +202,16 @@ const Products = (productProps: ProductsProps) => {
                         width={idx === 0 ? 210 : 70}
                         height={idx === 0 ? 210 : 70}
                       />
-                      <a onClick={() => mutateDeleteImg({id: product._id!, imageUrl: image})}>
+                      <a
+                        onClick={() =>
+                          mutateDeleteImg({ id: product._id!, imageUrl: image })
+                        }
+                      >
                         <Image
                           className={styles['icon-xs']}
                           src={deleteImgIcon}
                           alt={'update-icon'}
-                        />  
+                        />
                       </a>
                     </span>
                   ))}
@@ -229,31 +236,31 @@ const Products = (productProps: ProductsProps) => {
               <div>Quantity:</div>
             </div>
             <div className={styles.updates}>
-            {categoryList && (
-              <Select
-                className={'category-select'}
-                type={'category'}
-                optionList={categoryList}
-                changeFunc={handleInputChange}
-                hasLabel={false}
-                value={product.category}
-              />
-            )}
+              {categoryList && (
+                <Select
+                  className={'category-select'}
+                  type={'category'}
+                  optionList={categoryList}
+                  changeFunc={handleInputChange}
+                  hasLabel={false}
+                  value={product.category}
+                />
+              )}
               {productTitles.map((title, idx) => (
-                <div key={title}>
-                    <>
-                      <Input
-                        type={title}
-                        changeFunc={handleInputChange}
-                        hasLabel={false}
-                        value={productValues[idx]}
-                        className='input'
-                        name={title}
-                      />
-                      {error && title === 'name' && (
-                        <span className={styles.error}>{FIELD_EMPTY}</span>
-                      )}
-                    </>
+                <div key={generateUuid()}>
+                  <>
+                    <Input
+                      type={title}
+                      changeFunc={handleInputChange}
+                      hasLabel={false}
+                      value={productValues[idx]}
+                      className='input'
+                      name={title}
+                    />
+                    {error && title === 'name' && (
+                      <span className={styles.error}>{FIELD_EMPTY}</span>
+                    )}
+                  </>
                 </div>
               ))}
             </div>

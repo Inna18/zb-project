@@ -3,6 +3,7 @@ import styles from '@/app/components/atoms/atoms.module.css';
 import React, { ChangeEvent, InputHTMLAttributes } from 'react';
 
 import { toUpper } from '@/app/utils/text';
+import { generateUuid } from '@/app/utils/uuid';
 
 interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
   type: string;
@@ -13,7 +14,8 @@ interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
 }
 
 const Select = (selectProps: SelectProps) => {
-  const { className, type, optionList, changeFunc, hasLabel, value } = selectProps;
+  const { className, type, optionList, changeFunc, hasLabel, value } =
+    selectProps;
 
   return (
     <div className={styles[`${className}`]}>
@@ -27,8 +29,8 @@ const Select = (selectProps: SelectProps) => {
         <option value='' disabled={true}>
           {`Choose ${type}`}
         </option>
-        {optionList.map((option) => (
-          <option key={option} value={option}>
+        {optionList.map(option => (
+          <option key={generateUuid()} value={option}>
             {toUpper(option)}
           </option>
         ))}

@@ -12,7 +12,7 @@ const BASE_QUERY = `*[_type == 'category']{
 
 async function getCategories() {
   const categories = await client.fetch(BASE_QUERY);
-  console.log("Categories: ", categories);
+  console.log('Categories: ', categories);
   return categories;
 }
 

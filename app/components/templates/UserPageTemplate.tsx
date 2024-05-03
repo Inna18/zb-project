@@ -12,6 +12,7 @@ import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
+import { generateUuid } from '@/app/utils/uuid';
 
 const UserPageTemplate = () => {
   const session = useSession();
@@ -54,9 +55,9 @@ const UserPageTemplate = () => {
     <div className={styles.container}>
       <div className={styles.title}>My Page</div>
       <div className={styles['link-section']}>
-        {list.map((tab) => (
+        {list.map(tab => (
           <Link
-            key={tab}
+            key={generateUuid()}
             onClick={() => handleActiveTab(tab)}
             href={''}
             className={activeTab === tab ? styles.active : ''}

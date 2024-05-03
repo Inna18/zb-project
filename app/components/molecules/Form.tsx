@@ -4,6 +4,7 @@ import React from 'react';
 import Input from '@/app/components/atoms/input/Input';
 import { toUpper } from '@/app/utils/text';
 import Select from '@/app/components/atoms/select/Select';
+import { generateUuid } from '@/app/utils/uuid';
 
 interface FormProps {
   type?: string;
@@ -31,7 +32,7 @@ const Form = (formProps: FormProps) => {
   return (
     <div className={styles['input-list']}>
       {list.map((input, idx) => (
-        <div key={idx}>
+        <div key={generateUuid()}>
           <Input
             type={input == 'password' ? input : 'text'}
             id={`login-${input}`}
