@@ -11,11 +11,19 @@ import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProduc
 import { commonConstants } from '@/app/constants/common';
 import Product from '@/app/service/useProductApi';
 
-const ProductsList = () => {
+interface ProductsListProps {
+  renderSubMenu: (subMenu: string, id: string) => void;
+}
+
+const ProductsList = (productsListProps: ProductsListProps) => {
+  const { renderSubMenu } = productsListProps;
   const { isLoading, data: productList } = useProductList();
   const { LIST_EMPTY } = commonConstants();
   const { mutate: mutateDelete } = useProductDeleteById();
-  const handleUpdate = (id: string) => {};
+
+  const handleUpdate = (id: string) => {
+    renderSubMenu('details', id);
+  };
 
   const handleRemove = (id: string) => {
     mutateDelete(id);

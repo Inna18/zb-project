@@ -7,10 +7,11 @@ import Products from './Products';
 
 const ProductsAll = () => {
   const [subMenu, setSubMenu] = useState<string>('list');
+  const [productId, setProductId] = useState<string>('');
 
-  const subMenuRenderer = (subMenuType: string) => {
-    console.log(subMenuType);
+  const subMenuRenderer = (subMenuType: string, id: string) => {
     setSubMenu(subMenuType);
+    setProductId(id);
   };
 
   return (
@@ -24,10 +25,12 @@ const ProductsAll = () => {
               onClick={() => setSubMenu('details')}
             />
           </div>
-          <ProductsList />
+          <ProductsList renderSubMenu={subMenuRenderer} />
         </>
       )}
-      {subMenu === 'details' && <Products renderSubMenu={subMenuRenderer} />}
+      {subMenu === 'details' && (
+        <Products renderSubMenu={subMenuRenderer} productId={productId} />
+      )}
     </div>
   );
 };

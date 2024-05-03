@@ -1,6 +1,5 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
-import { ImageResponse } from 'next/server';
 
 export default interface Product {
   _id?: string;
@@ -8,7 +7,7 @@ export default interface Product {
   brand?: string;
   name?: string;
   price?: string;
-  quantity?: number;
+  quantity?: string;
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: any;
@@ -26,8 +25,19 @@ const BASE_QUERY = `*[_type == 'product']{
 }`;
 
 async function getProductById(id: string) {
-  const query = `*[_type == 'product' && _id == '${id}'][0]`;
+  const query = `*[_type == 'product' && _id == '${id}'][0]{
+    _id,
+    category,
+    brand,
+    name,
+    price,
+    quantity,
+    rating,
+    content,
+    "productImages": productImages[].asset->url,
+  }`;
   const productById = await client.fetch(query);
+  console.log('Product by Id: ', productById);
   return productById;
 }
 
@@ -75,18 +85,71 @@ async function createProduct(product: Product) {
       : null,
   };
   const productCreated = await client.create(sanityProduct);
-  console.log('Product created ', productCreated.name);
+  console.log('Product created ', productCreated._id);
   return productCreated;
 }
 
 async function updateProduct(id: string, updateProduct: Product) {
-  // TODO
+  console.log(id);
+  console.log(updateProduct);
+  const updatedProduct = await client
+    .patch(id)
+    .set({
+      category: updateProduct.category,
+      brand: updateProduct.brand,
+      name: updateProduct.name,
+      price: updateProduct.price,
+      quantity: updateProduct.quantity,
+      content: updateProduct.content,
+    })
+    .commit();
+  console.log(updatedProduct);
+  return updatedProduct;
+}
+
+async function updateProductImages(id: string, images: File[]) {
+  let productImages: SanityImageAssetDocument[] = [];
+  const promises = images.map(async (productImage: File) => {
+    return await client.assets.upload('image', productImage);
+  });
+  productImages = await Promise.all(promises);
+
+  const updatedImages = await client
+    .patch(id)
+    .setIfMissing({ productImages: [] })
+    .insert('after', 'productImages[-1]', [
+      ...productImages.map((productImage) => {
+        return {
+          _key: productImage?._id,
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: productImage?._id,
+          },
+        };
+      }),
+    ])
+    .commit();
+  console.log(updatedImages);
+  const imagesFromDb = await getProductImages(id);
+  console.log(imagesFromDb.productImages);
+  return imagesFromDb.productImages;
+}
+
+async function deleteProductImage(id: string, imageUrl: string) {
+  const key = `image-${imageUrl.split('/').pop()?.replace('.', '-')}`;
+  const imagesToRemove = [`productImages[_key==\"${key}\"]`]
+  const updatedImages = await client
+    .patch(id)
+    .unset(imagesToRemove)
+    .commit();
+  console.log(updatedImages);
 }
 
 async function getProductImages(id: string | undefined) {
   const query = `*[_type == 'product' && _id == '${id}'][0]{
-        "productImages": productImages.asset->url
-      }`;
+    "productImages": productImages[].asset->url,
+  }`;
   const productImages = await client.fetch(query);
   console.log('Product images ', productImages);
   return productImages;
@@ -111,10 +174,13 @@ async function deleteProductById(id: string) {
 }
 
 export {
+  getProductById,
   getProductList,
   createProduct,
   updateProduct,
+  updateProductImages,
   getProductImages,
   deleteProducts,
   deleteProductById,
+  deleteProductImage,
 };

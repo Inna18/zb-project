@@ -11,8 +11,9 @@ const BASE_QUERY = `*[_type == 'category']{
 }`;
 
 async function getCategories() {
-  console.log('Category list: ', client.fetch(BASE_QUERY));
-  return client.fetch(BASE_QUERY);
+  const categories = await client.fetch(BASE_QUERY);
+  console.log("Categories: ", categories);
+  return categories;
 }
 
 async function getCategoryById(id: string) {

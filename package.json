@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@portabletext/react": "^3.0.18",
+    "@portabletext/to-html": "^2.0.13",
     "@sanity/block-tools": "^3.39.1",
     "@sanity/image-url": "^1.0.2",
     "@sanity/vision": "^3.36.1",
