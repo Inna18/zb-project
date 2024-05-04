@@ -28,7 +28,7 @@ const Dropdown = (dropdownProps: DropdownProps) => {
       onMouseLeave={handleClose ? () => handleClose(false) : undefined}
     >
       {open &&
-        list.map(selectElem => (
+        list.map((selectElem) => (
           <li key={generateUuid()}>
             <Link
               href={handlePath(selectElem)}

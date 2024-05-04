@@ -55,7 +55,7 @@ const UserPageTemplate = () => {
     <div className={styles.container}>
       <div className={styles.title}>My Page</div>
       <div className={styles['link-section']}>
-        {list.map(tab => (
+        {list.map((tab) => (
           <Link
             key={generateUuid()}
             onClick={() => handleActiveTab(tab)}

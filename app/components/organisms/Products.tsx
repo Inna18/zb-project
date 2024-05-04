@@ -26,6 +26,7 @@ import { commonConstants } from '@/app/constants/common';
 import Select from '../atoms/select/Select';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { generateUuid } from '@/app/utils/uuid';
+import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -38,6 +39,7 @@ const Products = (productProps: ProductsProps) => {
   const { mutate: mutateUpdate } = useProductUpdate();
   const { mutate: mutateUpdateImg, data: updatedImages } =
     useProductUpdateImages();
+  const { mutate: mutateDelete } = useProductDeleteById();
   const { mutate: mutateDeleteImg } = useProductDeleteImg();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
   const { isLoading, data: existingProduct } = useProductGetById(productId!);
@@ -179,6 +181,20 @@ const Products = (productProps: ProductsProps) => {
   const routeBack = () => {
     close();
     renderSubMenu('list', '');
+  }
+
+  const cancelModal = () => {
+    close();
+    if (createdProduct) { // if create new -> cancel -> delete whole product
+      mutateDelete(createdProduct._id, {
+        onSuccess: () => {
+          renderSubMenu('list', '');
+        }
+      });
+    } else { // if update product -> cancel -> delete attached images
+      
+      renderSubMenu('list', '');
+    }
   };
 
   return (
@@ -294,7 +310,7 @@ const Products = (productProps: ProductsProps) => {
               show={isOpen}
               type={'confirm'}
               content={PRODUCT_CREATE_CANCEL}
-              onOk={routeBack}
+              onOk={cancelModal}
               onClose={close}
             />
           )}

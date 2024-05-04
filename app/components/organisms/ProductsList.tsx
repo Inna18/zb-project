@@ -34,7 +34,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
       {isLoading && <Spinner />}
       {!isLoading && (
         <div className={styles['product-list']}>
-          {productList && productList.length <= 0 && <div>{LIST_EMPTY}</div>}
+          {productList && productList.length <= 0 && <div className={styles.centered}>{LIST_EMPTY}</div>}
           {productList &&
             productList.map((product: Product) => (
               <div className={styles['product-card']} key={product._id}>
@@ -51,22 +51,22 @@ const ProductsList = (productsListProps: ProductsListProps) => {
                       height={100}
                     />
                   )}
-                <div>
-                  <div className={styles.name}>{product.name}</div>
-                  <div>{product.category}</div>
-                  <div>{product.brand}</div>
+                <div className={styles['list-product-details']}>
+                  <div>Name: {product.name}</div>
+                  <div>Category: {product.category}</div>
+                  <div>Brand: {product.brand}</div>
                 </div>
                 <div className={styles['icons-section']}>
                   <a onClick={() => handleUpdate(product._id!)}>
                     <Image
-                      className={styles['icon-m']}
+                      className={styles['icon']}
                       src={updateIcon}
                       alt={'update-icon'}
                     />
                   </a>
                   <a onClick={() => handleRemove(product._id!)}>
                     <Image
-                      className={styles['icon-m']}
+                      className={styles['icon']}
                       src={removeIcon}
                       alt={'remove-icon'}
                     />

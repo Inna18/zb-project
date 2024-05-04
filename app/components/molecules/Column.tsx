@@ -21,7 +21,7 @@ const Column = (columnProps: ColumnProps) => {
     <>
       <div className={styles.titles}>
         {list &&
-          list.map(menuElement => (
+          list.map((menuElement) => (
             <div key={generateUuid()}>
               {menuElement[0] + ' '}
               <span className={styles['required-mark']}>*</span>
@@ -30,15 +30,16 @@ const Column = (columnProps: ColumnProps) => {
       </div>
       {show === 'view' && (
         <div className={styles.values}>
-          {list && list.map(menuElement => (
-            <div key={generateUuid()}>{menuElement[1]}</div>
-          ))}
+          {list &&
+            list.map((menuElement) => (
+              <div key={generateUuid()}>{menuElement[1]}</div>
+            ))}
         </div>
       )}
       {show === 'update' && (
         <div className={styles.updates}>
           {list &&
-            list.map(menuElement => (
+            list.map((menuElement) => (
               <div key={generateUuid()} className={styles['input-gap']}>
                 <Input
                   type={menuElement[3]}

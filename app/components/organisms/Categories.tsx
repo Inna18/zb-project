@@ -14,6 +14,7 @@ import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryLi
 import { useCategoryDelete } from '@/app/queries/queryHooks/category/useCategoryDelete';
 import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
+import { commonConstants } from '@/app/constants/common';
 
 const Categories = () => {
   const queryClient = useQueryClient();
@@ -23,6 +24,7 @@ const Categories = () => {
   const { isLoading, data: categories } = useCategoryList();
   const { mutate: mutateDelete } = useCategoryDelete();
   const { open, close, isOpen } = useModal();
+  const { LIST_EMPTY } = commonConstants();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -75,6 +77,7 @@ const Categories = () => {
               <Button value='Add' onClick={handleAdd} />
             </div>
             <div className={styles['category-list']}>
+              {categories && categories.length <= 0 && <div className={styles.centered}>{LIST_EMPTY}</div>}
               {categories &&
                 categories.map((categoryEl: Category) => (
                   <div key={categoryEl._id} className={styles['category-card']}>

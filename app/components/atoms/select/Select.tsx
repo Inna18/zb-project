@@ -29,7 +29,7 @@ const Select = (selectProps: SelectProps) => {
         <option value='' disabled={true}>
           {`Choose ${type}`}
         </option>
-        {optionList.map(option => (
+        {optionList.map((option) => (
           <option key={generateUuid()} value={option}>
             {toUpper(option)}
           </option>

@@ -43,7 +43,7 @@ const Links = (linksProps: LinksProps) => {
 
   return (
     <div className={styles['links-section']}>
-      {list.map(link => (
+      {list.map((link) => (
         <span key={generateUuid()} className={styles.link}>
           <Link
             key={link}
