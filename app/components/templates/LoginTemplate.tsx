@@ -15,7 +15,7 @@ import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const LIST = ['email', 'password'];
+const LIST = [{id: 1, value: 'email'}, {id: 2, value: 'password'}];
 
 const LoginTemplate = () => {
   const router = useRouter();

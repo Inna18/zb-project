@@ -29,35 +29,35 @@ const Organization = () => {
     instagramUrl: '',
     youTubeUrl: '',
   });
-  const orgProperties: string[][] = [
-    ['Company Name: ', organization.name, myOrganization.name, 'name'],
-    ['Address: ', organization.address, myOrganization.address, 'address'],
-    [
+  const orgProperties: {id: number, value: string[]}[] = [
+    {id: 1, value: ['Company Name: ', organization.name, myOrganization.name, 'name']},
+    {id: 2, value: ['Address: ', organization.address, myOrganization.address, 'address']},
+    {id: 3, value: [
       'Business Number: ',
       organization.businessNumber,
       myOrganization.businessNumber,
       'businessNumber',
-    ],
-    ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo'],
-    [
+    ]},
+    {id: 4, value: ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo']},
+    {id: 5, value: [
       'C/S Number: ',
       organization.phoneNumber,
       myOrganization.phoneNumber,
       'phoneNumber',
-    ],
-    ['Email: ', organization.email, myOrganization.email, 'email'],
-    [
+    ]},
+    {id: 6, value: ['Email: ', organization.email, myOrganization.email, 'email']},
+    {id: 7, value: [
       'Instagram Link: ',
       organization.instagramUrl,
       myOrganization.instagramUrl,
       'instagramUrl',
-    ],
-    [
+    ]},
+    {id: 8, value: [
       'YouTube Link: ',
       organization.youTubeUrl,
       myOrganization.youTubeUrl,
       'youTubeUrl',
-    ],
+    ]},
   ];
 
   const { mutate } = useOrganizationUpdate();
@@ -83,7 +83,7 @@ const Organization = () => {
   const handleOrgSave = () => {
     let check: boolean[] = [];
     orgProperties.map((property) => {
-      check.push(property[0] !== '');
+      check.push(property.value[0] !== '');
     });
     if (!check.includes(false)) {
       mutate(myOrganization, {

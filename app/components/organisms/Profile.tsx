@@ -20,7 +20,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
-import { generateUuid } from '@/app/utils/uuid';
 
 const Profile = () => {
   const session = useSession();
@@ -37,12 +36,12 @@ const Profile = () => {
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
-    [updatedUser.email, 'email'],
-    [updatedUser.role, 'role'],
-    [updatedUser.password, 'password'],
-    [updatedUser.name, 'name'],
-    [updatedUser.address, 'address'],
-    [updatedUser.phoneNumber, 'phoneNumber'],
+    {id: 1, value: [updatedUser.email, 'email']},
+    {id: 2, value: [updatedUser.role, 'role']},
+    {id: 3, value: [updatedUser.password, 'password']},
+    {id: 4, value: [updatedUser.name, 'name']},
+    {id: 5, value: [updatedUser.address, 'address']},
+    {id: 6, value: [updatedUser.phoneNumber, 'phoneNumber']},
   ];
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -182,20 +181,20 @@ const Profile = () => {
               {user && show === 'update' && (
                 <div className={styles.updates}>
                   {userProperties.map((property) => (
-                    <div key={generateUuid()}>
+                    <div key={property.id}>
                       <Input
-                        type={handleCheckType(property[1]!)}
+                        type={handleCheckType(property.value[1]!)}
                         changeFunc={handleInputChange}
                         hasLabel={false}
-                        value={property[0]}
+                        value={property.value[0]}
                         className='input'
-                        name={property[1]}
-                        disabled={handleCheckDisabled(property[1])}
+                        name={property.value[1]}
+                        disabled={handleCheckDisabled(property.value[1])}
                       />
-                      {property[1] === 'password' && !passwordValid && (
+                      {property.value[1] === 'password' && !passwordValid && (
                         <div className={styles.error}>{passwordError}</div>
                       )}
-                      {property[0] === '' && property[1] === 'name' && (
+                      {property.value[0] === '' && property.value[1] === 'name' && (
                         <div className={styles.error}>{FIELD_EMPTY}</div>
                       )}
                     </div>

@@ -12,11 +12,10 @@ import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
-import { generateUuid } from '@/app/utils/uuid';
 
 const UserPageTemplate = () => {
   const session = useSession();
-  const [list, setList] = useState<string[]>([]);
+  const [list, setList] = useState<{id: number, value: string}[]>([]);
   const [activeTab, setActiveTab] = useState<string>('profile');
 
   const handleActiveTab = (tab: string) => {
@@ -26,8 +25,8 @@ const UserPageTemplate = () => {
   const handleCurrentUser = async () => {
     const user = session.data?.user;
     if (user && user.role === 'ADMIN')
-      setList(['profile', 'organization', 'categories', 'products']);
-    else setList(['profile', 'orders']);
+      setList([{id: 1, value: 'profile'}, {id: 2, value: 'organization'}, {id: 3, value: 'categories'}, {id: 4, value: 'products'}]);
+    else setList([{id: 1, value: 'profile'}, {id: 2, value: 'orders'}]);
   };
 
   const tabRenderer = (activeTab: string) => {
@@ -57,12 +56,12 @@ const UserPageTemplate = () => {
       <div className={styles['link-section']}>
         {list.map((tab) => (
           <Link
-            key={generateUuid()}
-            onClick={() => handleActiveTab(tab)}
+            key={tab.id}
+            onClick={() => handleActiveTab(tab.value)}
             href={''}
-            className={activeTab === tab ? styles.active : ''}
+            className={activeTab === tab.value ? styles.active : ''}
           >
-            {toUpper(tab)}
+            {toUpper(tab.value)}
           </Link>
         ))}
       </div>

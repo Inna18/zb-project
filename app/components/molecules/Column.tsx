@@ -2,10 +2,9 @@ import { commonConstants } from '@/app/constants/common';
 import Input from '../atoms/input/Input';
 import styles from './molecules.module.css';
 import React from 'react';
-import { generateUuid } from '@/app/utils/uuid';
 
 interface ColumnProps {
-  list: string[][];
+  list: {id: number, value: string[]}[];
   show: string;
   changeFunc: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -22,8 +21,8 @@ const Column = (columnProps: ColumnProps) => {
       <div className={styles.titles}>
         {list &&
           list.map((menuElement) => (
-            <div key={generateUuid()}>
-              {menuElement[0] + ' '}
+            <div key={menuElement.id}>
+              {menuElement.value[0] + ' '}
               <span className={styles['required-mark']}>*</span>
             </div>
           ))}
@@ -32,7 +31,7 @@ const Column = (columnProps: ColumnProps) => {
         <div className={styles.values}>
           {list &&
             list.map((menuElement) => (
-              <div key={generateUuid()}>{menuElement[1]}</div>
+              <div key={menuElement.id}>{menuElement.value[1]}</div>
             ))}
         </div>
       )}
@@ -40,17 +39,17 @@ const Column = (columnProps: ColumnProps) => {
         <div className={styles.updates}>
           {list &&
             list.map((menuElement) => (
-              <div key={generateUuid()} className={styles['input-gap']}>
+              <div key={menuElement.id} className={styles['input-gap']}>
                 <Input
-                  type={menuElement[3]}
+                  type={menuElement.value[3]}
                   changeFunc={changeFunc}
                   hasLabel={false}
-                  value={menuElement[2]}
+                  value={menuElement.value[2]}
                   className='input'
-                  name={menuElement[3]}
-                  disabled={checkDisabled(menuElement[3])}
+                  name={menuElement.value[3]}
+                  disabled={checkDisabled(menuElement.value[3])}
                 />
-                {menuElement[2] === '' && (
+                {menuElement.value[2] === '' && (
                   <span className={styles.error}>{FIELD_EMPTY}</span>
                 )}
               </div>

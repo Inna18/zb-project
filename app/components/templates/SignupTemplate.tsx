@@ -18,7 +18,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const LIST = ['email', 'password', 'name'];
+const LIST = [{id: 1, value: 'email'}, {id: 2, value: 'password'}, {id: 3, value: 'name'}];
 
 const SignupTemplate = () => {
   const router = useRouter();

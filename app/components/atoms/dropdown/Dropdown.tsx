@@ -2,11 +2,9 @@ import styles from '@/app/components/atoms/atoms.module.css';
 
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { generateUuid } from '@/app/utils/uuid';
 
 interface DropdownProps {
-  list: string[];
+  list: {id: number, value: string}[];
   open: boolean;
   handleClose: ((param: boolean) => void) | undefined;
   handlePath: (param: string) => URL;
@@ -14,7 +12,6 @@ interface DropdownProps {
 }
 
 const Dropdown = (dropdownProps: DropdownProps) => {
-  const router = useRouter();
   const { list, open, handleClose, handlePath, handleLogout } = dropdownProps;
 
   const handleDropLogout = (selectedElem: string) => {
@@ -29,12 +26,12 @@ const Dropdown = (dropdownProps: DropdownProps) => {
     >
       {open &&
         list.map((selectElem) => (
-          <li key={generateUuid()}>
+          <li key={selectElem.id}>
             <Link
-              href={handlePath(selectElem)}
-              onClick={handleDropLogout(selectElem)}
+              href={handlePath(selectElem.value)}
+              onClick={handleDropLogout(selectElem.value)}
             >
-              {selectElem}
+              {selectElem.value}
             </Link>
           </li>
         ))}

@@ -4,12 +4,11 @@ import React from 'react';
 import Input from '@/app/components/atoms/input/Input';
 import { toUpper } from '@/app/utils/text';
 import Select from '@/app/components/atoms/select/Select';
-import { generateUuid } from '@/app/utils/uuid';
 
 interface FormProps {
   type?: string;
   required?: boolean;
-  list: string[];
+  list: {id: number, value: string}[];
   userProps: (string | undefined)[];
   changeFunc: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -32,24 +31,24 @@ const Form = (formProps: FormProps) => {
   return (
     <div className={styles['input-list']}>
       {list.map((input, idx) => (
-        <div key={generateUuid()}>
+        <div key={input.id}>
           <Input
-            type={input == 'password' ? input : 'text'}
-            id={`login-${input}`}
-            placeholder={`Insert ${input}`}
+            type={input.value == 'password' ? input.value : 'text'}
+            id={`login-${input.value}`}
+            placeholder={`Insert ${input.value}`}
             hasLabel={true}
-            labelText={toUpper(input)}
-            name={input}
+            labelText={toUpper(input.value)}
+            name={input.value}
             value={userProps[idx]}
             className='input'
             changeFunc={changeFunc}
-            required={input == 'name' ? true : false}
+            required={input.value == 'name' ? true : false}
             maxLength={20}
           />
-          {input === 'email' && (
+          {input.value === 'email' && (
             <div className={styles.error}>{emailError}</div>
           )}
-          {input === 'password' && (
+          {input.value === 'password' && (
             <div className={styles.error}>{passwordError}</div>
           )}
         </div>
@@ -58,7 +57,7 @@ const Form = (formProps: FormProps) => {
         <Select
           className={'role-select'}
           type={'role'}
-          optionList={['ADMIN', 'USER']}
+          optionList={[{id: 1, value: 'ADMIN'}, {id: 2, value: 'USER'}]}
           changeFunc={changeFunc}
           hasLabel={true}
         />

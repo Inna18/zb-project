@@ -25,7 +25,6 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
 import Select from '../atoms/select/Select';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
-import { generateUuid } from '@/app/utils/uuid';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 
 interface ProductsProps {
@@ -59,12 +58,12 @@ const Products = (productProps: ProductsProps) => {
     product.price,
     product.quantity,
   ];
-  const productTitles = ['brand', 'name', 'price', 'quantity'];
+  const productTitles = [{id: 1, value: 'brand'}, {id: 2, value: 'name'}, {id: 3, value: 'price'}, {id: 4, value: 'quantity'}];
   const [imgArr, setImgArr] = useState<File[]>([]);
   const [modalType, setModalType] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [countImages, setCountImages] = useState<number>(0);
-  const [categoryList, setCategoryList] = useState<string[] | null>(null);
+  const [categoryList, setCategoryList] = useState<{id: number, value: string}[] | null>(null);
   const { open, close, isOpen } = useModal();
   const {
     PRODUCT_IMAGE_LIMIT_ERROR,
@@ -83,7 +82,7 @@ const Products = (productProps: ProductsProps) => {
   useEffect(() => {
     if (!loadingCategories) {
       setCategoryList(
-        categories.map((category: { _id: ''; name: '' }) => category.name)
+        categories.map((category: { _id: ''; name: '' }) => { return { id: category._id, value: category.name }})
       );
     }
   }, [loadingCategories]);
@@ -210,7 +209,7 @@ const Products = (productProps: ProductsProps) => {
               <div className={styles['images-section']}>
                 {product.productImages &&
                   product.productImages.map((image: string, idx: number) => (
-                    <span key={generateUuid()}>
+                    <span key={image}>
                       <Image
                         key={image}
                         src={image}
@@ -263,17 +262,17 @@ const Products = (productProps: ProductsProps) => {
                 />
               )}
               {productTitles.map((title, idx) => (
-                <div key={generateUuid()}>
+                <div key={title.id}>
                   <>
                     <Input
-                      type={title}
+                      type={title.value}
                       changeFunc={handleInputChange}
                       hasLabel={false}
                       value={productValues[idx]}
                       className='input'
-                      name={title}
+                      name={title.value}
                     />
-                    {error && title === 'name' && (
+                    {error && title.value === 'name' && (
                       <span className={styles.error}>{FIELD_EMPTY}</span>
                     )}
                   </>
