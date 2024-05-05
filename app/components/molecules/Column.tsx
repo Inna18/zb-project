@@ -4,7 +4,7 @@ import styles from './molecules.module.css';
 import React from 'react';
 
 interface ColumnProps {
-  list: {id: number, value: string[]}[];
+  list: { id: number; value: string[] }[];
   show: string;
   changeFunc: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -12,9 +12,10 @@ interface ColumnProps {
   checkDisabled: (param: string) => boolean;
 }
 
+const { FIELD_EMPTY } = commonConstants;
+
 const Column = (columnProps: ColumnProps) => {
   const { list, show, changeFunc, checkDisabled } = columnProps;
-  const { FIELD_EMPTY } = commonConstants();
 
   return (
     <>

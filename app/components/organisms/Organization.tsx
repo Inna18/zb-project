@@ -12,7 +12,8 @@ import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/use
 import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { commonConstants } from '@/app/constants/common';
+
+const { ORGANIZATION_UPDATE_SUCCESS } = modalMsgConstants;
 
 const Organization = () => {
   const queryClient = useQueryClient();
@@ -29,42 +30,66 @@ const Organization = () => {
     instagramUrl: '',
     youTubeUrl: '',
   });
-  const orgProperties: {id: number, value: string[]}[] = [
-    {id: 1, value: ['Company Name: ', organization.name, myOrganization.name, 'name']},
-    {id: 2, value: ['Address: ', organization.address, myOrganization.address, 'address']},
-    {id: 3, value: [
-      'Business Number: ',
-      organization.businessNumber,
-      myOrganization.businessNumber,
-      'businessNumber',
-    ]},
-    {id: 4, value: ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo']},
-    {id: 5, value: [
-      'C/S Number: ',
-      organization.phoneNumber,
-      myOrganization.phoneNumber,
-      'phoneNumber',
-    ]},
-    {id: 6, value: ['Email: ', organization.email, myOrganization.email, 'email']},
-    {id: 7, value: [
-      'Instagram Link: ',
-      organization.instagramUrl,
-      myOrganization.instagramUrl,
-      'instagramUrl',
-    ]},
-    {id: 8, value: [
-      'YouTube Link: ',
-      organization.youTubeUrl,
-      myOrganization.youTubeUrl,
-      'youTubeUrl',
-    ]},
+  const orgProperties: { id: number; value: string[] }[] = [
+    {
+      id: 1,
+      value: ['Company Name: ', organization.name, myOrganization.name, 'name'],
+    },
+    {
+      id: 2,
+      value: [
+        'Address: ',
+        organization.address,
+        myOrganization.address,
+        'address',
+      ],
+    },
+    {
+      id: 3,
+      value: [
+        'Business Number: ',
+        organization.businessNumber,
+        myOrganization.businessNumber,
+        'businessNumber',
+      ],
+    },
+    { id: 4, value: ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo'] },
+    {
+      id: 5,
+      value: [
+        'C/S Number: ',
+        organization.phoneNumber,
+        myOrganization.phoneNumber,
+        'phoneNumber',
+      ],
+    },
+    {
+      id: 6,
+      value: ['Email: ', organization.email, myOrganization.email, 'email'],
+    },
+    {
+      id: 7,
+      value: [
+        'Instagram Link: ',
+        organization.instagramUrl,
+        myOrganization.instagramUrl,
+        'instagramUrl',
+      ],
+    },
+    {
+      id: 8,
+      value: [
+        'YouTube Link: ',
+        organization.youTubeUrl,
+        myOrganization.youTubeUrl,
+        'youTubeUrl',
+      ],
+    },
   ];
 
   const { mutate } = useOrganizationUpdate();
 
   const { open, close, isOpen } = useModal();
-  const { ORGANIZATION_UPDATE_SUCCESS } = modalMsgConstants();
-  const { FIELD_EMPTY } = commonConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

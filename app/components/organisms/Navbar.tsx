@@ -9,13 +9,21 @@ import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-const MENU_LIST = [{id: 1, value: 'home'}, {id: 2, value: 'shop'}, {id: 3, value: 'blog'}, {id: 4, value: 'about'}, {id: 5, value: 'contact'}];
+const MENU_LIST = [
+  { id: 1, value: 'home' },
+  { id: 2, value: 'shop' },
+  { id: 3, value: 'blog' },
+  { id: 4, value: 'about' },
+  { id: 5, value: 'contact' },
+];
 
 const Navbar = () => {
   const session = useSession();
   const router = useRouter();
 
-  const [profileMenu, setProfileMenu] = useState<{id: number, value: string}[]>([]);
+  const [profileMenu, setProfileMenu] = useState<
+    { id: number; value: string }[]
+  >([]);
   const [openUser, setOpenUser] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [username, setUsername] = useState<string | null | undefined>('');
@@ -31,10 +39,18 @@ const Navbar = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      setProfileMenu([{id: 1, value: 'logout'}, {id: 2, value: 'myPage'}, {id: 3, value: 'cart'}]);
+      setProfileMenu([
+        { id: 1, value: 'logout' },
+        { id: 2, value: 'myPage' },
+        { id: 3, value: 'cart' },
+      ]);
     } else {
       setUsername('Guest');
-      setProfileMenu([{id: 1, value: 'login'}, {id: 2, value: 'signup'}, {id: 3, value: 'cart'}]);
+      setProfileMenu([
+        { id: 1, value: 'login' },
+        { id: 2, value: 'signup' },
+        { id: 3, value: 'cart' },
+      ]);
     }
   }, [session]);
 

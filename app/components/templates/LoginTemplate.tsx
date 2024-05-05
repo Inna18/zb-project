@@ -15,7 +15,11 @@ import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const LIST = [{id: 1, value: 'email'}, {id: 2, value: 'password'}];
+const LIST = [
+  { id: 1, value: 'email' },
+  { id: 2, value: 'password' },
+];
+const { USER_LOGIN_ERROR } = modalMsgConstants;
 
 const LoginTemplate = () => {
   const router = useRouter();
@@ -23,7 +27,6 @@ const LoginTemplate = () => {
   const userProperties = [loginUser.email, loginUser.password];
   const { validateForm, emailError, passwordError } = useFormValidator();
   const { open, close, isOpen } = useModal();
-  const { USER_LOGIN_ERROR } = modalMsgConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

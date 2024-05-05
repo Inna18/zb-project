@@ -9,10 +9,14 @@ import { usePathname } from 'next/navigation';
 import { toUpper } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 
-const SHOP = [{id: 1, value: 'all'}, {id: 2, value: 'category A'}, {id: 3, value: 'category B'}];
+const SHOP = [
+  { id: 1, value: 'all' },
+  { id: 2, value: 'category A' },
+  { id: 3, value: 'category B' },
+];
 
 interface LinksProps {
-  list: {id: number, value: string}[];
+  list: { id: number; value: string }[];
   isMenu: boolean;
   openMenu?: boolean;
   handleOpenMenu?: (param: boolean) => void;
@@ -46,7 +50,9 @@ const Links = (linksProps: LinksProps) => {
         <span key={link.id} className={styles.link}>
           <Link
             key={link.value}
-            className={isMenu && pathname === `/${link.value}` ? styles.active : ''}
+            className={
+              isMenu && pathname === `/${link.value}` ? styles.active : ''
+            }
             href={`/${link.value}`}
             onMouseEnter={() => handleOpen(link.value)}
           >

@@ -10,6 +10,7 @@ import Product from '@/app/service/useProductApi';
 import Modal from '../atoms/modal/Modal';
 import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
+import Select from '../atoms/select/Select';
 import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
 
 import { toHTML } from '@portabletext/to-html';
@@ -23,7 +24,6 @@ import { htmlToBlocks } from '@sanity/block-tools';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
-import Select from '../atoms/select/Select';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 
@@ -31,6 +31,12 @@ interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   productId: string | undefined;
 }
+const {
+  PRODUCT_IMAGE_LIMIT_ERROR,
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_CREATE_CANCEL,
+} = modalMsgConstants;
+const { FIELD_EMPTY } = commonConstants;
 
 const Products = (productProps: ProductsProps) => {
   const { renderSubMenu, productId } = productProps;
@@ -58,19 +64,20 @@ const Products = (productProps: ProductsProps) => {
     product.price,
     product.quantity,
   ];
-  const productTitles = [{id: 1, value: 'brand'}, {id: 2, value: 'name'}, {id: 3, value: 'price'}, {id: 4, value: 'quantity'}];
+  const productTitles = [
+    { id: 1, value: 'brand' },
+    { id: 2, value: 'name' },
+    { id: 3, value: 'price' },
+    { id: 4, value: 'quantity' },
+  ];
   const [imgArr, setImgArr] = useState<File[]>([]);
   const [modalType, setModalType] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [countImages, setCountImages] = useState<number>(0);
-  const [categoryList, setCategoryList] = useState<{id: number, value: string}[] | null>(null);
+  const [categoryList, setCategoryList] = useState<
+    { id: number; value: string }[] | null
+  >(null);
   const { open, close, isOpen } = useModal();
-  const {
-    PRODUCT_IMAGE_LIMIT_ERROR,
-    PRODUCT_CREATE_SUCCESS,
-    PRODUCT_CREATE_CANCEL,
-  } = modalMsgConstants();
-  const { FIELD_EMPTY } = commonConstants();
 
   useEffect(() => {
     // if product is created for the 1st time
@@ -82,7 +89,9 @@ const Products = (productProps: ProductsProps) => {
   useEffect(() => {
     if (!loadingCategories) {
       setCategoryList(
-        categories.map((category: { _id: ''; name: '' }) => { return { id: category._id, value: category.name }})
+        categories.map((category: { _id: ''; name: '' }) => {
+          return { id: category._id, value: category.name };
+        })
       );
     }
   }, [loadingCategories]);
@@ -180,18 +189,20 @@ const Products = (productProps: ProductsProps) => {
   const routeBack = () => {
     close();
     renderSubMenu('list', '');
-  }
+  };
 
   const cancelModal = () => {
     close();
-    if (createdProduct) { // if create new -> cancel -> delete whole product
+    if (createdProduct) {
+      // if create new -> cancel -> delete whole product
       mutateDelete(createdProduct._id, {
         onSuccess: () => {
           renderSubMenu('list', '');
-        }
+        },
       });
-    } else { // if update product -> cancel -> delete attached images
-      
+    } else {
+      // if update product -> cancel -> delete attached images
+
       renderSubMenu('list', '');
     }
   };

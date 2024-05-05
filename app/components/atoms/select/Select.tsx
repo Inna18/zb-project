@@ -6,7 +6,7 @@ import { toUpper } from '@/app/utils/text';
 
 interface SelectProps extends InputHTMLAttributes<HTMLSelectElement> {
   type: string;
-  optionList: {id: number, value: string}[];
+  optionList: { id: number; value: string }[];
   changeFunc: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   hasLabel: boolean;
   value?: string;
@@ -20,7 +20,7 @@ const Select = (selectProps: SelectProps) => {
     <div className={styles[`${className}`]}>
       {hasLabel && <label htmlFor={type}>{toUpper(type)}</label>}
       <select
-        defaultValue={value ? value : ''}
+        defaultValue={value ?? value}
         name={type}
         onChange={changeFunc}
         required={true}

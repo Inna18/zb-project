@@ -8,7 +8,7 @@ import Select from '@/app/components/atoms/select/Select';
 interface FormProps {
   type?: string;
   required?: boolean;
-  list: {id: number, value: string}[];
+  list: { id: number; value: string }[];
   userProps: (string | undefined)[];
   changeFunc: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -57,7 +57,10 @@ const Form = (formProps: FormProps) => {
         <Select
           className={'role-select'}
           type={'role'}
-          optionList={[{id: 1, value: 'ADMIN'}, {id: 2, value: 'USER'}]}
+          optionList={[
+            { id: 1, value: 'ADMIN' },
+            { id: 2, value: 'USER' },
+          ]}
           changeFunc={changeFunc}
           hasLabel={true}
         />

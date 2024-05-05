@@ -15,10 +15,11 @@ interface ProductsListProps {
   renderSubMenu: (subMenu: string, id: string) => void;
 }
 
+const { LIST_EMPTY } = commonConstants;
+
 const ProductsList = (productsListProps: ProductsListProps) => {
   const { renderSubMenu } = productsListProps;
   const { isLoading, data: productList } = useProductList();
-  const { LIST_EMPTY } = commonConstants();
   const { mutate: mutateDelete } = useProductDeleteById();
 
   const handleUpdate = (id: string) => {
@@ -34,15 +35,16 @@ const ProductsList = (productsListProps: ProductsListProps) => {
       {isLoading && <Spinner />}
       {!isLoading && (
         <div className={styles['product-list']}>
-          {productList && productList.length <= 0 && <div className={styles.centered}>{LIST_EMPTY}</div>}
+          {productList && productList.length <= 0 && (
+            <div className={styles.centered}>{LIST_EMPTY}</div>
+          )}
           {productList &&
             productList.map((product: Product) => (
               <div className={styles['product-card']} key={product._id}>
-                {product && product.productImages.length === 0 && (
+                {product.productImages.length === 0 && (
                   <div className={styles.centered}>No Image</div>
                 )}
-                {product &&
-                  product.productImages.length > 0 &&
+                {product.productImages.length > 0 &&
                   product.productImages[0] && (
                     <Image
                       src={product.productImages[0]}

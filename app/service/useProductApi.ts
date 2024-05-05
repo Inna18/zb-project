@@ -10,7 +10,7 @@ export default interface Product {
   quantity?: string;
   rating?: number;
   content?: any; // what is rich text type?
-  productImages?: any;
+  productImages?: string[];
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -56,7 +56,7 @@ async function getProductList() {
 
 async function createProduct(product: Product) {
   let productImages: SanityImageAssetDocument[] = [];
-  const promises = product.productImages.map(async (productImage: File) => {
+  const promises = product.productImages!.map(async (productImage: string) => {
     return await client.assets.upload('image', productImage);
   });
   productImages = await Promise.all(promises);

@@ -1,5 +1,4 @@
 import { client } from '@/sanity/lib/client';
-import { modalMsgConstants } from '../constants/modalMsg';
 
 export default interface User {
   _id?: string;

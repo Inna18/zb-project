@@ -15,7 +15,7 @@ import { useSession } from 'next-auth/react';
 
 const UserPageTemplate = () => {
   const session = useSession();
-  const [list, setList] = useState<{id: number, value: string}[]>([]);
+  const [list, setList] = useState<{ id: number; value: string }[]>([]);
   const [activeTab, setActiveTab] = useState<string>('profile');
 
   const handleActiveTab = (tab: string) => {
@@ -25,8 +25,17 @@ const UserPageTemplate = () => {
   const handleCurrentUser = async () => {
     const user = session.data?.user;
     if (user && user.role === 'ADMIN')
-      setList([{id: 1, value: 'profile'}, {id: 2, value: 'organization'}, {id: 3, value: 'categories'}, {id: 4, value: 'products'}]);
-    else setList([{id: 1, value: 'profile'}, {id: 2, value: 'orders'}]);
+      setList([
+        { id: 1, value: 'profile' },
+        { id: 2, value: 'organization' },
+        { id: 3, value: 'categories' },
+        { id: 4, value: 'products' },
+      ]);
+    else
+      setList([
+        { id: 1, value: 'profile' },
+        { id: 2, value: 'orders' },
+      ]);
   };
 
   const tabRenderer = (activeTab: string) => {

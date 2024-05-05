@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 interface DropdownProps {
-  list: {id: number, value: string}[];
+  list: { id: number; value: string }[];
   open: boolean;
   handleClose: ((param: boolean) => void) | undefined;
   handlePath: (param: string) => URL;
