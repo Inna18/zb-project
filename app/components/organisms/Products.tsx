@@ -19,6 +19,7 @@ import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpd
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
 import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
+import { useProductDeleteImgs } from '@/app/queries/queryHooks/product/useProductDeleteImgs';
 import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModal } from '@/app/hooks/useModal';
@@ -46,6 +47,7 @@ const Products = (productProps: ProductsProps) => {
     useProductUpdateImages();
   const { mutate: mutateDelete } = useProductDeleteById();
   const { mutate: mutateDeleteImg } = useProductDeleteImg();
+  const { mutate: mutateDeleteImgs } = useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
   const { isLoading, data: existingProduct } = useProductGetById(productId!);
   const queryClient = useQueryClient();
@@ -71,6 +73,7 @@ const Products = (productProps: ProductsProps) => {
     { id: 4, value: 'quantity' },
   ];
   const [imgArr, setImgArr] = useState<File[]>([]);
+  const [imgCancelCount, setImgCancelCount] = useState<number>(0);
   const [modalType, setModalType] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
   const [countImages, setCountImages] = useState<number>(0);
@@ -123,6 +126,7 @@ const Products = (productProps: ProductsProps) => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCountImages(countImages + 1);
+    setImgCancelCount(imgCancelCount + 1);
     if (countImages >= 4) {
       setModalType('error');
       open();
@@ -202,8 +206,18 @@ const Products = (productProps: ProductsProps) => {
       });
     } else {
       // if update product -> cancel -> delete attached images
-
-      renderSubMenu('list', '');
+      if (imgCancelCount > 0) {
+        mutateDeleteImgs(
+          { id: existingProduct._id, numToDelete: imgCancelCount },
+          {
+            onSuccess: () => {
+              renderSubMenu('list', '');
+            },
+          }
+        );
+      } else {
+        renderSubMenu('list', '');
+      }
     }
   };
 

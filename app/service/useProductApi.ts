@@ -90,8 +90,6 @@ async function createProduct(product: Product) {
 }
 
 async function updateProduct(id: string, updateProduct: Product) {
-  console.log(id);
-  console.log(updateProduct);
   const updatedProduct = await client
     .patch(id)
     .set({
@@ -143,6 +141,17 @@ async function deleteProductImage(id: string, imageUrl: string) {
   console.log(updatedImages);
 }
 
+async function deleteProductImages(id: string, numToDelete: number) {
+  const imagesUrl = await getProductImages(id);
+  let imagesToRemove = [];
+  for (let i = 1; i <= numToDelete; i++) {
+    const key = `image-${imagesUrl.productImages[imagesUrl.productImages.length - i].split('/').pop()?.replace('.', '-')}`;
+    imagesToRemove.push(`productImages[_key==\"${key}\"]`);
+  }
+  const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
+  console.log(updatedImages);
+}
+
 async function getProductImages(id: string | undefined) {
   const query = `*[_type == 'product' && _id == '${id}'][0]{
     "productImages": productImages[].asset->url,
@@ -180,4 +189,5 @@ export {
   deleteProducts,
   deleteProductById,
   deleteProductImage,
+  deleteProductImages,
 };

@@ -10,6 +10,8 @@ import { useProductList } from '@/app/queries/queryHooks/product/useProductList'
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { commonConstants } from '@/app/constants/common';
 import Product from '@/app/service/useProductApi';
+import Pagination from '../atoms/pagination/Pagination';
+import { useSearchParams } from 'next/navigation';
 
 interface ProductsListProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -18,8 +20,18 @@ interface ProductsListProps {
 const { LIST_EMPTY } = commonConstants;
 
 const ProductsList = (productsListProps: ProductsListProps) => {
+  const searchParams = useSearchParams();
   const { renderSubMenu } = productsListProps;
   const { isLoading, data: productList } = useProductList();
+
+  const page = searchParams?.get('page') ?? '1';
+  const perPage = searchParams?.get('per_page') ?? '5';
+  const totalPage =
+    productList && Math.ceil(productList.length / Number(perPage));
+  const start = (Number(page) - 1) * Number(perPage);
+  const end = start + Number(perPage);
+  const list = productList && productList.slice(start, end);
+
   const { mutate: mutateDelete } = useProductDeleteById();
 
   const handleUpdate = (id: string) => {
@@ -38,8 +50,8 @@ const ProductsList = (productsListProps: ProductsListProps) => {
           {productList && productList.length <= 0 && (
             <div className={styles.centered}>{LIST_EMPTY}</div>
           )}
-          {productList &&
-            productList.map((product: Product) => (
+          {list &&
+            list.map((product: Product) => (
               <div className={styles['product-card']} key={product._id}>
                 {product.productImages.length === 0 && (
                   <div className={styles.centered}>No Image</div>
@@ -77,6 +89,15 @@ const ProductsList = (productsListProps: ProductsListProps) => {
               </div>
             ))}
         </div>
+      )}
+      {productList && (
+        <Pagination
+          totalPage={totalPage}
+          page={Number(page)}
+          perPage={Number(perPage)}
+          hasPrev={start > 0}
+          hasNext={end < productList.length}
+        />
       )}
     </>
   );
