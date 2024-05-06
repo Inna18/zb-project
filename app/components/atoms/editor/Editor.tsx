@@ -1,6 +1,6 @@
 import styles from '@/app/components/atoms/atoms.module.css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import { EditorContent, useEditor } from '@tiptap/react';
@@ -33,12 +33,6 @@ const MenuBar = ({ editor }) => {
         h3
       </button>
       <button
-        onClick={() => editor.chain().focus().setParagraph().run()}
-        className={editor.isActive('paragraph') ? 'is-active' : ''}
-      >
-        paragraph
-      </button>
-      <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         className={editor.isActive('bold') ? 'is-active' : ''}
       >
@@ -57,12 +51,6 @@ const MenuBar = ({ editor }) => {
         strike
       </button>
       <button
-        onClick={() => editor.chain().focus().toggleHighlight().run()}
-        className={editor.isActive('highlight') ? 'is-active' : ''}
-      >
-        highlight
-      </button>
-      <button
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={editor.isActive('bulletList') ? 'is-active' : ''}
       >
@@ -74,37 +62,34 @@ const MenuBar = ({ editor }) => {
       >
         ordered list
       </button>
-      <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-        horizontal rule
-      </button>
     </div>
   );
 };
 
 interface EditorProps {
+  content: string;
   onChange: (newContent: string) => void;
 }
 
 const Editor = (editorProps: EditorProps) => {
-  const { onChange } = editorProps;
+  const { content, onChange } = editorProps;
   const editor = useEditor({
     extensions: [
       StarterKit,
-
       TextAlign.configure({
         types: ['heading, paragraph'],
       }),
       Highlight,
     ],
-    // editorProps: {
-    //   attributes: {
-    //     class: 'editor'
-    //   }
-    // },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    content: '',
   });
+
+  useEffect(() => {
+    editor?.commands.setContent(content);
+  }, [content]);
 
   return (
     <div>

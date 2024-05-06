@@ -79,13 +79,15 @@ const Categories = () => {
                 categories.map((categoryEl: Category) => (
                   <div key={categoryEl._id} className={styles['category-card']}>
                     {categoryEl.name}
-                    <a onClick={() => handleRemove(categoryEl._id)}>
-                      <Image
-                        className={styles.icon}
-                        src={removeIcon}
-                        alt={'youtube-icon'}
-                      />
-                    </a>
+                    <div className={styles['icons-section']}>
+                      <a onClick={() => handleRemove(categoryEl._id)}>
+                        <Image
+                          className={styles.icon}
+                          src={removeIcon}
+                          alt={'remove-icon'}
+                        />
+                      </a>
+                    </div>
                   </div>
                 ))}
             </div>

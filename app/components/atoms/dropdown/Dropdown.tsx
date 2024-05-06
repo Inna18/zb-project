@@ -3,6 +3,7 @@ import styles from '@/app/components/atoms/atoms.module.css';
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { generateUuid } from '@/app/utils/uuid';
 
 interface DropdownProps {
   list: string[];
@@ -27,8 +28,8 @@ const Dropdown = (dropdownProps: DropdownProps) => {
       onMouseLeave={handleClose ? () => handleClose(false) : undefined}
     >
       {open &&
-        list.map((selectElem, idx) => (
-          <li key={idx}>
+        list.map(selectElem => (
+          <li key={generateUuid()}>
             <Link
               href={handlePath(selectElem)}
               onClick={handleDropLogout(selectElem)}

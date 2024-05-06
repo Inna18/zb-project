@@ -20,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
+import { generateUuid } from '@/app/utils/uuid';
 
 const Profile = () => {
   const session = useSession();
@@ -181,7 +182,7 @@ const Profile = () => {
               {user && show === 'update' && (
                 <div className={styles.updates}>
                   {userProperties.map((property) => (
-                    <div key={property[1]}>
+                    <div key={generateUuid()}>
                       <Input
                         type={handleCheckType(property[1]!)}
                         changeFunc={handleInputChange}

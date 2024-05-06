@@ -8,6 +8,7 @@ import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePathname } from 'next/navigation';
 import { toUpper } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
+import { generateUuid } from '@/app/utils/uuid';
 
 const SHOP = ['all', 'category A', 'category B'];
 
@@ -42,8 +43,8 @@ const Links = (linksProps: LinksProps) => {
 
   return (
     <div className={styles['links-section']}>
-      {list.map((link) => (
-        <span key={link} className={styles.link}>
+      {list.map(link => (
+        <span key={generateUuid()} className={styles.link}>
           <Link
             key={link}
             className={isMenu && pathname === `/${link}` ? styles.active : ''}

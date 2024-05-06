@@ -2,6 +2,7 @@ import { commonConstants } from '@/app/constants/common';
 import Input from '../atoms/input/Input';
 import styles from './molecules.module.css';
 import React from 'react';
+import { generateUuid } from '@/app/utils/uuid';
 
 interface ColumnProps {
   list: string[][];
@@ -20,8 +21,8 @@ const Column = (columnProps: ColumnProps) => {
     <>
       <div className={styles.titles}>
         {list &&
-          list.map((menuElement) => (
-            <div>
+          list.map(menuElement => (
+            <div key={generateUuid()}>
               {menuElement[0] + ' '}
               <span className={styles['required-mark']}>*</span>
             </div>
@@ -29,14 +30,16 @@ const Column = (columnProps: ColumnProps) => {
       </div>
       {show === 'view' && (
         <div className={styles.values}>
-          {list && list.map((menuElement) => <div>{menuElement[1]}</div>)}
+          {list && list.map(menuElement => (
+            <div key={generateUuid()}>{menuElement[1]}</div>
+          ))}
         </div>
       )}
       {show === 'update' && (
         <div className={styles.updates}>
           {list &&
-            list.map((menuElement) => (
-              <div key={menuElement[3]} className={styles['input-gap']}>
+            list.map(menuElement => (
+              <div key={generateUuid()} className={styles['input-gap']}>
                 <Input
                   type={menuElement[3]}
                   changeFunc={changeFunc}
