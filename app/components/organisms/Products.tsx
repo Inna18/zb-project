@@ -74,7 +74,12 @@ const Products = (productProps: ProductsProps) => {
   ];
   const [imgArr, setImgArr] = useState<File[]>([]);
   const [imgCancelCount, setImgCancelCount] = useState<number>(0);
-  const [modalType, setModalType] = useState<string>('');
+  const [modalDetails, setModalDetails] = useState<{
+    type: string;
+    content: string;
+    onOk?: () => void;
+    onClose?: () => void;
+  }>({ type: '', content: '' });
   const [error, setError] = useState<boolean>(false);
   const [countImages, setCountImages] = useState<number>(0);
   const [categoryList, setCategoryList] = useState<
@@ -128,7 +133,11 @@ const Products = (productProps: ProductsProps) => {
     setCountImages(countImages + 1);
     setImgCancelCount(imgCancelCount + 1);
     if (countImages >= 4) {
-      setModalType('error');
+      setModalDetails({
+        type: 'alert',
+        content: PRODUCT_IMAGE_LIMIT_ERROR,
+        onClose: close,
+      });
       open();
     } else {
       let file = e.currentTarget.files;
@@ -166,7 +175,11 @@ const Products = (productProps: ProductsProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
-            setModalType('success');
+            setModalDetails({
+              type: 'alert',
+              content: PRODUCT_CREATE_SUCCESS,
+              onClose: routeBack,
+            });
             open();
           },
         }
@@ -177,7 +190,11 @@ const Products = (productProps: ProductsProps) => {
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
-            setModalType('success');
+            setModalDetails({
+              type: 'alert',
+              content: PRODUCT_CREATE_SUCCESS,
+              onClose: routeBack,
+            });
             open();
           },
         }
@@ -186,7 +203,12 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleCancel = () => {
-    setModalType('cancel');
+    setModalDetails({
+      type: 'confirm',
+      content: PRODUCT_CREATE_CANCEL,
+      onOk: cancelModal,
+      onClose: close,
+    });
     open();
   };
 
@@ -319,34 +341,14 @@ const Products = (productProps: ProductsProps) => {
               onClick={handleCancel}
             />
           </div>
-          {modalType === 'success' && (
-            <Modal
-              selector={'portal'}
-              show={isOpen}
-              type={'alert'}
-              content={PRODUCT_CREATE_SUCCESS}
-              onClose={routeBack}
-            />
-          )}
-          {modalType === 'cancel' && (
-            <Modal
-              selector={'portal'}
-              show={isOpen}
-              type={'confirm'}
-              content={PRODUCT_CREATE_CANCEL}
-              onOk={cancelModal}
-              onClose={close}
-            />
-          )}
-          {modalType === 'error' && (
-            <Modal
-              selector={'portal'}
-              show={isOpen}
-              type={'alert'}
-              content={PRODUCT_IMAGE_LIMIT_ERROR}
-              onClose={close}
-            />
-          )}
+          <Modal
+            selector={'portal'}
+            show={isOpen}
+            type={modalDetails.type}
+            content={modalDetails.content}
+            onOk={modalDetails.onOk}
+            onClose={modalDetails.onClose}
+          />
         </>
       )}
     </>
