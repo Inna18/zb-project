@@ -14,7 +14,6 @@ import Select from '../atoms/select/Select';
 import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
 
 import { toHTML } from '@portabletext/to-html';
-import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
@@ -31,6 +30,7 @@ import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProduc
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   productId: string | undefined;
+  newProductId: string | undefined;
 }
 const {
   PRODUCT_IMAGE_LIMIT_ERROR,
@@ -40,16 +40,22 @@ const {
 const { FIELD_EMPTY } = commonConstants;
 
 const Products = (productProps: ProductsProps) => {
-  const { renderSubMenu, productId } = productProps;
-  const { mutate, data: createdProduct } = useProductCreate();
+  const { renderSubMenu, productId, newProductId } = productProps;
   const { mutate: mutateUpdate } = useProductUpdate();
-  const { mutate: mutateUpdateImg, data: updatedImages } =
-    useProductUpdateImages();
-  const { mutate: mutateDelete } = useProductDeleteById();
-  const { mutate: mutateDeleteImg } = useProductDeleteImg();
-  const { mutate: mutateDeleteImgs } = useProductDeleteImgs();
+  const {
+    mutate: mutateUpdateImg,
+    data: updatedImages,
+    isPending: pendingUpdateImg,
+  } = useProductUpdateImages();
+  const { mutate: mutateDelete, isPending: pendingDelete } =
+    useProductDeleteById();
+  const { mutate: mutateDeleteImg, isPending: pendingDeleteImg } =
+    useProductDeleteImg();
+  const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
+    useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
   const { isLoading, data: existingProduct } = useProductGetById(productId!);
+
   const queryClient = useQueryClient();
   const [product, setProduct] = useState<Product>({
     category: '',
@@ -88,13 +94,6 @@ const Products = (productProps: ProductsProps) => {
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
-    // if product is created for the 1st time
-    if (!isLoading) {
-      if (!existingProduct && !createdProduct) mutate(product);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
     if (!loadingCategories) {
       setCategoryList(
         categories.map((category: { _id: ''; name: '' }) => {
@@ -112,24 +111,7 @@ const Products = (productProps: ProductsProps) => {
     }
   }, [existingProduct]);
 
-  useEffect(() => {
-    // when imgArr changing when create/update product
-    let id;
-    if (productId) id = productId;
-    else id = createdProduct?._id!;
-
-    mutateUpdateImg(
-      { id: id, images: [imgArr[imgArr.length - 1]] },
-      {
-        onSuccess: () => {
-          setProduct({ ...product, productImages: updatedImages });
-          setImgArr([]);
-        },
-      }
-    );
-  }, [imgArr]);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setCountImages(countImages + 1);
     setImgCancelCount(imgCancelCount + 1);
     if (countImages >= 4) {
@@ -142,7 +124,35 @@ const Products = (productProps: ProductsProps) => {
     } else {
       let file = e.currentTarget.files;
       setImgArr((prevState) => [...prevState, file?.[0]!]);
+
+      let id;
+      if (productId) id = productId;
+      else id = newProductId!;
+
+      mutateUpdateImg(
+        { id: id, images: [file?.[0]!] },
+        {
+          onSuccess: () => {
+            setProduct({ ...product, productImages: updatedImages });
+            queryClient.invalidateQueries({ queryKey: ['product', id] });
+            queryClient.refetchQueries({ queryKey: ['product', id] });
+          },
+        }
+      );
     }
+  };
+
+  const handleDeleteImg = (url: string) => {
+    const id = product._id ? product._id : newProductId;
+    mutateDeleteImg(
+      { id: id!, imageUrl: url },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['product', product._id] });
+          queryClient.refetchQueries({ queryKey: ['product', product._id] });
+        },
+      }
+    );
   };
 
   const handleInputChange = (
@@ -186,7 +196,7 @@ const Products = (productProps: ProductsProps) => {
       );
     } else {
       mutateUpdate(
-        { id: createdProduct?._id!, product: product },
+        { id: newProductId!, product: product },
         {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['products'] });
@@ -219,9 +229,9 @@ const Products = (productProps: ProductsProps) => {
 
   const cancelModal = () => {
     close();
-    if (createdProduct) {
+    if (newProductId) {
       // if create new -> cancel -> delete whole product
-      mutateDelete(createdProduct._id, {
+      mutateDelete(newProductId, {
         onSuccess: () => {
           renderSubMenu('list', '');
         },
@@ -233,6 +243,12 @@ const Products = (productProps: ProductsProps) => {
           { id: existingProduct._id, numToDelete: imgCancelCount },
           {
             onSuccess: () => {
+              queryClient.invalidateQueries({
+                queryKey: ['product', existingProduct._id],
+              });
+              queryClient.refetchQueries({
+                queryKey: ['product', existingProduct._id],
+              });
               renderSubMenu('list', '');
             },
           }
@@ -245,7 +261,11 @@ const Products = (productProps: ProductsProps) => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {(isLoading ||
+        pendingDelete ||
+        pendingUpdateImg ||
+        pendingDeleteImg ||
+        pendingDeleteImgs) && <Spinner />}
       {!isLoading && (
         <>
           <div className={styles['product-details']}>
@@ -264,11 +284,7 @@ const Products = (productProps: ProductsProps) => {
                         width={idx === 0 ? 210 : 70}
                         height={idx === 0 ? 210 : 70}
                       />
-                      <a
-                        onClick={() =>
-                          mutateDeleteImg({ id: product._id!, imageUrl: image })
-                        }
-                      >
+                      <a onClick={() => handleDeleteImg(image)}>
                         <Image
                           className={styles['icon-xs']}
                           src={deleteImgIcon}

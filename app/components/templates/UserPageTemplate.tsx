@@ -31,11 +31,12 @@ const UserPageTemplate = () => {
         { id: 3, value: 'categories' },
         { id: 4, value: 'products' },
       ]);
-    else
+    else if (user && user.role === 'USER') {
       setList([
         { id: 1, value: 'profile' },
         { id: 2, value: 'orders' },
       ]);
+    }
   };
 
   const tabRenderer = (activeTab: string) => {

@@ -21,7 +21,7 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
 
-const { USER_UPDATE_SUCCESS } = modalMsgConstants;
+const { USER_UPDATE_SUCCESS, USER_UPDATE_CANCEL } = modalMsgConstants;
 const { FIELD_EMPTY } = commonConstants;
 const { PASSWORD_ERROR } = authConstants;
 
@@ -29,6 +29,12 @@ const Profile = () => {
   const session = useSession();
   const queryClient = useQueryClient();
   const [show, setShow] = useState<string>('view');
+  const [modalDetails, setModalDetails] = useState<{
+    type: string;
+    content: string;
+    onOk?: () => void;
+    onClose?: () => void;
+  }>({ type: '', content: '' });
   const [updatedUser, setUpdatedUser] = useState<User>({
     _id: '',
     email: '',
@@ -66,10 +72,18 @@ const Profile = () => {
     setShow('update');
     setUpdatedUser({ ...user, profileImg: '' });
   };
+
   const handleUserCancel = () => {
     setPasswordValid(true);
-    setShow('view');
+    setModalDetails({
+      type: 'confirm',
+      content: USER_UPDATE_CANCEL,
+      onOk: handleMove,
+      onClose: close,
+    });
+    open();
   };
+
   const handleUserSave = () => {
     let valid = passwordValidation(updatedUser.password);
     setPasswordValid(valid);
@@ -77,6 +91,11 @@ const Profile = () => {
       mutate(updatedUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
+          setModalDetails({
+            type: 'alert',
+            content: USER_UPDATE_SUCCESS,
+            onClose: handleMove,
+          });
           open();
         },
       });
@@ -222,15 +241,14 @@ const Profile = () => {
           </div>
         </>
       )}
-      {status === 'success' && (
-        <Modal
-          selector={'portal'}
-          show={isOpen}
-          type={'alert'}
-          content={USER_UPDATE_SUCCESS}
-          onClose={handleMove}
-        />
-      )}
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={modalDetails.type}
+        content={modalDetails.content}
+        onOk={modalDetails.onOk}
+        onClose={modalDetails.onClose}
+      />
     </>
   );
 };

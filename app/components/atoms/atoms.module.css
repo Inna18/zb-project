@@ -49,6 +49,28 @@
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
 }
+.button:disabled,
+.button[disabled] {
+  width: 80px;
+  height: 40px;
+  background-color: rgb(99, 96, 93, 0.3);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgb(99, 96, 93, 0.3);
+}
+.button-small:disabled,
+.button-small[disabled] {
+  width: 36px;
+  height: 36px;
+  background-color: rgb(99, 96, 93, 0.3);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgb(99, 96, 93, 0.3);
+}
 
 /* input */
 .input-section {

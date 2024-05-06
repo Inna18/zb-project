@@ -12,17 +12,20 @@ import { commonConstants } from '@/app/constants/common';
 import Product from '@/app/service/useProductApi';
 import Pagination from '../atoms/pagination/Pagination';
 import { useSearchParams } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface ProductsListProps {
   renderSubMenu: (subMenu: string, id: string) => void;
 }
-
 const { LIST_EMPTY } = commonConstants;
 
 const ProductsList = (productsListProps: ProductsListProps) => {
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const { renderSubMenu } = productsListProps;
   const { isLoading, data: productList } = useProductList();
+  const { mutate: mutateDelete, isPending: pendingDelete } =
+    useProductDeleteById();
 
   const page = searchParams?.get('page') ?? '1';
   const perPage = searchParams?.get('per_page') ?? '5';
@@ -32,19 +35,25 @@ const ProductsList = (productsListProps: ProductsListProps) => {
   const end = start + Number(perPage);
   const list = productList && productList.slice(start, end);
 
-  const { mutate: mutateDelete } = useProductDeleteById();
-
   const handleUpdate = (id: string) => {
     renderSubMenu('details', id);
   };
 
   const handleRemove = (id: string) => {
-    mutateDelete(id);
+    mutateDelete(id, {
+      onSuccess: () => {
+        const prevProducts = queryClient.getQueryData(['products']);
+        queryClient.setQueryData(['products'], (old: Product[]) =>
+          old.filter((p) => p._id !== id)
+        );
+        return { prevProducts };
+      },
+    });
   };
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {(isLoading || pendingDelete) && <Spinner />}
       {!isLoading && (
         <div className={styles['product-list']}>
           {productList && productList.length <= 0 && (
@@ -90,7 +99,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
             ))}
         </div>
       )}
-      {productList && (
+      {productList && totalPage > 0 && (
         <Pagination
           totalPage={totalPage}
           page={Number(page)}

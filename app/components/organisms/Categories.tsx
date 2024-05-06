@@ -22,9 +22,11 @@ const Categories = () => {
   const queryClient = useQueryClient();
   const [category, setCategory] = useState<Category>({ name: '' });
   const [error, setError] = useState<string>('');
-  const { mutate: mutateCreate } = useCategoryCreate();
+  const { mutate: mutateCreate, isPending: pendingCreate } =
+    useCategoryCreate();
   const { isLoading, data: categories } = useCategoryList();
-  const { mutate: mutateDelete } = useCategoryDelete();
+  const { mutate: mutateDelete, isPending: pendingDelete } =
+    useCategoryDelete();
   const { open, close, isOpen } = useModal();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,18 +35,20 @@ const Categories = () => {
   };
 
   const handleAdd = () => {
-    mutateCreate(category, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['categories'] });
-        setCategory((prevState) => {
-          return { ...prevState, name: '' };
-        });
-      },
-      onError: (e) => {
-        setError(e.message);
-        open();
-      },
-    });
+    if (category.name !== '') {
+      mutateCreate(category, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['categories'] });
+          setCategory((prevState) => {
+            return { ...prevState, name: '' };
+          });
+        },
+        onError: (e) => {
+          setError(e.message);
+          open();
+        },
+      });
+    }
   };
 
   const handleRemove = (id: string | undefined) => {
@@ -59,7 +63,7 @@ const Categories = () => {
 
   return (
     <>
-      {isLoading && <Spinner />}
+      {(isLoading || pendingCreate || pendingDelete) && <Spinner />}
       {!isLoading && (
         <>
           <div className={styles['categories-section']}>
@@ -75,7 +79,11 @@ const Categories = () => {
                 className='input'
                 changeFunc={handleInput}
               />
-              <Button value='Add' onClick={handleAdd} />
+              <Button
+                value='Add'
+                onClick={handleAdd}
+                disabled={category.name === ''}
+              />
             </div>
             <div className={styles['category-list']}>
               {categories && categories.length <= 0 && (

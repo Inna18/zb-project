@@ -19,13 +19,17 @@ const Pagination = (paginationProps: PaginationProps) => {
   const { totalPage, hasPrev, hasNext } = paginationProps;
   const [pages, setPages] = useState<number[]>([]);
 
-  const page = searchParams?.get('page') ?? '1';
-  const perPage = searchParams?.get('per_page') ?? '5';
+  let page = Number(searchParams?.get('page') ?? '1');
 
   useEffect(() => {
     let arr = [];
     for (let i = 1; i <= totalPage; i++) arr.push(i);
     setPages(arr);
+
+    if (page > totalPage) {
+      page = totalPage;
+      router.push(`${pathname}/?page=${page}`);
+    }
   }, [totalPage]);
 
   const handlePage = (pageNum: number) => {
@@ -37,7 +41,7 @@ const Pagination = (paginationProps: PaginationProps) => {
       <Button
         value='<'
         className='button-small'
-        onClick={() => handlePage(Number(page) - 1)}
+        onClick={() => handlePage(page - 1)}
         disabled={!hasPrev}
       />
       {totalPage &&
@@ -47,13 +51,13 @@ const Pagination = (paginationProps: PaginationProps) => {
             key={pageEl}
             value={pageEl}
             onClick={() => handlePage(pageEl)}
-            className={Number(page) === pageEl ? 'pg-btn-active' : 'pg-btn'}
+            className={page === pageEl ? 'pg-btn-active' : 'pg-btn'}
           />
         ))}
       <Button
         value='>'
         className='button-small'
-        onClick={() => handlePage(Number(page) + 1)}
+        onClick={() => handlePage(page + 1)}
         disabled={!hasNext}
       />
     </div>
