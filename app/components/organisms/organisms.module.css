@@ -322,16 +322,19 @@
   cursor: pointer;
   border-radius: 50%;
   padding: 5px;
+  margin: 10px;
 }
 .load button:focus img {
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
   border-radius: 50%;
   padding: 5px;
+  margin: 10px;
 }
 
 .best-items-list {
   display: grid;
+  margin: 20px;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .best-item-card {

@@ -47,6 +47,19 @@ async function getProductList() {
     category,
     brand,
     name,
+    "productImages": productImages[].asset->url
+  }`;
+  const productList = await client.fetch(query);
+  console.log('Product list: ', productList);
+  return productList;
+}
+
+async function getBestProductList(count: number) {
+  const query = `*[_type == 'product'][0...${count}]{
+    _id,
+    category,
+    brand,
+    name,
     price,
     rating,
     "productImages": productImages[].asset->url
@@ -54,6 +67,7 @@ async function getProductList() {
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
   return productList;
+  
 }
 
 async function createProduct(product: Product) {
@@ -184,6 +198,7 @@ async function deleteProductById(id: string) {
 export {
   getProductById,
   getProductList,
+  getBestProductList,
   createProduct,
   updateProduct,
   updateProductImages,
