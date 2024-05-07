@@ -47,6 +47,8 @@ async function getProductList() {
     category,
     brand,
     name,
+    price,
+    rating,
     "productImages": productImages[].asset->url
   }`;
   const productList = await client.fetch(query);

@@ -75,3 +75,37 @@
   width: 1000px;
   height: 440px;
 }
+
+/* home page */
+.scroller {
+  height: 643px;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+}
+.scroller section {
+  height: 100%;
+  scroll-snap-align: start;
+}
+.main-banner {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+.main-banner div {
+  margin: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.main-banner img {
+  height: 643px;
+  width: 100%;
+  object-fit: cover;
+}
+.main-banner a {
+  font-size: 16px;
+  margin: 0 10px;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
