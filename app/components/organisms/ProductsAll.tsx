@@ -20,7 +20,7 @@ const ProductsAll = () => {
     content: [],
     productImages: [],
     _createdAt: '',
-    rating: 0
+    rating: 0,
   });
   const [subMenu, setSubMenu] = useState<string>('list');
   const [productId, setProductId] = useState<string>('');

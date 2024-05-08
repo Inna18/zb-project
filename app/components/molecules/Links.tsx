@@ -26,7 +26,15 @@ const Links = (linksProps: LinksProps) => {
 
   useEffect(() => {
     if (categoryList) {
-      setShopList([...categoryList.map((category: Category) => {return { id: category._id, value: category.name, link: `shop?category=${category.name}` }})]);
+      setShopList([
+        ...categoryList.map((category: Category) => {
+          return {
+            id: category._id,
+            value: category.name,
+            link: `shop?category=${category.name}`,
+          };
+        }),
+      ]);
     }
   }, [categoryList]);
 
@@ -52,34 +60,34 @@ const Links = (linksProps: LinksProps) => {
     <>
       {!isLoading && (
         <div className={styles['links-section']}>
-        {list.map((link) => (
-          <span key={link.id} className={styles.link}>
-            <Link
-              key={link.value}
-              className={
-                isMenu && pathname === `/${link.value}` ? styles.active : ''
-              }
-              href={`/${link.value}`}
-              onMouseEnter={() => handleOpen(link.value)}
-            >
-              {toUpper(link.value)}
-            </Link>
-            {openMenu && link.value === 'shop' && (
-              <div className={styles['dropdown-section']}>
-                {shopList.length > 0 && (
-                  <Dropdown
-                    key={'menu'}
-                    list={shopList}
-                    open={openMenu}
-                    handleClose={handleOpenMenu}
-                    handlePath={handlePath}
-                  />
-                )}
-              </div>
-            )}
-          </span>
-        ))}
-      </div>
+          {list.map((link) => (
+            <span key={link.id} className={styles.link}>
+              <Link
+                key={link.value}
+                className={
+                  isMenu && pathname === `/${link.value}` ? styles.active : ''
+                }
+                href={`/${link.value}`}
+                onMouseEnter={() => handleOpen(link.value)}
+              >
+                {toUpper(link.value)}
+              </Link>
+              {openMenu && link.value === 'shop' && (
+                <div className={styles['dropdown-section']}>
+                  {shopList.length > 0 && (
+                    <Dropdown
+                      key={'menu'}
+                      list={shopList}
+                      open={openMenu}
+                      handleClose={handleOpenMenu}
+                      handlePath={handlePath}
+                    />
+                  )}
+                </div>
+              )}
+            </span>
+          ))}
+        </div>
       )}
     </>
   );

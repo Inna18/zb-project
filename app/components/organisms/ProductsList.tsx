@@ -62,23 +62,26 @@ const ProductsList = (productsListProps: ProductsListProps) => {
           {list &&
             list.map((product: Product) => (
               <div className={styles['product-card']} key={product._id}>
-                {product.productImages && product.productImages.length === 0 && (
-                  <div className={styles.centered}>No Image</div>
-                )}
-                {product.productImages && product.productImages.length > 0 &&
-                  (
-                    <Image
-                      src={product.productImages[0]}
-                      alt={'user-profile'}
-                      width={100}
-                      height={100}
-                    />
+                {product.productImages &&
+                  product.productImages.length === 0 && (
+                    <div className={styles.centered}>No Image</div>
                   )}
+                {product.productImages && product.productImages.length > 0 && (
+                  <Image
+                    src={product.productImages[0]}
+                    alt={'user-profile'}
+                    width={100}
+                    height={100}
+                  />
+                )}
                 <div className={styles['list-product-details']}>
                   <div>Name: {product.name}</div>
                   <div>Category: {product.category}</div>
                   <div>Brand: {product.brand}</div>
-                  <div>Created at: {moment(product._createdAt).format('YYYY-MM-DD, HH:mm')}</div>
+                  <div>
+                    Created at:{' '}
+                    {moment(product._createdAt).format('YYYY-MM-DD, HH:mm')}
+                  </div>
                 </div>
                 <div className={styles['icons-section']}>
                   <a onClick={() => handleUpdate(product._id!)}>

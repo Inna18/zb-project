@@ -71,7 +71,6 @@ async function getBestProductList(count: number) {
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
   return productList;
-  
 }
 
 async function createProduct(product: Product) {

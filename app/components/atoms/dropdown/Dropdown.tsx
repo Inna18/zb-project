@@ -28,7 +28,9 @@ const Dropdown = (dropdownProps: DropdownProps) => {
         list.map((selectElem) => (
           <li key={selectElem.id}>
             <Link
-              href={handlePath(selectElem.link ? selectElem.link : selectElem.value)}
+              href={handlePath(
+                selectElem.link ? selectElem.link : selectElem.value
+              )}
               onClick={handleDropLogout(selectElem.value)}
             >
               {selectElem.value}
