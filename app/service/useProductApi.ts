@@ -10,7 +10,7 @@ export default interface Product {
   quantity?: string;
   rating?: number;
   content?: any; // what is rich text type?
-  productImages?: any;
+  productImages?: string[];
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -54,9 +54,25 @@ async function getProductList() {
   return productList;
 }
 
+async function getBestProductList(count: number) {
+  const query = `*[_type == 'product'][0...${count}]{
+    _id,
+    category,
+    brand,
+    name,
+    price,
+    rating,
+    "productImages": productImages[].asset->url
+  }`;
+  const productList = await client.fetch(query);
+  console.log('Product list: ', productList);
+  return productList;
+  
+}
+
 async function createProduct(product: Product) {
   let productImages: SanityImageAssetDocument[] = [];
-  const promises = product.productImages.map(async (productImage: File) => {
+  const promises = product.productImages!.map(async (productImage: string) => {
     return await client.assets.upload('image', productImage);
   });
   productImages = await Promise.all(promises);
@@ -90,8 +106,6 @@ async function createProduct(product: Product) {
 }
 
 async function updateProduct(id: string, updateProduct: Product) {
-  console.log(id);
-  console.log(updateProduct);
   const updatedProduct = await client
     .patch(id)
     .set({
@@ -143,6 +157,17 @@ async function deleteProductImage(id: string, imageUrl: string) {
   console.log(updatedImages);
 }
 
+async function deleteProductImages(id: string, numToDelete: number) {
+  const imagesUrl = await getProductImages(id);
+  let imagesToRemove = [];
+  for (let i = 1; i <= numToDelete; i++) {
+    const key = `image-${imagesUrl.productImages[imagesUrl.productImages.length - i].split('/').pop()?.replace('.', '-')}`;
+    imagesToRemove.push(`productImages[_key==\"${key}\"]`);
+  }
+  const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
+  console.log(updatedImages);
+}
+
 async function getProductImages(id: string | undefined) {
   const query = `*[_type == 'product' && _id == '${id}'][0]{
     "productImages": productImages[].asset->url,
@@ -173,6 +198,7 @@ async function deleteProductById(id: string) {
 export {
   getProductById,
   getProductList,
+  getBestProductList,
   createProduct,
   updateProduct,
   updateProductImages,
@@ -180,4 +206,5 @@ export {
   deleteProducts,
   deleteProductById,
   deleteProductImage,
+  deleteProductImages,
 };

@@ -18,7 +18,12 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const LIST = ['email', 'password', 'name'];
+const LIST = [
+  { id: 1, value: 'email' },
+  { id: 2, value: 'password' },
+  { id: 3, value: 'name' },
+];
+const { USER_CREATE_SUCCESS, USER_CREATE_ERROR } = modalMsgConstants;
 
 const SignupTemplate = () => {
   const router = useRouter();
@@ -39,7 +44,6 @@ const SignupTemplate = () => {
   const { validateForm, emailError, passwordError } = useFormValidator();
   const { mutate, isPending, status } = useUserCreate();
   const { open, close, isOpen } = useModal();
-  const { USER_CREATE_SUCCESS, USER_CREATE_ERROR } = modalMsgConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

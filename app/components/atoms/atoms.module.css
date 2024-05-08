@@ -29,7 +29,6 @@
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
 }
-
 .button-long {
   width: 100px;
   height: 40px;
@@ -39,6 +38,38 @@
   color: #fff;
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
+}
+.button-small {
+  width: 36px;
+  height: 36px;
+  background-color: #e58025;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px #e58025;
+}
+.button:disabled,
+.button[disabled] {
+  width: 80px;
+  height: 40px;
+  background-color: rgb(99, 96, 93, 0.3);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgb(99, 96, 93, 0.3);
+}
+.button-small:disabled,
+.button-small[disabled] {
+  width: 36px;
+  height: 36px;
+  background-color: rgb(99, 96, 93, 0.3);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgb(99, 96, 93, 0.3);
 }
 
 /* input */
@@ -259,4 +290,35 @@
 .editor-menu button:hover {
   color: #e58025;
   font-weight: 500;
+}
+
+/* pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.pagination > * {
+  margin: 0 6px;
+  cursor: pointer;
+}
+.pagination .pg-btn {
+  width: 36px;
+  height: 36px;
+  background-color: inherit;
+  border: none;
+  box-shadow: none;
+  color: #242220;
+  cursor: pointer;
+}
+.pagination .pg-btn-active {
+  width: 36px;
+  height: 36px;
+  background-color: inherit;
+  border: none;
+  box-shadow: none;
+  color: #242220;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }

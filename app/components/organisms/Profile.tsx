@@ -20,12 +20,21 @@ import { useQueryClient } from '@tanstack/react-query';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
-import { generateUuid } from '@/app/utils/uuid';
+
+const { USER_UPDATE_SUCCESS, USER_UPDATE_CANCEL } = modalMsgConstants;
+const { FIELD_EMPTY } = commonConstants;
+const { PASSWORD_ERROR } = authConstants;
 
 const Profile = () => {
   const session = useSession();
   const queryClient = useQueryClient();
   const [show, setShow] = useState<string>('view');
+  const [modalDetails, setModalDetails] = useState<{
+    type: string;
+    content: string;
+    onOk?: () => void;
+    onClose?: () => void;
+  }>({ type: '', content: '' });
   const [updatedUser, setUpdatedUser] = useState<User>({
     _id: '',
     email: '',
@@ -37,22 +46,19 @@ const Profile = () => {
   });
   const [imgName, setImgName] = useState<string | undefined>('');
   const userProperties = [
-    [updatedUser.email, 'email'],
-    [updatedUser.role, 'role'],
-    [updatedUser.password, 'password'],
-    [updatedUser.name, 'name'],
-    [updatedUser.address, 'address'],
-    [updatedUser.phoneNumber, 'phoneNumber'],
+    { id: 1, value: [updatedUser.email, 'email'] },
+    { id: 2, value: [updatedUser.role, 'role'] },
+    { id: 3, value: [updatedUser.password, 'password'] },
+    { id: 4, value: [updatedUser.name, 'name'] },
+    { id: 5, value: [updatedUser.address, 'address'] },
+    { id: 6, value: [updatedUser.phoneNumber, 'phoneNumber'] },
   ];
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const { PASSWORD_ERROR } = authConstants();
 
   const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
   const { mutate, status } = useUserUpdate();
   const { open, close, isOpen } = useModal();
-  const { USER_UPDATE_SUCCESS } = modalMsgConstants();
-  const { FIELD_EMPTY } = commonConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -66,10 +72,18 @@ const Profile = () => {
     setShow('update');
     setUpdatedUser({ ...user, profileImg: '' });
   };
+
   const handleUserCancel = () => {
     setPasswordValid(true);
-    setShow('view');
+    setModalDetails({
+      type: 'confirm',
+      content: USER_UPDATE_CANCEL,
+      onOk: handleMove,
+      onClose: close,
+    });
+    open();
   };
+
   const handleUserSave = () => {
     let valid = passwordValidation(updatedUser.password);
     setPasswordValid(valid);
@@ -77,6 +91,11 @@ const Profile = () => {
       mutate(updatedUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
+          setModalDetails({
+            type: 'alert',
+            content: USER_UPDATE_SUCCESS,
+            onClose: handleMove,
+          });
           open();
         },
       });
@@ -182,22 +201,23 @@ const Profile = () => {
               {user && show === 'update' && (
                 <div className={styles.updates}>
                   {userProperties.map((property) => (
-                    <div key={generateUuid()}>
+                    <div key={property.id}>
                       <Input
-                        type={handleCheckType(property[1]!)}
+                        type={handleCheckType(property.value[1]!)}
                         changeFunc={handleInputChange}
                         hasLabel={false}
-                        value={property[0]}
+                        value={property.value[0]}
                         className='input'
-                        name={property[1]}
-                        disabled={handleCheckDisabled(property[1])}
+                        name={property.value[1]}
+                        disabled={handleCheckDisabled(property.value[1])}
                       />
-                      {property[1] === 'password' && !passwordValid && (
+                      {property.value[1] === 'password' && !passwordValid && (
                         <div className={styles.error}>{passwordError}</div>
                       )}
-                      {property[0] === '' && property[1] === 'name' && (
-                        <div className={styles.error}>{FIELD_EMPTY}</div>
-                      )}
+                      {property.value[0] === '' &&
+                        property.value[1] === 'name' && (
+                          <div className={styles.error}>{FIELD_EMPTY}</div>
+                        )}
                     </div>
                   ))}
                 </div>
@@ -221,15 +241,14 @@ const Profile = () => {
           </div>
         </>
       )}
-      {status === 'success' && (
-        <Modal
-          selector={'portal'}
-          show={isOpen}
-          type={'alert'}
-          content={USER_UPDATE_SUCCESS}
-          onClose={handleMove}
-        />
-      )}
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={modalDetails.type}
+        content={modalDetails.content}
+        onOk={modalDetails.onOk}
+        onClose={modalDetails.onClose}
+      />
     </>
   );
 };

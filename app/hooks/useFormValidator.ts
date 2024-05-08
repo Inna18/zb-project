@@ -3,6 +3,8 @@ import { emailValidation } from '@/app/utils/validation';
 import { passwordValidation } from '@/app/utils/validation';
 import { authConstants } from '@/app/constants/auth';
 
+const { EMAIL_ERROR, PASSWORD_ERROR } = authConstants;
+
 export const useFormValidator = () => {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -10,7 +12,6 @@ export const useFormValidator = () => {
   const validateForm = (email: string, password: string) => {
     const emailValid = emailValidation(email);
     const passwordValid = passwordValidation(password);
-    const { EMAIL_ERROR, PASSWORD_ERROR } = authConstants();
 
     if (emailValid && passwordValid) {
       setEmailError('');

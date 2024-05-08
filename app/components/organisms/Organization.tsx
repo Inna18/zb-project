@@ -12,12 +12,20 @@ import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/use
 import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { commonConstants } from '@/app/constants/common';
+
+const { ORGANIZATION_UPDATE_SUCCESS, ORGANIZATION_UPDATE_CANCEL } =
+  modalMsgConstants;
 
 const Organization = () => {
   const queryClient = useQueryClient();
   const { isLoading, data: organization } = useOrganizationGet();
   const [show, setShow] = useState<string>('view');
+  const [modalDetails, setModalDetails] = useState<{
+    type: string;
+    content: string;
+    onOk?: () => void;
+    onClose?: () => void;
+  }>({ type: '', content: '' });
   const [myOrganization, setMyOrganization] = useState<OrganizationEntity>({
     _id: '',
     name: '',
@@ -29,42 +37,71 @@ const Organization = () => {
     instagramUrl: '',
     youTubeUrl: '',
   });
-  const orgProperties: string[][] = [
-    ['Company Name: ', organization.name, myOrganization.name, 'name'],
-    ['Address: ', organization.address, myOrganization.address, 'address'],
-    [
-      'Business Number: ',
-      organization.businessNumber,
-      myOrganization.businessNumber,
-      'businessNumber',
-    ],
-    ['CEO: ', organization.ceo, myOrganization.ceo, 'ceo'],
-    [
-      'C/S Number: ',
-      organization.phoneNumber,
-      myOrganization.phoneNumber,
-      'phoneNumber',
-    ],
-    ['Email: ', organization.email, myOrganization.email, 'email'],
-    [
-      'Instagram Link: ',
-      organization.instagramUrl,
-      myOrganization.instagramUrl,
-      'instagramUrl',
-    ],
-    [
-      'YouTube Link: ',
-      organization.youTubeUrl,
-      myOrganization.youTubeUrl,
-      'youTubeUrl',
-    ],
+  const orgProperties: { id: number; value: string[] }[] = [
+    {
+      id: 1,
+      value: [
+        'Company Name: ',
+        organization?.name,
+        myOrganization.name,
+        'name',
+      ],
+    },
+    {
+      id: 2,
+      value: [
+        'Address: ',
+        organization?.address,
+        myOrganization.address,
+        'address',
+      ],
+    },
+    {
+      id: 3,
+      value: [
+        'Business Number: ',
+        organization?.businessNumber,
+        myOrganization.businessNumber,
+        'businessNumber',
+      ],
+    },
+    { id: 4, value: ['CEO: ', organization?.ceo, myOrganization.ceo, 'ceo'] },
+    {
+      id: 5,
+      value: [
+        'C/S Number: ',
+        organization?.phoneNumber,
+        myOrganization.phoneNumber,
+        'phoneNumber',
+      ],
+    },
+    {
+      id: 6,
+      value: ['Email: ', organization?.email, myOrganization.email, 'email'],
+    },
+    {
+      id: 7,
+      value: [
+        'Instagram Link: ',
+        organization?.instagramUrl,
+        myOrganization.instagramUrl,
+        'instagramUrl',
+      ],
+    },
+    {
+      id: 8,
+      value: [
+        'YouTube Link: ',
+        organization?.youTubeUrl,
+        myOrganization.youTubeUrl,
+        'youTubeUrl',
+      ],
+    },
   ];
 
   const { mutate } = useOrganizationUpdate();
 
   const { open, close, isOpen } = useModal();
-  const { ORGANIZATION_UPDATE_SUCCESS } = modalMsgConstants();
-  const { FIELD_EMPTY } = commonConstants();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -78,17 +115,30 @@ const Organization = () => {
     setMyOrganization(organization);
   };
 
-  const handleOrgCancel = () => setShow('view');
+  const handleOrgCancel = () => {
+    setModalDetails({
+      type: 'confirm',
+      content: ORGANIZATION_UPDATE_CANCEL,
+      onOk: handleMove,
+      onClose: close,
+    });
+    open();
+  };
 
   const handleOrgSave = () => {
     let check: boolean[] = [];
     orgProperties.map((property) => {
-      check.push(property[0] !== '');
+      check.push(property.value[0] !== '');
     });
     if (!check.includes(false)) {
       mutate(myOrganization, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['organization'] });
+          setModalDetails({
+            type: 'alert',
+            content: ORGANIZATION_UPDATE_SUCCESS,
+            onClose: handleMove,
+          });
           open();
         },
       });
@@ -145,9 +195,10 @@ const Organization = () => {
           <Modal
             selector={'portal'}
             show={isOpen}
-            type={'alert'}
-            content={ORGANIZATION_UPDATE_SUCCESS}
-            onClose={handleMove}
+            type={modalDetails.type}
+            content={modalDetails.content}
+            onOk={modalDetails.onOk}
+            onClose={modalDetails.onClose}
           />
         </>
       )}

@@ -8,12 +8,15 @@ import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePathname } from 'next/navigation';
 import { toUpper } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
-import { generateUuid } from '@/app/utils/uuid';
 
-const SHOP = ['all', 'category A', 'category B'];
+const SHOP = [
+  { id: 1, value: 'all' },
+  { id: 2, value: 'category A' },
+  { id: 3, value: 'category B' },
+];
 
 interface LinksProps {
-  list: string[];
+  list: { id: number; value: string }[];
   isMenu: boolean;
   openMenu?: boolean;
   handleOpenMenu?: (param: boolean) => void;
@@ -43,17 +46,19 @@ const Links = (linksProps: LinksProps) => {
 
   return (
     <div className={styles['links-section']}>
-      {list.map(link => (
-        <span key={generateUuid()} className={styles.link}>
+      {list.map((link) => (
+        <span key={link.id} className={styles.link}>
           <Link
-            key={link}
-            className={isMenu && pathname === `/${link}` ? styles.active : ''}
-            href={`/${link}`}
-            onMouseEnter={() => handleOpen(link)}
+            key={link.value}
+            className={
+              isMenu && pathname === `/${link.value}` ? styles.active : ''
+            }
+            href={`/${link.value}`}
+            onMouseEnter={() => handleOpen(link.value)}
           >
-            {toUpper(link)}
+            {toUpper(link.value)}
           </Link>
-          {openMenu && link === 'shop' && (
+          {openMenu && link.value === 'shop' && (
             <div className={styles['dropdown-section']}>
               <Dropdown
                 key={'menu'}

@@ -28,23 +28,25 @@
   width: 100%;
 }
 .product-card {
-  height: 80px;
+  height: 40px;
   padding: 10px;
   margin: 10px;
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   border: 1px solid;
   border-radius: 4px;
-}
-.product-card .name {
-  font-size: 24px;
-  margin: 6px 0;
+  align-items: center;
 }
 .product-card img {
   width: 100%;
   height: inherit;
   object-fit: contain;
-  align-self: center;
+}
+.product-card .list-product-details {
+  display: flex;
+}
+.product-card .list-product-details div {
+  margin-right: 12px;
 }
 .profile-details {
   width: 80%;
@@ -269,13 +271,8 @@
   height: 20px;
   cursor: pointer;
 }
-.icons-section .icon-m {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-}
-.icons-section .icon-m:nth-child(1) {
-  margin-right: 16px;
+.icons-section .icon:nth-child(1) {
+  margin-left: 16px;
 }
 
 /* dropdown */
@@ -294,4 +291,80 @@
 /* required-mark */
 .required-mark {
   color: #e58025;
+}
+
+/* home */
+.best-items {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  font-size: 20px;
+  margin: 30px;
+  font-weight: 500;
+}
+.load {
+  display: flex;
+  justify-content: center;
+}
+.load button {
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+.load button img {
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
+  margin: 10px;
+}
+.load button:focus img {
+  cursor: pointer;
+  box-shadow: 0 0 5px #e58025;
+  border-radius: 50%;
+  padding: 5px;
+  margin: 10px;
+}
+
+.best-items-list {
+  display: grid;
+  margin: 20px;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+.best-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 10px;
+}
+.best-item-card .image-section {
+  width: 200px;
+  height: 200px;
+}
+.best-item-card .decription-section {
+  width: 200px;
+  font-size: 12px;
+}
+.best-item-card .decription-section div {
+  margin: 8px 0;
+}
+.best-item-card .decription-section .name {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 4px 0;
+}
+.best-item-card .decription-section div .category {
+  padding: 4px ;
+  background-color: rgb(99, 96, 93, 0.1);
+}
+.best-item-card .decription-section .rating {
+  display: flex;
+  align-items: center;
 }
