@@ -33,7 +33,7 @@ const HomeBestItems = () => {
         {!isLoading && (
             <>
                 <div className={styles['best-items-list']}>
-                    {productList && productList.length <= 0 && <div>No Items</div>}
+                    {productList && productList.length <= 0 && <div className={styles.empty}>No Items</div>}
                     {productList && productList.map((product: Product) => (
                         <div key={product._id} className={styles['best-item-card']} onClick={() => handleProductDetails(product._id!, product.category)}>
                             <div className={styles['image-section']}>
@@ -51,12 +51,13 @@ const HomeBestItems = () => {
                                 <div>{product.price}won</div>
                                 <div className={styles.rating}>
                                     <Image src={starIcon} alt={'item-image'} width={18} height={18}/>
-                                    <span>{product.rating ? product.rating : '5.0'}</span>
+                                    <span>{product.rating}</span>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+                {productList.length > 0 && (
                 <div className={styles.load}>
                     {loadCount <= 19 && (
                         <button onClick={handleLoad}>
@@ -64,6 +65,7 @@ const HomeBestItems = () => {
                         </button>
                     )}
                 </div>
+                )}
             </>
         )}
       </div>

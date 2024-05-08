@@ -330,6 +330,9 @@
   margin: 20px;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
+.best-items-list .empty {
+  grid-column-end: span 5;
+}
 .best-item-card {
   display: flex;
   flex-direction: column;
@@ -350,6 +353,9 @@
 .best-item-card .image-section {
   width: 200px;
   height: 200px;
+}
+.best-item-card .image-section img {
+  object-fit: contain;
 }
 .best-item-card .decription-section {
   width: 200px;

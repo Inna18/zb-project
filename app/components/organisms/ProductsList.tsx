@@ -12,6 +12,7 @@ import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProduc
 import { commonConstants } from '@/app/constants/common';
 import { useSearchParams } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import moment from 'moment';
 
 interface ProductsListProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -77,6 +78,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
                   <div>Name: {product.name}</div>
                   <div>Category: {product.category}</div>
                   <div>Brand: {product.brand}</div>
+                  <div>Created at: {moment(product._createdAt).format('YYYY-MM-DD, HH:mm')}</div>
                 </div>
                 <div className={styles['icons-section']}>
                   <a onClick={() => handleUpdate(product._id!)}>

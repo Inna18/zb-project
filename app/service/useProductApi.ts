@@ -1,5 +1,6 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
+import { DatetimeComponents } from 'sanity';
 
 export default interface Product {
   _id?: string;
@@ -11,6 +12,7 @@ export default interface Product {
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
+  _createdAt: string;
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -42,11 +44,12 @@ async function getProductById(id: string) {
 }
 
 async function getProductList() {
-  const query = `*[_type == 'product']{
+  const query = `*[_type == 'product'] | order(_createdAt desc) {
     _id,
     category,
     brand,
     name,
+    _createdAt,
     "productImages": productImages[].asset->url
   }`;
   const productList = await client.fetch(query);
@@ -55,13 +58,14 @@ async function getProductList() {
 }
 
 async function getBestProductList(count: number) {
-  const query = `*[_type == 'product'][0...${count}]{
+  const query = `*[_type == 'product'] | order(rating desc, _createdAt desc) [0...${count}]{
     _id,
     category,
     brand,
     name,
     price,
     rating,
+    _createdAt,
     "productImages": productImages[].asset->url
   }`;
   const productList = await client.fetch(query);

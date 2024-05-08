@@ -26,7 +26,7 @@ const Links = (linksProps: LinksProps) => {
 
   useEffect(() => {
     if (categoryList) {
-      setShopList([...categoryList.map((category: Category) => {return { id: category._id, value: category.name, link: `category/${category.name}` }})]);
+      setShopList([...categoryList.map((category: Category) => {return { id: category._id, value: category.name, link: `shop?category=${category.name}` }})]);
     }
   }, [categoryList]);
 
