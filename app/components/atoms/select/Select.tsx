@@ -20,7 +20,7 @@ const Select = (selectProps: SelectProps) => {
     <div className={styles[`${className}`]}>
       {hasLabel && <label htmlFor={type}>{toUpper(type)}</label>}
       <select
-        defaultValue={value ?? value}
+        defaultValue={value ?? ''}
         name={type}
         onChange={changeFunc}
         required={true}

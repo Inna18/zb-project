@@ -1,16 +1,17 @@
 import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
+import { useBestProductList } from '@/app/queries/queryHooks/product/useBestProductList';
+import { useRouter } from 'next/navigation';
 import Product from '@/app/service/useProductApi';
 import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
 import starIcon from '@/public/icons/star-solid.svg';
 import arrowLoadIcon from '@/public/icons/angles-down-solid.svg';
-import { useBestProductList } from '@/app/queries/queryHooks/product/useBestProductList';
-import { useQueryClient } from '@tanstack/react-query';
+
 
 const HomeBestItems = () => {
-    const queryClient = useQueryClient();
+    const { push } = useRouter();
     const [loadCount, setLoadCount] = useState<number>(5);
     const { isLoading, isRefetching, data: productList, refetch } = useBestProductList(loadCount);
 
@@ -18,8 +19,10 @@ const HomeBestItems = () => {
         refetch();
     }, [loadCount]);
 
-    const handleLoad = () => {
-        setLoadCount(loadCount + 5);
+    const handleLoad = () => setLoadCount(loadCount + 5);
+
+    const handleProductDetails = (productId: string, productCategory: string) => {
+        push(`/shop?category=${productCategory}&productId=${productId}`);
     }
 
   return (
@@ -32,7 +35,7 @@ const HomeBestItems = () => {
                 <div className={styles['best-items-list']}>
                     {productList && productList.length <= 0 && <div>No Items</div>}
                     {productList && productList.map((product: Product) => (
-                        <div key={product._id} className={styles['best-item-card']}>
+                        <div key={product._id} className={styles['best-item-card']} onClick={() => handleProductDetails(product._id!, product.category)}>
                             <div className={styles['image-section']}>
                                 {product.productImages && product.productImages?.length <= 0 && (
                                     <div className={styles.centered}>No Image</div>
