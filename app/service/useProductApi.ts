@@ -43,15 +43,27 @@ async function getProductById(id: string) {
   return productById;
 }
 
-async function getProductList() {
-  const query = `*[_type == 'product'] | order(_createdAt desc) {
-    _id,
-    category,
-    brand,
-    name,
-    _createdAt,
-    "productImages": productImages[].asset->url
-  }`;
+async function getProductList(orderBy: string, filter?: string | null) {
+  let query;
+  if (filter) {
+    query = `*[_type == 'product' && category == '${filter}'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url
+    }`;
+  } else {
+    query = `*[_type == 'product'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url
+    }`;
+  }
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
   return productList;

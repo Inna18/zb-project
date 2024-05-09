@@ -23,7 +23,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const { renderSubMenu } = productsListProps;
-  const { isLoading, data: productList } = useProductList();
+  const { isLoading, data: productList } = useProductList('_createdAt');
   const { mutate: mutateDelete, isPending: pendingDelete } =
     useProductDeleteById();
 

@@ -26,7 +26,7 @@ const HomeBestItems = () => {
   const handleLoad = () => setLoadCount(loadCount + 5);
 
   const handleProductDetails = (productId: string, productCategory: string) => {
-    push(`/shop?category=${productCategory}&productId=${productId}`);
+    push(`/shop/details?productId=${productId}`);
   };
 
   return (
@@ -52,7 +52,11 @@ const HomeBestItems = () => {
                     <div className={styles['image-section']}>
                       {product.productImages &&
                         product.productImages?.length <= 0 && (
-                          <div className={styles.centered}>No Image</div>
+                          <div
+                            className={`${styles.centered} ${styles.caption}`}
+                          >
+                            No Image
+                          </div>
                         )}
                       {product.productImages &&
                         product.productImages.length > 0 && (

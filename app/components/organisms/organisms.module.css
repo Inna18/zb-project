@@ -354,6 +354,10 @@
   width: 200px;
   height: 200px;
 }
+.best-item-card .caption {
+  font-size: 12px;
+  color: #8e8e8e;
+}
 .best-item-card .image-section img {
   object-fit: contain;
 }
