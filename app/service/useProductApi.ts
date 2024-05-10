@@ -1,6 +1,5 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
-import { DatetimeComponents } from 'sanity';
 
 export default interface Product {
   _id?: string;
@@ -12,7 +11,7 @@ export default interface Product {
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
-  _createdAt: string;
+  _createdAt?: string;
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -93,7 +92,6 @@ async function createProduct(product: Product) {
   productImages = await Promise.all(promises);
 
   const sanityProduct = {
-    id: product._id,
     _type: 'product',
     category: product.category,
     brand: product.brand,
@@ -170,6 +168,9 @@ async function deleteProductImage(id: string, imageUrl: string) {
   const imagesToRemove = [`productImages[_key==\"${key}\"]`];
   const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
   console.log(updatedImages);
+  const imagesFromDb = await getProductImages(id);
+  console.log(imagesFromDb.productImages);
+  return imagesFromDb.productImages;
 }
 
 async function deleteProductImages(id: string, numToDelete: number) {

@@ -1,41 +1,33 @@
 import styles from './organisms.module.css';
+
 import React, { useState } from 'react';
 import Button from '../atoms/button/Button';
-
 import ProductsList from './ProductsList';
 import Products from './Products';
-import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
-import Product from '@/app/service/useProductApi';
 import Spinner from '../atoms/spinner/Spinner';
-import { useQueryClient } from '@tanstack/react-query';
+import { useProductStore } from '@/app/stores/useProductStore';
+import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
 
 const ProductsAll = () => {
-  const queryClient = useQueryClient();
-  const [product, setProduct] = useState<Product>({
-    category: '',
-    brand: '',
-    name: '',
-    price: '',
-    quantity: '',
-    content: [],
-    productImages: [],
-    _createdAt: '',
-    rating: 0,
-  });
-  const [subMenu, setSubMenu] = useState<string>('list');
-  const [productId, setProductId] = useState<string>('');
+  const product = useProductStore((state) => state.product);
+  const resetProduct = useProductStore((state) => state.resetProduct);
   const {
     mutate,
     data: createdProduct,
     isPending: pendingCreate,
   } = useProductCreate();
 
+  const [subMenu, setSubMenu] = useState<string>('list');
+  const [productId, setProductId] = useState<string>('');
+
   const subMenuRenderer = (subMenuType: string, id: string) => {
+    resetProduct();
     setSubMenu(subMenuType);
     setProductId(id);
   };
 
   const handleAddProduct = () => {
+    resetProduct();
     mutate(product, {
       onSuccess: () => {
         setSubMenu('details');
@@ -61,8 +53,8 @@ const ProductsAll = () => {
       {subMenu === 'details' && (
         <Products
           renderSubMenu={subMenuRenderer}
-          productId={productId}
-          newProductId={productId === '' ? createdProduct?._id : ''}
+          productId={productId !== '' ? productId : createdProduct?._id}
+          updateOrCreate={productId !== '' ? 'update' : 'create'}
         />
       )}
     </div>

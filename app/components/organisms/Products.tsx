@@ -6,7 +6,6 @@ import Editor from '../atoms/editor/Editor';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
 import productSchema from '@/sanity/schemas/product';
-import Product from '@/app/service/useProductApi';
 import Modal from '../atoms/modal/Modal';
 import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
@@ -26,11 +25,12 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
+import { useProductStore } from '@/app/stores/useProductStore';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   productId: string | undefined;
-  newProductId: string | undefined;
+  updateOrCreate: string
 }
 const {
   PRODUCT_IMAGE_LIMIT_ERROR,
@@ -38,9 +38,19 @@ const {
   PRODUCT_CREATE_CANCEL,
 } = modalMsgConstants;
 const { FIELD_EMPTY } = commonConstants;
+const PRODUCT_TITLES = [
+  { id: 1, value: 'brand' },
+  { id: 2, value: 'name' },
+  { id: 3, value: 'price' },
+  { id: 4, value: 'quantity' },
+];
 
 const Products = (productProps: ProductsProps) => {
-  const { renderSubMenu, productId, newProductId } = productProps;
+  const product = useProductStore((state) => state.product);
+  const updateProduct = useProductStore((state) => state.updateProduct);
+
+  const queryClient = useQueryClient();
+  const { renderSubMenu, productId, updateOrCreate } = productProps;
   const { mutate: mutateUpdate } = useProductUpdate();
   const {
     mutate: mutateUpdateImg,
@@ -54,29 +64,13 @@ const Products = (productProps: ProductsProps) => {
   const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
     useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
-  const { isLoading, data: existingProduct } = useProductGetById(productId!);
+  const { isLoading: loadingProduct, data: existingProduct } = useProductGetById(productId!);
 
-  const queryClient = useQueryClient();
-  const [product, setProduct] = useState<Product>({
-    category: '',
-    brand: '',
-    name: '',
-    price: '',
-    quantity: '',
-    content: [],
-    productImages: [],
-  });
   const productValues = [
-    product.brand,
-    product.name,
-    product.price,
-    product.quantity,
-  ];
-  const productTitles = [
-    { id: 1, value: 'brand' },
-    { id: 2, value: 'name' },
-    { id: 3, value: 'price' },
-    { id: 4, value: 'quantity' },
+    product?.brand,
+    product?.name,
+    product?.price,
+    product?.quantity,
   ];
   const [imgArr, setImgArr] = useState<File[]>([]);
   const [imgCancelCount, setImgCancelCount] = useState<number>(0);
@@ -94,6 +88,7 @@ const Products = (productProps: ProductsProps) => {
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
+    // load categories
     if (!loadingCategories) {
       setCategoryList(
         categories.map((category: { _id: ''; name: '' }) => {
@@ -104,16 +99,16 @@ const Products = (productProps: ProductsProps) => {
   }, [loadingCategories]);
 
   useEffect(() => {
-    // if product is updated
+    // move data from db to product object
     if (existingProduct) {
-      setProduct(existingProduct);
+      updateProduct(existingProduct);
       setCountImages(existingProduct.productImages.length);
     }
   }, [existingProduct]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountImages(countImages + 1);
-    setImgCancelCount(imgCancelCount + 1);
+    setCountImages(countImages + 1); // image arr limit = 4, track images added
+    setImgCancelCount(imgCancelCount + 1); // to delete added images if cancel product create/update
     if (countImages >= 4) {
       setModalDetails({
         type: 'alert',
@@ -125,17 +120,12 @@ const Products = (productProps: ProductsProps) => {
       let file = e.currentTarget.files;
       setImgArr((prevState) => [...prevState, file?.[0]!]);
 
-      let id;
-      if (productId) id = productId;
-      else id = newProductId!;
-
       mutateUpdateImg(
-        { id: id, images: [file?.[0]!] },
+        { id: productId!, images: [file?.[0]!] },
         {
-          onSuccess: () => {
-            setProduct({ ...product, productImages: updatedImages });
-            queryClient.invalidateQueries({ queryKey: ['product', id] });
-            queryClient.refetchQueries({ queryKey: ['product', id] });
+          onSuccess: async (data) => {
+            // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
+            queryClient.setQueryData(['product', productId], () => ({...product, productImages: data}));
           },
         }
       );
@@ -143,13 +133,12 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleDeleteImg = (url: string) => {
-    const id = product._id ? product._id : newProductId;
     mutateDeleteImg(
-      { id: id!, imageUrl: url },
+      { id: productId!, imageUrl: url },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['product', product._id] });
-          queryClient.refetchQueries({ queryKey: ['product', product._id] });
+        onSuccess: (data) => {
+          // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
+          queryClient.setQueryData(['product', productId], () => ({...product, productImages: data}));
         },
       }
     );
@@ -161,7 +150,7 @@ const Products = (productProps: ProductsProps) => {
     const { name, value } = e.target;
     if (name === 'name' && value === '') setError(true);
     else setError(false);
-    setProduct({ ...product, [name]: value });
+    updateProduct({ ...product, [name]: value });
   };
 
   const handleContentChange = (contentDescription: string) => {
@@ -174,7 +163,7 @@ const Products = (productProps: ProductsProps) => {
       .get('product')
       .fields.find((field: any) => field.name === 'content').type;
     const blocks = htmlToBlocks(contentDescription, blockContentType);
-    setProduct({ ...product, content: blocks });
+    updateProduct({ ...product, content: blocks });
   };
 
   const handleSave = () => {
@@ -184,7 +173,7 @@ const Products = (productProps: ProductsProps) => {
         { id: productId, product: product },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] });
+            queryClient.refetchQueries({ queryKey: ['products'] });
             setModalDetails({
               type: 'alert',
               content: PRODUCT_CREATE_SUCCESS,
@@ -196,10 +185,10 @@ const Products = (productProps: ProductsProps) => {
       );
     } else {
       mutateUpdate(
-        { id: newProductId!, product: product },
+        { id: productId!, product: product },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] });
+            queryClient.refetchQueries({ queryKey: ['products'] });
             setModalDetails({
               type: 'alert',
               content: PRODUCT_CREATE_SUCCESS,
@@ -229,44 +218,31 @@ const Products = (productProps: ProductsProps) => {
 
   const cancelModal = () => {
     close();
-    if (newProductId) {
+    if (updateOrCreate === 'create') {
       // if create new -> cancel -> delete whole product
-      mutateDelete(newProductId, {
-        onSuccess: () => {
-          renderSubMenu('list', '');
-        },
+      mutateDelete(productId!, {
+        onSuccess: () => renderSubMenu('list', ''),
       });
     } else {
       // if update product -> cancel -> delete attached images
       if (imgCancelCount > 0) {
         mutateDeleteImgs(
-          { id: existingProduct._id, numToDelete: imgCancelCount },
-          {
-            onSuccess: () => {
-              queryClient.invalidateQueries({
-                queryKey: ['product', existingProduct._id],
-              });
-              queryClient.refetchQueries({
-                queryKey: ['product', existingProduct._id],
-              });
-              renderSubMenu('list', '');
-            },
-          }
+          { id: productId!, numToDelete: imgCancelCount },
+          { onSuccess: () => updateProduct({ ...product, productImages: updatedImages }), }
         );
-      } else {
-        renderSubMenu('list', '');
-      }
+      } 
+      renderSubMenu('list', '');
     }
   };
 
   return (
     <>
-      {(isLoading ||
+      {(loadingProduct ||
         pendingDelete ||
         pendingUpdateImg ||
         pendingDeleteImg ||
         pendingDeleteImgs) && <Spinner />}
-      {!isLoading && (
+      {!loadingProduct && (
         <>
           <div className={styles['product-details']}>
             <div className={styles['product-images']}>
@@ -324,7 +300,7 @@ const Products = (productProps: ProductsProps) => {
                   value={product.category}
                 />
               )}
-              {productTitles.map((title, idx) => (
+              {PRODUCT_TITLES.map((title, idx) => (
                 <div key={title.id}>
                   <>
                     <Input
