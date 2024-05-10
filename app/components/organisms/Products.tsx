@@ -30,7 +30,7 @@ import { useProductStore } from '@/app/stores/useProductStore';
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   productId: string | undefined;
-  updateOrCreate: string
+  updateOrCreate: string;
 }
 const {
   PRODUCT_IMAGE_LIMIT_ERROR,
@@ -64,7 +64,8 @@ const Products = (productProps: ProductsProps) => {
   const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
     useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
-  const { isLoading: loadingProduct, data: existingProduct } = useProductGetById(productId!);
+  const { isLoading: loadingProduct, data: existingProduct } =
+    useProductGetById(productId!);
 
   const productValues = [
     product?.brand,
@@ -125,7 +126,10 @@ const Products = (productProps: ProductsProps) => {
         {
           onSuccess: async (data) => {
             // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
-            queryClient.setQueryData(['product', productId], () => ({...product, productImages: data}));
+            queryClient.setQueryData(['product', productId], () => ({
+              ...product,
+              productImages: data,
+            }));
           },
         }
       );
@@ -138,7 +142,10 @@ const Products = (productProps: ProductsProps) => {
       {
         onSuccess: (data) => {
           // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
-          queryClient.setQueryData(['product', productId], () => ({...product, productImages: data}));
+          queryClient.setQueryData(['product', productId], () => ({
+            ...product,
+            productImages: data,
+          }));
         },
       }
     );
@@ -228,9 +235,12 @@ const Products = (productProps: ProductsProps) => {
       if (imgCancelCount > 0) {
         mutateDeleteImgs(
           { id: productId!, numToDelete: imgCancelCount },
-          { onSuccess: () => updateProduct({ ...product, productImages: updatedImages }), }
+          {
+            onSuccess: () =>
+              updateProduct({ ...product, productImages: updatedImages }),
+          }
         );
-      } 
+      }
       renderSubMenu('list', '');
     }
   };
