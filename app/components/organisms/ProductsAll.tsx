@@ -6,30 +6,35 @@ import ProductsList from './ProductsList';
 import Products from './Products';
 import Spinner from '../atoms/spinner/Spinner';
 import { useProductStore } from '@/app/stores/useProductStore';
+import { useProductIdStore } from '@/app/stores/useProductIdStore';
+import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
 import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
 
 const ProductsAll = () => {
-  const product = useProductStore((state) => state.product);
-  const resetProduct = useProductStore((state) => state.resetProduct);
-  const {
-    mutate,
-    data: createdProduct,
-    isPending: pendingCreate,
-  } = useProductCreate();
+  const { product, resetProduct } = useProductStore((state) => state);
+  const { productId, updateId } = useProductIdStore((state) => state);
+  const resetImageCount = useImgCancelCount((state) => state.reset);
+
+  const { mutate, isPending: pendingCreate } = useProductCreate();
 
   const [subMenu, setSubMenu] = useState<string>('list');
-  const [productId, setProductId] = useState<string>('');
+  const [formType, setFormType] = useState<string>('');
 
   const subMenuRenderer = (subMenuType: string, id: string) => {
+    resetImageCount();
     resetProduct();
     setSubMenu(subMenuType);
-    setProductId(id);
+    updateId(id);
+    setFormType('update');
   };
 
   const handleAddProduct = () => {
-    resetProduct();
     mutate(product, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        resetImageCount();
+        resetProduct();
+        updateId(data._id!);
+        setFormType('create');
         setSubMenu('details');
       },
     });
@@ -51,11 +56,7 @@ const ProductsAll = () => {
         </>
       )}
       {subMenu === 'details' && (
-        <Products
-          renderSubMenu={subMenuRenderer}
-          productId={productId !== '' ? productId : createdProduct?._id}
-          updateOrCreate={productId !== '' ? 'update' : 'create'}
-        />
+        <Products renderSubMenu={subMenuRenderer} formType={formType} />
       )}
     </div>
   );

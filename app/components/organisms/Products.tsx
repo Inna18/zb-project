@@ -8,15 +8,12 @@ import Button from '../atoms/button/Button';
 import productSchema from '@/sanity/schemas/product';
 import Modal from '../atoms/modal/Modal';
 import Spinner from '../atoms/spinner/Spinner';
-import Image from 'next/image';
 import Select from '../atoms/select/Select';
-import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
+import ProductImages from '../molecules/ProductImages';
 
 import { toHTML } from '@portabletext/to-html';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
-import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
-import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
 import { useProductDeleteImgs } from '@/app/queries/queryHooks/product/useProductDeleteImgs';
 import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
@@ -26,17 +23,15 @@ import { commonConstants } from '@/app/constants/common';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductStore } from '@/app/stores/useProductStore';
+import { useProductIdStore } from '@/app/stores/useProductIdStore';
+import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
-  productId: string | undefined;
-  updateOrCreate: string;
+  formType: string;
 }
-const {
-  PRODUCT_IMAGE_LIMIT_ERROR,
-  PRODUCT_CREATE_SUCCESS,
-  PRODUCT_CREATE_CANCEL,
-} = modalMsgConstants;
+const { PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants;
 const { FIELD_EMPTY } = commonConstants;
 const PRODUCT_TITLES = [
   { id: 1, value: 'brand' },
@@ -46,21 +41,16 @@ const PRODUCT_TITLES = [
 ];
 
 const Products = (productProps: ProductsProps) => {
-  const product = useProductStore((state) => state.product);
-  const updateProduct = useProductStore((state) => state.updateProduct);
+  const { product, updateProduct } = useProductStore((state) => state);
+  const productId = useProductIdStore((state) => state.productId);
+  const imgCancelCount = useImgCancelCount((state) => state.imgCancleCount);
 
   const queryClient = useQueryClient();
-  const { renderSubMenu, productId, updateOrCreate } = productProps;
+  const { renderSubMenu, formType } = productProps;
   const { mutate: mutateUpdate } = useProductUpdate();
-  const {
-    mutate: mutateUpdateImg,
-    data: updatedImages,
-    isPending: pendingUpdateImg,
-  } = useProductUpdateImages();
+  const { data: updatedImages } = useProductUpdateImages();
   const { mutate: mutateDelete, isPending: pendingDelete } =
     useProductDeleteById();
-  const { mutate: mutateDeleteImg, isPending: pendingDeleteImg } =
-    useProductDeleteImg();
   const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
     useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
@@ -73,8 +63,6 @@ const Products = (productProps: ProductsProps) => {
     product?.price,
     product?.quantity,
   ];
-  const [imgArr, setImgArr] = useState<File[]>([]);
-  const [imgCancelCount, setImgCancelCount] = useState<number>(0);
   const [modalDetails, setModalDetails] = useState<{
     type: string;
     content: string;
@@ -106,50 +94,6 @@ const Products = (productProps: ProductsProps) => {
       setCountImages(existingProduct.productImages.length);
     }
   }, [existingProduct]);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountImages(countImages + 1); // image arr limit = 4, track images added
-    setImgCancelCount(imgCancelCount + 1); // to delete added images if cancel product create/update
-    if (countImages >= 4) {
-      setModalDetails({
-        type: 'alert',
-        content: PRODUCT_IMAGE_LIMIT_ERROR,
-        onClose: close,
-      });
-      open();
-    } else {
-      let file = e.currentTarget.files;
-      setImgArr((prevState) => [...prevState, file?.[0]!]);
-
-      mutateUpdateImg(
-        { id: productId!, images: [file?.[0]!] },
-        {
-          onSuccess: async (data) => {
-            // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
-            queryClient.setQueryData(['product', productId], () => ({
-              ...product,
-              productImages: data,
-            }));
-          },
-        }
-      );
-    }
-  };
-
-  const handleDeleteImg = (url: string) => {
-    mutateDeleteImg(
-      { id: productId!, imageUrl: url },
-      {
-        onSuccess: (data) => {
-          // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
-          queryClient.setQueryData(['product', productId], () => ({
-            ...product,
-            productImages: data,
-          }));
-        },
-      }
-    );
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -225,7 +169,7 @@ const Products = (productProps: ProductsProps) => {
 
   const cancelModal = () => {
     close();
-    if (updateOrCreate === 'create') {
+    if (formType === 'create') {
       // if create new -> cancel -> delete whole product
       mutateDelete(productId!, {
         onSuccess: () => renderSubMenu('list', ''),
@@ -247,49 +191,11 @@ const Products = (productProps: ProductsProps) => {
 
   return (
     <>
-      {(loadingProduct ||
-        pendingDelete ||
-        pendingUpdateImg ||
-        pendingDeleteImg ||
-        pendingDeleteImgs) && <Spinner />}
+      {(loadingProduct || pendingDelete || pendingDeleteImgs) && <Spinner />}
       {!loadingProduct && (
         <>
           <div className={styles['product-details']}>
-            <div className={styles['product-images']}>
-              {product.productImages && product.productImages.length <= 0 && (
-                <div className={styles.centered}>No Images</div>
-              )}
-              <div className={styles['images-section']}>
-                {product.productImages &&
-                  product.productImages.map((image: string, idx: number) => (
-                    <span key={image}>
-                      <Image
-                        key={image}
-                        src={image}
-                        alt={'product-img'}
-                        width={idx === 0 ? 210 : 70}
-                        height={idx === 0 ? 210 : 70}
-                      />
-                      <a onClick={() => handleDeleteImg(image)}>
-                        <Image
-                          className={styles['icon-xs']}
-                          src={deleteImgIcon}
-                          alt={'update-icon'}
-                        />
-                      </a>
-                    </span>
-                  ))}
-              </div>
-              <Input
-                type='file'
-                id='product-img'
-                className='image'
-                labelText='Add Image'
-                hasLabel={true}
-                name='productImg'
-                changeFunc={handleImageUpload}
-              />
-            </div>
+            <ProductImages />
             <div className={styles.titles}>
               <div>Category:</div>
               <div>Brand:</div>
