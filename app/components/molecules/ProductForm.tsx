@@ -15,13 +15,19 @@ const PRODUCT_TITLES = [
 ];
 const { FIELD_EMPTY } = commonConstants;
 
-const ProductForm = () => {
+interface ProductFormProps {
+  emptyName: boolean;
+  checkName: (result: boolean) => void;
+}
+
+const ProductForm = (productFormProps: ProductFormProps) => {
+  const { emptyName, checkName } = productFormProps;
+
   const { product, updateProduct } = useProductStore((state) => state);
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
   const [categoryList, setCategoryList] = useState<
     { id: number; value: string }[] | null
   >(null);
-  const [error, setError] = useState<boolean>(false);
 
   const productValues = [
     product?.brand,
@@ -45,8 +51,7 @@ const ProductForm = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    if (name === 'name' && value === '') setError(true);
-    else setError(false);
+    if (name === 'name' && value !== '') checkName(false);
     updateProduct({ ...product, [name]: value });
   };
 
@@ -83,7 +88,7 @@ const ProductForm = () => {
                 className='input'
                 name={title.value}
               />
-              {error && title.value === 'name' && (
+              {emptyName && title.value === 'name' && (
                 <span className={styles.error}>{FIELD_EMPTY}</span>
               )}
             </>

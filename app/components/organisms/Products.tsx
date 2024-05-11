@@ -54,8 +54,7 @@ const Products = (productProps: ProductsProps) => {
     onOk?: () => void;
     onClose?: () => void;
   }>({ type: '', content: '' });
-  const [error, setError] = useState<boolean>(false);
-  // const [countImages, setCountImages] = useState<number>(0);
+  const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
@@ -80,7 +79,7 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleSave = () => {
-    if (product.name === '') setError(true);
+    if (product.name === '') setEmptyName(true);
     else if (productId) {
       mutateUpdate(
         { id: productId, product: product },
@@ -158,7 +157,10 @@ const Products = (productProps: ProductsProps) => {
         <>
           <div className={styles['product-details']}>
             <ProductImages />
-            <ProductForm />
+            <ProductForm
+              emptyName={emptyName}
+              checkName={(result: boolean) => setEmptyName(result)}
+            />
           </div>
           <div className={styles.editor}>
             <Editor
