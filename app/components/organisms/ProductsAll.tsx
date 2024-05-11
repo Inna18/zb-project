@@ -13,7 +13,7 @@ import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCre
 const ProductsAll = () => {
   const { product, resetProduct } = useProductStore((state) => state);
   const { productId, updateId } = useProductIdStore((state) => state);
-  const resetImageCount = useImgCancelCount((state) => state.reset);
+  const resetImageCount = useImgCancelCount((state) => state.resetCancelCount);
 
   const { mutate, isPending: pendingCreate } = useProductCreate();
 

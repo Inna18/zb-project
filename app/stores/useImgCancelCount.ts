@@ -4,16 +4,16 @@ type State = {
   imgCancleCount: number;
 };
 type Action = {
-  increment: () => void;
-  decrement: () => void;
-  reset: () => void;
+  incrementCancelCount: () => void;
+  decrementCancelCount: () => void;
+  resetCancelCount: () => void;
 };
 
 export const useImgCancelCount = create<State & Action>()((set) => ({
   imgCancleCount: 0,
-  increment: () =>
+  incrementCancelCount: () =>
     set((state) => ({ imgCancleCount: state.imgCancleCount + 1 })),
-  decrement: () =>
+  decrementCancelCount: () =>
     set((state) => ({ imgCancleCount: state.imgCancleCount - 1 })),
-  reset: () => set({ imgCancleCount: 0 }),
+  resetCancelCount: () => set({ imgCancleCount: 0 }),
 }));

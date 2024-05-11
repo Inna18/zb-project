@@ -117,3 +117,12 @@
   grid-row-end: 4;
   grid-column-end: 5;
 }
+/* product form */
+.titles div {
+  margin: 26px 0;
+  height: 30px;
+}
+.updates div {
+  margin-top: 16px;
+  height: 38px;
+}
