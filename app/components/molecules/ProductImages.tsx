@@ -12,33 +12,26 @@ import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProd
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
-import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
-import { useImgLimitCount } from '@/app/stores/useImgLimitCount';
+import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
+import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
 import { useModal } from '@/app/hooks/useModal';
+import { useModalStore } from '@/app/stores/useModalStore';
 
 const { PRODUCT_IMAGE_LIMIT_ERROR } = modalMsgConstants;
 
 const ProductImages = () => {
   const product = useProductStore((state) => state.product);
   const productId = useProductIdStore((state) => state.productId);
-  const { incrementCancelCount, decrementCancelCount } = useImgCancelCount(
+  const { incrementCancelCount, decrementCancelCount } = useImgCancelCountStore(
     (state) => state
   );
-  const { imgLimitCount, incrementLimitCount } = useImgLimitCount(
+  const { imgLimitCount, incrementLimitCount } = useImgLimitCountStore(
     (state) => state
   );
-
-  const queryClient = useQueryClient();
-
-  // const [countImages, setCountImages] = useState<number>(0);
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
+  const { modal, setModal } = useModalStore((state) => state);
   const { open, close, isOpen } = useModal();
 
+  const queryClient = useQueryClient();
   const {
     mutate: mutateUpdateImg,
     data: updatedImages,
@@ -51,7 +44,7 @@ const ProductImages = () => {
     incrementLimitCount(); // image arr limit = 4, track images added
     incrementCancelCount(); // to delete added images if cancel product create/update
     if (imgLimitCount >= 4) {
-      setModalDetails({
+      setModal({
         type: 'alert',
         content: PRODUCT_IMAGE_LIMIT_ERROR,
         onClose: close,
@@ -132,10 +125,9 @@ const ProductImages = () => {
       <Modal
         selector={'portal'}
         show={isOpen}
-        type={modalDetails.type}
-        content={modalDetails.content}
-        onOk={modalDetails.onOk}
-        onClose={modalDetails.onClose}
+        type={modal.type}
+        content={modal.content}
+        onClose={modal.onClose}
       />
     </>
   );

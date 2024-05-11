@@ -21,21 +21,31 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
-import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
-import { useImgLimitCount } from '@/app/stores/useImgLimitCount';
+import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
+import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
+import { useModalStore } from '@/app/stores/useModalStore';
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   formType: string;
 }
-const { PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants;
+const {
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_CREATE_CANCEL,
+} = modalMsgConstants;
 
 const Products = (productProps: ProductsProps) => {
   const { product, updateProduct } = useProductStore((state) => state);
   const productId = useProductIdStore((state) => state.productId);
-  const imgCancelCount = useImgCancelCount((state) => state.imgCancleCount);
-  const setImgLimitCount = useImgLimitCount((state) => state.setImgLimitCount);
+  const imgCancelCount = useImgCancelCountStore(
+    (state) => state.imgCancleCount
+  );
+  const setImgLimitCount = useImgLimitCountStore(
+    (state) => state.setImgLimitCount
+  );
+  const { modal, setModal } = useModalStore((state) => state);
 
   const queryClient = useQueryClient();
   const { renderSubMenu, formType } = productProps;
@@ -48,12 +58,6 @@ const Products = (productProps: ProductsProps) => {
   const { isLoading: loadingProduct, data: existingProduct } =
     useProductGetById(productId!);
 
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
   const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
@@ -79,31 +83,18 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleSave = () => {
+    let content =
+      formType === 'create' ? PRODUCT_CREATE_SUCCESS : PRODUCT_UPDATE_SUCCESS;
     if (product.name === '') setEmptyName(true);
-    else if (productId) {
+    else {
       mutateUpdate(
         { id: productId, product: product },
         {
           onSuccess: () => {
             queryClient.refetchQueries({ queryKey: ['products'] });
-            setModalDetails({
+            setModal({
               type: 'alert',
-              content: PRODUCT_CREATE_SUCCESS,
-              onClose: routeBack,
-            });
-            open();
-          },
-        }
-      );
-    } else {
-      mutateUpdate(
-        { id: productId!, product: product },
-        {
-          onSuccess: () => {
-            queryClient.refetchQueries({ queryKey: ['products'] });
-            setModalDetails({
-              type: 'alert',
-              content: PRODUCT_CREATE_SUCCESS,
+              content: content,
               onClose: routeBack,
             });
             open();
@@ -114,7 +105,7 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleCancel = () => {
-    setModalDetails({
+    setModal({
       type: 'confirm',
       content: PRODUCT_CREATE_CANCEL,
       onOk: cancelModal,
@@ -179,10 +170,10 @@ const Products = (productProps: ProductsProps) => {
           <Modal
             selector={'portal'}
             show={isOpen}
-            type={modalDetails.type}
-            content={modalDetails.content}
-            onOk={modalDetails.onOk}
-            onClose={modalDetails.onClose}
+            type={modal.type}
+            content={modal.content}
+            onOk={modal.onOk}
+            onClose={modal.onClose}
           />
         </>
       )}

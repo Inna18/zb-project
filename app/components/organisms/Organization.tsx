@@ -12,20 +12,16 @@ import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/use
 import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useModalStore } from '@/app/stores/useModalStore';
 
 const { ORGANIZATION_UPDATE_SUCCESS, ORGANIZATION_UPDATE_CANCEL } =
   modalMsgConstants;
 
 const Organization = () => {
+  const { modal, setModal } = useModalStore((state) => state);
   const queryClient = useQueryClient();
   const { isLoading, data: organization } = useOrganizationGet();
   const [show, setShow] = useState<string>('view');
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
   const [myOrganization, setMyOrganization] = useState<OrganizationEntity>({
     _id: '',
     name: '',
@@ -116,7 +112,7 @@ const Organization = () => {
   };
 
   const handleOrgCancel = () => {
-    setModalDetails({
+    setModal({
       type: 'confirm',
       content: ORGANIZATION_UPDATE_CANCEL,
       onOk: handleMove,
@@ -134,7 +130,7 @@ const Organization = () => {
       mutate(myOrganization, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['organization'] });
-          setModalDetails({
+          setModal({
             type: 'alert',
             content: ORGANIZATION_UPDATE_SUCCESS,
             onClose: handleMove,
@@ -195,10 +191,10 @@ const Organization = () => {
           <Modal
             selector={'portal'}
             show={isOpen}
-            type={modalDetails.type}
-            content={modalDetails.content}
-            onOk={modalDetails.onOk}
-            onClose={modalDetails.onClose}
+            type={modal.type}
+            content={modal.content}
+            onOk={modal.onOk}
+            onClose={modal.onClose}
           />
         </>
       )}

@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 
-type State = {
+interface State {
   imgCancleCount: number;
-};
-type Action = {
+}
+interface Action {
   incrementCancelCount: () => void;
   decrementCancelCount: () => void;
   resetCancelCount: () => void;
-};
+}
 
-export const useImgCancelCount = create<State & Action>()((set) => ({
+export const useImgCancelCountStore = create<State & Action>()((set) => ({
   imgCancleCount: 0,
   incrementCancelCount: () =>
     set((state) => ({ imgCancleCount: state.imgCancleCount + 1 })),

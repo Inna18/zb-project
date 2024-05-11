@@ -9,7 +9,7 @@ interface Action {
   resetLimitCount: () => void;
 }
 
-export const useImgLimitCount = create<State & Action>()((set) => ({
+export const useImgLimitCountStore = create<State & Action>()((set) => ({
   imgLimitCount: 0,
   setImgLimitCount: (count) => set(() => ({ imgLimitCount: count })),
   incrementLimitCount: () =>
