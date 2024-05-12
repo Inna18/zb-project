@@ -5,7 +5,7 @@ export default interface Category {
   name: string;
 }
 
-const BASE_QUERY = `*[_type == 'category']{
+const BASE_QUERY = `*[_type == 'category'] | order(name asc) {
     _id,
     name
 }`;

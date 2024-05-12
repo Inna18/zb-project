@@ -6,18 +6,14 @@ import Editor from '../atoms/editor/Editor';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
 import productSchema from '@/sanity/schemas/product';
-import Product from '@/app/service/useProductApi';
 import Modal from '../atoms/modal/Modal';
 import Spinner from '../atoms/spinner/Spinner';
-import Image from 'next/image';
 import Select from '../atoms/select/Select';
-import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
+import ProductImages from '../molecules/ProductImages';
 
 import { toHTML } from '@portabletext/to-html';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
-import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
-import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
 import { useProductDeleteImgs } from '@/app/queries/queryHooks/product/useProductDeleteImgs';
 import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
@@ -26,60 +22,47 @@ import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
+import { useProductStore } from '@/app/stores/useProductStore';
+import { useProductIdStore } from '@/app/stores/useProductIdStore';
+import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
-  productId: string | undefined;
-  newProductId: string | undefined;
+  formType: string;
 }
-const {
-  PRODUCT_IMAGE_LIMIT_ERROR,
-  PRODUCT_CREATE_SUCCESS,
-  PRODUCT_CREATE_CANCEL,
-} = modalMsgConstants;
+const { PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants;
 const { FIELD_EMPTY } = commonConstants;
+const PRODUCT_TITLES = [
+  { id: 1, value: 'brand' },
+  { id: 2, value: 'name' },
+  { id: 3, value: 'price' },
+  { id: 4, value: 'quantity' },
+];
 
 const Products = (productProps: ProductsProps) => {
-  const { renderSubMenu, productId, newProductId } = productProps;
+  const { product, updateProduct } = useProductStore((state) => state);
+  const productId = useProductIdStore((state) => state.productId);
+  const imgCancelCount = useImgCancelCount((state) => state.imgCancleCount);
+
+  const queryClient = useQueryClient();
+  const { renderSubMenu, formType } = productProps;
   const { mutate: mutateUpdate } = useProductUpdate();
-  const {
-    mutate: mutateUpdateImg,
-    data: updatedImages,
-    isPending: pendingUpdateImg,
-  } = useProductUpdateImages();
+  const { data: updatedImages } = useProductUpdateImages();
   const { mutate: mutateDelete, isPending: pendingDelete } =
     useProductDeleteById();
-  const { mutate: mutateDeleteImg, isPending: pendingDeleteImg } =
-    useProductDeleteImg();
   const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
     useProductDeleteImgs();
   const { isLoading: loadingCategories, data: categories } = useCategoryList();
-  const { isLoading, data: existingProduct } = useProductGetById(productId!);
+  const { isLoading: loadingProduct, data: existingProduct } =
+    useProductGetById(productId!);
 
-  const queryClient = useQueryClient();
-  const [product, setProduct] = useState<Product>({
-    category: '',
-    brand: '',
-    name: '',
-    price: '',
-    quantity: '',
-    content: [],
-    productImages: [],
-  });
   const productValues = [
-    product.brand,
-    product.name,
-    product.price,
-    product.quantity,
+    product?.brand,
+    product?.name,
+    product?.price,
+    product?.quantity,
   ];
-  const productTitles = [
-    { id: 1, value: 'brand' },
-    { id: 2, value: 'name' },
-    { id: 3, value: 'price' },
-    { id: 4, value: 'quantity' },
-  ];
-  const [imgArr, setImgArr] = useState<File[]>([]);
-  const [imgCancelCount, setImgCancelCount] = useState<number>(0);
   const [modalDetails, setModalDetails] = useState<{
     type: string;
     content: string;
@@ -94,6 +77,7 @@ const Products = (productProps: ProductsProps) => {
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
+    // load categories
     if (!loadingCategories) {
       setCategoryList(
         categories.map((category: { _id: ''; name: '' }) => {
@@ -104,56 +88,12 @@ const Products = (productProps: ProductsProps) => {
   }, [loadingCategories]);
 
   useEffect(() => {
-    // if product is updated
+    // move data from db to product object
     if (existingProduct) {
-      setProduct(existingProduct);
+      updateProduct(existingProduct);
       setCountImages(existingProduct.productImages.length);
     }
   }, [existingProduct]);
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountImages(countImages + 1);
-    setImgCancelCount(imgCancelCount + 1);
-    if (countImages >= 4) {
-      setModalDetails({
-        type: 'alert',
-        content: PRODUCT_IMAGE_LIMIT_ERROR,
-        onClose: close,
-      });
-      open();
-    } else {
-      let file = e.currentTarget.files;
-      setImgArr((prevState) => [...prevState, file?.[0]!]);
-
-      let id;
-      if (productId) id = productId;
-      else id = newProductId!;
-
-      mutateUpdateImg(
-        { id: id, images: [file?.[0]!] },
-        {
-          onSuccess: () => {
-            setProduct({ ...product, productImages: updatedImages });
-            queryClient.invalidateQueries({ queryKey: ['product', id] });
-            queryClient.refetchQueries({ queryKey: ['product', id] });
-          },
-        }
-      );
-    }
-  };
-
-  const handleDeleteImg = (url: string) => {
-    const id = product._id ? product._id : newProductId;
-    mutateDeleteImg(
-      { id: id!, imageUrl: url },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['product', product._id] });
-          queryClient.refetchQueries({ queryKey: ['product', product._id] });
-        },
-      }
-    );
-  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -161,7 +101,7 @@ const Products = (productProps: ProductsProps) => {
     const { name, value } = e.target;
     if (name === 'name' && value === '') setError(true);
     else setError(false);
-    setProduct({ ...product, [name]: value });
+    updateProduct({ ...product, [name]: value });
   };
 
   const handleContentChange = (contentDescription: string) => {
@@ -174,7 +114,7 @@ const Products = (productProps: ProductsProps) => {
       .get('product')
       .fields.find((field: any) => field.name === 'content').type;
     const blocks = htmlToBlocks(contentDescription, blockContentType);
-    setProduct({ ...product, content: blocks });
+    updateProduct({ ...product, content: blocks });
   };
 
   const handleSave = () => {
@@ -184,7 +124,7 @@ const Products = (productProps: ProductsProps) => {
         { id: productId, product: product },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] });
+            queryClient.refetchQueries({ queryKey: ['products'] });
             setModalDetails({
               type: 'alert',
               content: PRODUCT_CREATE_SUCCESS,
@@ -196,10 +136,10 @@ const Products = (productProps: ProductsProps) => {
       );
     } else {
       mutateUpdate(
-        { id: newProductId!, product: product },
+        { id: productId!, product: product },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['products'] });
+            queryClient.refetchQueries({ queryKey: ['products'] });
             setModalDetails({
               type: 'alert',
               content: PRODUCT_CREATE_SUCCESS,
@@ -229,81 +169,33 @@ const Products = (productProps: ProductsProps) => {
 
   const cancelModal = () => {
     close();
-    if (newProductId) {
+    if (formType === 'create') {
       // if create new -> cancel -> delete whole product
-      mutateDelete(newProductId, {
-        onSuccess: () => {
-          renderSubMenu('list', '');
-        },
+      mutateDelete(productId!, {
+        onSuccess: () => renderSubMenu('list', ''),
       });
     } else {
       // if update product -> cancel -> delete attached images
       if (imgCancelCount > 0) {
         mutateDeleteImgs(
-          { id: existingProduct._id, numToDelete: imgCancelCount },
+          { id: productId!, numToDelete: imgCancelCount },
           {
-            onSuccess: () => {
-              queryClient.invalidateQueries({
-                queryKey: ['product', existingProduct._id],
-              });
-              queryClient.refetchQueries({
-                queryKey: ['product', existingProduct._id],
-              });
-              renderSubMenu('list', '');
-            },
+            onSuccess: () =>
+              updateProduct({ ...product, productImages: updatedImages }),
           }
         );
-      } else {
-        renderSubMenu('list', '');
       }
+      renderSubMenu('list', '');
     }
   };
 
   return (
     <>
-      {(isLoading ||
-        pendingDelete ||
-        pendingUpdateImg ||
-        pendingDeleteImg ||
-        pendingDeleteImgs) && <Spinner />}
-      {!isLoading && (
+      {(loadingProduct || pendingDelete || pendingDeleteImgs) && <Spinner />}
+      {!loadingProduct && (
         <>
           <div className={styles['product-details']}>
-            <div className={styles['product-images']}>
-              {product.productImages && product.productImages.length <= 0 && (
-                <div className={styles.centered}>No Images</div>
-              )}
-              <div className={styles['images-section']}>
-                {product.productImages &&
-                  product.productImages.map((image: string, idx: number) => (
-                    <span key={image}>
-                      <Image
-                        key={image}
-                        src={image}
-                        alt={'product-img'}
-                        width={idx === 0 ? 210 : 70}
-                        height={idx === 0 ? 210 : 70}
-                      />
-                      <a onClick={() => handleDeleteImg(image)}>
-                        <Image
-                          className={styles['icon-xs']}
-                          src={deleteImgIcon}
-                          alt={'update-icon'}
-                        />
-                      </a>
-                    </span>
-                  ))}
-              </div>
-              <Input
-                type='file'
-                id='product-img'
-                className='image'
-                labelText='Add Image'
-                hasLabel={true}
-                name='productImg'
-                changeFunc={handleImageUpload}
-              />
-            </div>
+            <ProductImages />
             <div className={styles.titles}>
               <div>Category:</div>
               <div>Brand:</div>
@@ -324,7 +216,7 @@ const Products = (productProps: ProductsProps) => {
                   value={product.category}
                 />
               )}
-              {productTitles.map((title, idx) => (
+              {PRODUCT_TITLES.map((title, idx) => (
                 <div key={title.id}>
                   <>
                     <Input

@@ -11,6 +11,7 @@ export default interface Product {
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
+  _createdAt?: string;
 }
 
 const BASE_QUERY = `*[_type == 'product']{
@@ -41,33 +42,46 @@ async function getProductById(id: string) {
   return productById;
 }
 
-async function getProductList() {
-  const query = `*[_type == 'product']{
-    _id,
-    category,
-    brand,
-    name,
-    "productImages": productImages[].asset->url
-  }`;
+async function getProductList(orderBy: string, filter?: string | null) {
+  let query;
+  if (filter) {
+    query = `*[_type == 'product' && category == '${filter}'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url
+    }`;
+  } else {
+    query = `*[_type == 'product'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url
+    }`;
+  }
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
   return productList;
 }
 
 async function getBestProductList(count: number) {
-  const query = `*[_type == 'product'][0...${count}]{
+  const query = `*[_type == 'product'] | order(rating desc, _createdAt desc) [0...${count}]{
     _id,
     category,
     brand,
     name,
     price,
     rating,
+    _createdAt,
     "productImages": productImages[].asset->url
   }`;
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
   return productList;
-  
 }
 
 async function createProduct(product: Product) {
@@ -78,7 +92,6 @@ async function createProduct(product: Product) {
   productImages = await Promise.all(promises);
 
   const sanityProduct = {
-    id: product._id,
     _type: 'product',
     category: product.category,
     brand: product.brand,
@@ -155,6 +168,9 @@ async function deleteProductImage(id: string, imageUrl: string) {
   const imagesToRemove = [`productImages[_key==\"${key}\"]`];
   const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
   console.log(updatedImages);
+  const imagesFromDb = await getProductImages(id);
+  console.log(imagesFromDb.productImages);
+  return imagesFromDb.productImages;
 }
 
 async function deleteProductImages(id: string, numToDelete: number) {

@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 interface DropdownProps {
-  list: { id: number; value: string }[];
+  list: { id: number; value: string; link?: string | undefined }[];
   open: boolean;
   handleClose: ((param: boolean) => void) | undefined;
   handlePath: (param: string) => URL;
@@ -28,7 +28,9 @@ const Dropdown = (dropdownProps: DropdownProps) => {
         list.map((selectElem) => (
           <li key={selectElem.id}>
             <Link
-              href={handlePath(selectElem.value)}
+              href={handlePath(
+                selectElem.link ? selectElem.link : selectElem.value
+              )}
               onClick={handleDropLogout(selectElem.value)}
             >
               {selectElem.value}

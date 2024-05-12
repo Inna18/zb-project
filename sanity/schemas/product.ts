@@ -8,7 +8,7 @@ export default {
     { name: 'name', title: 'Name', type: 'string' },
     { name: 'price', title: 'Price', type: 'string' },
     { name: 'quantity', title: 'Quantity', type: 'string' },
-    { name: 'rating', title: 'Rating', type: 'number' },
+    { name: 'rating', title: 'Rating', type: 'number', initialValue: 0 },
     {
       name: 'content',
       title: 'Content',

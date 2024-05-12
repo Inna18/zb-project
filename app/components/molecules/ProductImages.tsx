@@ -1,0 +1,127 @@
+import styles from './molecules.module.css';
+
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Input from '../atoms/input/Input';
+import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
+import { useProductStore } from '@/app/stores/useProductStore';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
+import Spinner from '../atoms/spinner/Spinner';
+import { useProductIdStore } from '@/app/stores/useProductIdStore';
+import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+
+const { PRODUCT_IMAGE_LIMIT_ERROR } = modalMsgConstants;
+
+const ProductImages = () => {
+  const product = useProductStore((state) => state.product);
+  const productId = useProductIdStore((state) => state.productId);
+  const { increment, decrement } = useImgCancelCount((state) => state);
+
+  const queryClient = useQueryClient();
+
+  const [countImages, setCountImages] = useState<number>(0);
+  const [modalDetails, setModalDetails] = useState<{
+    type: string;
+    content: string;
+    onOk?: () => void;
+    onClose?: () => void;
+  }>({ type: '', content: '' });
+
+  const {
+    mutate: mutateUpdateImg,
+    data: updatedImages,
+    isPending: pendingUpdateImg,
+  } = useProductUpdateImages();
+  const { mutate: mutateDeleteImg, isPending: pendingDeleteImg } =
+    useProductDeleteImg();
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCountImages(countImages + 1); // image arr limit = 4, track images added
+    increment(); // to delete added images if cancel product create/update
+    if (countImages >= 4) {
+      setModalDetails({
+        type: 'alert',
+        content: PRODUCT_IMAGE_LIMIT_ERROR,
+        onClose: close,
+      });
+      open();
+    } else {
+      let file = e.currentTarget.files;
+      mutateUpdateImg(
+        { id: productId!, images: [file?.[0]!] },
+        {
+          onSuccess: async (data) => {
+            // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
+            queryClient.setQueryData(['product', productId], () => ({
+              ...product,
+              productImages: data,
+            }));
+          },
+        }
+      );
+    }
+  };
+
+  const handleDeleteImg = (url: string) => {
+    decrement();
+    mutateDeleteImg(
+      { id: productId!, imageUrl: url },
+      {
+        onSuccess: (data) => {
+          // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
+          queryClient.setQueryData(['product', productId], () => ({
+            ...product,
+            productImages: data,
+          }));
+        },
+      }
+    );
+  };
+
+  return (
+    <>
+      {(pendingUpdateImg || pendingDeleteImg) && <Spinner />}
+
+      <div className={styles['product-images']}>
+        {product.productImages && product.productImages.length <= 0 && (
+          <div className={styles.centered}>No Images</div>
+        )}
+        <div className={styles['images-section']}>
+          {product.productImages &&
+            product.productImages.map((image: string, idx: number) => (
+              <span key={image}>
+                <Image
+                  key={image}
+                  src={image}
+                  alt={'product-img'}
+                  width={idx === 0 ? 210 : 70}
+                  height={idx === 0 ? 210 : 70}
+                />
+                <a onClick={() => handleDeleteImg(image)}>
+                  <Image
+                    className={styles['icon-xs']}
+                    src={deleteImgIcon}
+                    alt={'update-icon'}
+                  />
+                </a>
+              </span>
+            ))}
+        </div>
+        <Input
+          type='file'
+          id='product-img'
+          className='image'
+          labelText='Add Image'
+          hasLabel={true}
+          name='productImg'
+          changeFunc={handleImageUpload}
+        />
+      </div>
+    </>
+  );
+};
+
+export default ProductImages;

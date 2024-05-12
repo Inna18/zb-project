@@ -6,5 +6,6 @@ export const useProductGetById = (id: string) => {
   return useQuery({
     queryKey: PRODUCT_KEYS.get(id),
     queryFn: async () => await getProductById(id),
+    refetchOnWindowFocus: false,
   });
 };

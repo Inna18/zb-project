@@ -1,7 +1,12 @@
+import ShopTemplate from '@/app/components/templates/ShopTemplate';
 import React from 'react';
 
 const Shop = () => {
-  return <div>Shop</div>;
+  return (
+    <div>
+      <ShopTemplate />
+    </div>
+  );
 };
 
 export default Shop;
