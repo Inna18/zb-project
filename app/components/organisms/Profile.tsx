@@ -53,7 +53,7 @@ const Profile = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
-  const { mutate, status } = useUserUpdate();
+  const { mutate } = useUserUpdate();
   const { open, close, isOpen } = useModal();
 
   const handleInputChange = (

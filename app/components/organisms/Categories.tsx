@@ -28,6 +28,7 @@ const Categories = () => {
   const { mutate: mutateDelete, isPending: pendingDelete } =
     useCategoryDelete();
   const { open, close, isOpen } = useModal();
+  const isLoadingOrPending = isLoading || pendingCreate || pendingDelete;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -63,7 +64,7 @@ const Categories = () => {
 
   return (
     <>
-      {(isLoading || pendingCreate || pendingDelete) && <Spinner />}
+      {isLoadingOrPending && <Spinner />}
       {!isLoading && (
         <>
           <div className={styles['categories-section']}>

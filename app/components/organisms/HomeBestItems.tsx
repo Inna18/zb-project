@@ -16,6 +16,7 @@ const HomeBestItems = () => {
     data: productList,
     refetch,
   } = useBestProductList(loadCount);
+  const isLoadingOrRefetching = isLoading || isRefetching;
 
   useEffect(() => {
     refetch();
@@ -27,7 +28,7 @@ const HomeBestItems = () => {
     <div className={styles['best-items']}>
       <div className={styles.title}>Best Items</div>
       <div>
-        {(isLoading || isRefetching) && <Spinner />}
+        {isLoadingOrRefetching && <Spinner />}
         {!isLoading && (
           <>
             <div className={styles['best-items-list']}>
