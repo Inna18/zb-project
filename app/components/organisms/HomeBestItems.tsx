@@ -37,7 +37,7 @@ const HomeBestItems = () => {
               )}
               {productList &&
                 productList.map((product: Product) => (
-                  <ProductCard product={product} />
+                  <ProductCard key={product._id} product={product} />
                 ))}
             </div>
             {productList.length > 0 && (

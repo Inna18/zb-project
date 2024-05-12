@@ -20,7 +20,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div>
       <div
-        key={product._id}
         className={styles['product-card']}
         onClick={() => handleShopDetails(product._id!)}
       >

@@ -39,6 +39,16 @@
   cursor: pointer;
   box-shadow: 0 0 5px #e58025;
 }
+.button2-long {
+  width: 100px;
+  height: 40px;
+  background-color: #fff;
+  border: 1px solid #e58025;
+  border-radius: 12px;
+  color: #e58025;
+  cursor: pointer;
+  box-shadow: 0 0 5px #e58025;
+}
 .button-small {
   width: 36px;
   height: 36px;

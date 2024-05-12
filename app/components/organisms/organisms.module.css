@@ -271,3 +271,51 @@
 .best-items-list .empty {
   grid-column-end: span 5;
 }
+
+/* details description */
+.upper {
+  height: 420px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 140px;
+}
+.upper .description div {
+  padding: 10px 0;
+}
+.upper .description .brand {
+  font-weight: 600;
+  font-size: 16px;
+  color: rgb(36, 34, 32, 0.3);
+}
+.upper .description .category {
+  font-size: 14px;
+  padding: 4px;
+  background-color: rgb(99, 96, 93, 0.1);
+}
+.upper .description .name {
+  font-size: 30px;
+  font-weight: 600;
+  color: #e58025;
+}
+.upper .description .rating {
+  display: flex;
+  align-items: center;
+}
+.upper .description .price-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 20px;
+  margin: 20px 0;
+  border-top: 1px solid rgb(99, 96, 93, 0.1);
+}
+.upper .description .price {
+  font-size: 20px;
+}
+.upper .description .btn-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.upper .description .btn-section button:nth-child(1) {
+  margin-right: 30px;
+}

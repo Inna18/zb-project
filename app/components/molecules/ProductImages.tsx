@@ -1,6 +1,6 @@
 import styles from './molecules.module.css';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Input from '../atoms/input/Input';
 import Spinner from '../atoms/spinner/Spinner';
@@ -86,7 +86,6 @@ const ProductImages = () => {
   return (
     <>
       {(pendingUpdateImg || pendingDeleteImg) && <Spinner />}
-
       <div className={styles['product-images']}>
         {product.productImages && product.productImages.length <= 0 && (
           <div className={styles.centered}>No Images</div>

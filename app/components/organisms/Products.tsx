@@ -58,7 +58,8 @@ const Products = (productProps: ProductsProps) => {
   const { isLoading: loadingProduct, data: existingProduct } =
     useProductGetById(productId!);
 
-  const isLoadingOrPending = loadingProduct || pendingDelete || pendingDeleteImgs;
+  const isLoadingOrPending =
+    loadingProduct || pendingDelete || pendingDeleteImgs;
   const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
