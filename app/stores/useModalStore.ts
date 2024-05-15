@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 interface Modal {
-  type: string;
+  type: 'confirm' | 'alert';
   content: string;
   onOk?: () => void;
   onClose?: () => void;
@@ -14,7 +14,7 @@ interface Action {
   setModal: (updatedModal: Modal) => void;
 }
 const initialState: Modal = {
-  type: '',
+  type: 'confirm',
   content: '',
 };
 export const useModalStore = create<State & Action>()((set) => ({

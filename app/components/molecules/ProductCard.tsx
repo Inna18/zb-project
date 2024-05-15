@@ -24,17 +24,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
         onClick={() => handleShopDetails(product._id!)}
       >
         <div className={styles['image-section']}>
-          {product.productImages && product.productImages?.length <= 0 && (
+          {product.productImages && ((product.productImages?.length <= 0) ? (
             <div className={styles.centered}>No Image</div>
-          )}
-          {product.productImages && product.productImages.length > 0 && (
+          ) : (
             <Image
               src={product.productImages[0]}
               alt={'item-image'}
               width={200}
               height={200}
             />
-          )}
+          ))}
         </div>
         <div className={styles['decription-section']}>
           <div className={styles.name}>{product.name}</div>
