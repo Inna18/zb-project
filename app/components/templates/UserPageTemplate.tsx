@@ -12,47 +12,29 @@ import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
+import { useTabRenderer } from '@/app/hooks/useTabRenderer';
 
 const UserPageTemplate = () => {
   const session = useSession();
-  const [list, setList] = useState<{ id: number; value: string }[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('profile');
-
-  const handleActiveTab = (tab: string) => {
-    setActiveTab(tab);
-  };
+  const [list, setList] = useState<
+    { id: number; value: string; component: React.JSX.Element }[]
+  >([]);
+  const { handleActiveTab, tabRenderer, activeTab } = useTabRenderer(list);
 
   const handleCurrentUser = async () => {
     const user = session.data?.user;
     if (user && user.role === 'ADMIN')
       setList([
-        { id: 1, value: 'profile' },
-        { id: 2, value: 'organization' },
-        { id: 3, value: 'categories' },
-        { id: 4, value: 'products' },
+        { id: 1, value: 'profile', component: <Profile /> },
+        { id: 2, value: 'organization', component: <Organization /> },
+        { id: 3, value: 'categories', component: <Categories /> },
+        { id: 4, value: 'products', component: <ProductsAll /> },
       ]);
     else if (user && user.role === 'USER') {
       setList([
-        { id: 1, value: 'profile' },
-        { id: 2, value: 'orders' },
+        { id: 1, value: 'profile', component: <Profile /> },
+        { id: 2, value: 'orders', component: <Orders /> },
       ]);
-    }
-  };
-
-  const tabRenderer = (activeTab: string) => {
-    switch (activeTab) {
-      case 'profile':
-        return <Profile />;
-      case 'orders':
-        return <Orders />;
-      case 'organization':
-        return <Organization />;
-      case 'categories':
-        return <Categories />;
-      case 'products':
-        return <ProductsAll />;
-      default:
-        return null;
     }
   };
 
@@ -75,7 +57,7 @@ const UserPageTemplate = () => {
           </Link>
         ))}
       </div>
-      <div className={styles['mypage-tabs']}>{tabRenderer(activeTab)}</div>
+      <div className={styles['mypage-tabs']}>{list && tabRenderer()}</div>
     </div>
   );
 };

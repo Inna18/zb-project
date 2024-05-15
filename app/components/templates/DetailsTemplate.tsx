@@ -1,7 +1,7 @@
 'use client';
 import styles from './templates.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Spinner from '../atoms/spinner/Spinner';
 import DetailsDescription from '../organisms/DetailsDescription';
@@ -10,11 +10,15 @@ import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGe
 import { useSearchParams } from 'next/navigation';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { toUpper } from '@/app/utils/text';
+import { useTabRenderer } from '@/app/hooks/useTabRenderer';
+import About from '../organisms/About';
+import Reviews from '../organisms/Reviews';
+import DeliveryReturn from '../organisms/DeliveryReturn';
 
 const TABS = [
-  { id: 1, value: 'about' },
-  { id: 2, value: 'reviews' },
-  { id: 3, value: 'delivery & return' },
+  { id: 1, value: 'about', component: <About /> },
+  { id: 2, value: 'reviews', component: <Reviews /> },
+  { id: 3, value: 'delivery & return', component: <DeliveryReturn /> },
 ];
 
 const DetailsTemplate = () => {
@@ -23,10 +27,7 @@ const DetailsTemplate = () => {
   const { isLoading: loadingProduct, data: existingProduct } =
     useProductGetById(productId!);
 
-  const [activeTab, setActiveTab] = useState<string>('about');
-  const handleActiveTab = (tab: string) => {
-    setActiveTab(tab);
-  };
+  const { handleActiveTab, tabRenderer, activeTab } = useTabRenderer(TABS);
 
   useEffect(() => {
     updateProduct(existingProduct);
@@ -51,6 +52,7 @@ const DetailsTemplate = () => {
                 </Link>
               ))}
             </div>
+            <div className={styles['mypage-tabs']}>{TABS && tabRenderer()}</div>
           </div>
         </div>
       )}
