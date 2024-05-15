@@ -32,7 +32,7 @@
   padding: 10px;
   margin: 10px;
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 9fr 1fr;
   border: 1px solid;
   border-radius: 4px;
   align-items: center;
@@ -204,13 +204,24 @@
 .icons-section div:nth-child(1) {
   margin-right: 6px;
 }
-.icons-section .icon {
+.icons-section .icon,
+.status .icon {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
 .icons-section .icon:nth-child(1) {
   margin-left: 16px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.status .icon {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
 }
 
 /* dropdown */

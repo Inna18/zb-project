@@ -11,7 +11,7 @@ const DescriptionImages = () => {
 
   useEffect(() => {
     if (product.productImages) {
-      if (product.productImages.length <= 0) return; 
+      if (product.productImages.length <= 0) return;
       else setMainImage(product.productImages[0]);
     }
   }, [product]);
@@ -28,12 +28,12 @@ const DescriptionImages = () => {
       <div className={styles['images-section']}>
         {product.productImages && product.productImages.length > 0 && (
           <Image
-          key={mainImage}
-          src={mainImage ? mainImage : ''}
-          alt={'product-img'}
-          width={250}
-          height={250}
-        />
+            key={mainImage}
+            src={mainImage ? mainImage : ''}
+            alt={'product-img'}
+            width={250}
+            height={250}
+          />
         )}
         {product.productImages &&
           product.productImages.map((image: string) => (

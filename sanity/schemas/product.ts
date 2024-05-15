@@ -34,5 +34,6 @@ export default {
       validation: (Rule: any) => Rule.max(4),
       options: { hotspot: true },
     },
+    { name: 'posted', title: 'Posted', type: 'boolean' },
   ],
 };

@@ -227,3 +227,23 @@
   grid-row-end: 5;
   grid-column-end: 5;
 }
+
+/* product list icons */
+/* icon */
+.icons-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icons-section div:nth-child(1) {
+  margin-right: 6px;
+}
+.icons-section .icon,
+.status .icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.icons-section .icon:nth-child(1) {
+  margin-left: 16px;
+}

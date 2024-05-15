@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import Spinner from '../atoms/spinner/Spinner';
 import Product from '@/app/service/useProductApi';
 import { useSearchParams } from 'next/navigation';
-import { useProductList } from '@/app/queries/queryHooks/product/useProductList';
+import { useShopProductList } from '@/app/queries/queryHooks/product/useShopProductList';
 import ProductCard from '../molecules/ProductCard';
 
 const ShopTemplate = () => {
@@ -15,7 +15,7 @@ const ShopTemplate = () => {
     isLoading,
     data: productList,
     refetch,
-  } = useProductList('name', searchParams);
+  } = useShopProductList('name', searchParams);
 
   useEffect(() => {
     refetch();
