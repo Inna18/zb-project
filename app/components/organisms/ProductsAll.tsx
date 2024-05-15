@@ -7,13 +7,15 @@ import Products from './Products';
 import Spinner from '../atoms/spinner/Spinner';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
-import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
 import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
 
 const ProductsAll = () => {
   const { product, resetProduct } = useProductStore((state) => state);
   const { productId, updateId } = useProductIdStore((state) => state);
-  const resetImageCount = useImgCancelCount((state) => state.reset);
+  const resetImageCount = useImgCancelCountStore(
+    (state) => state.resetCancelCount
+  );
 
   const { mutate, isPending: pendingCreate } = useProductCreate();
 

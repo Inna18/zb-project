@@ -20,6 +20,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
+import { useModalStore } from '@/app/stores/useModalStore';
 
 const { USER_UPDATE_SUCCESS, USER_UPDATE_CANCEL } = modalMsgConstants;
 const { FIELD_EMPTY } = commonConstants;
@@ -28,13 +29,8 @@ const { PASSWORD_ERROR } = authConstants;
 const Profile = () => {
   const session = useSession();
   const queryClient = useQueryClient();
+  const { modal, setModal } = useModalStore((state) => state);
   const [show, setShow] = useState<string>('view');
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
   const [updatedUser, setUpdatedUser] = useState<User>({
     _id: '',
     email: '',
@@ -57,7 +53,7 @@ const Profile = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
-  const { mutate, status } = useUserUpdate();
+  const { mutate } = useUserUpdate();
   const { open, close, isOpen } = useModal();
 
   const handleInputChange = (
@@ -75,7 +71,7 @@ const Profile = () => {
 
   const handleUserCancel = () => {
     setPasswordValid(true);
-    setModalDetails({
+    setModal({
       type: 'confirm',
       content: USER_UPDATE_CANCEL,
       onOk: handleMove,
@@ -91,7 +87,7 @@ const Profile = () => {
       mutate(updatedUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
-          setModalDetails({
+          setModal({
             type: 'alert',
             content: USER_UPDATE_SUCCESS,
             onClose: handleMove,
@@ -244,10 +240,10 @@ const Profile = () => {
       <Modal
         selector={'portal'}
         show={isOpen}
-        type={modalDetails.type}
-        content={modalDetails.content}
-        onOk={modalDetails.onOk}
-        onClose={modalDetails.onClose}
+        type={modal.type}
+        content={modal.content}
+        onOk={modal.onOk}
+        onClose={modal.onClose}
       />
     </>
   );

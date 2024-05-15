@@ -1,35 +1,37 @@
 import styles from './molecules.module.css';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Input from '../atoms/input/Input';
+import Spinner from '../atoms/spinner/Spinner';
 import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
+import Modal from '../atoms/modal/Modal';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
-import Spinner from '../atoms/spinner/Spinner';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
-import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
+import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
+import { useModal } from '@/app/hooks/useModal';
+import { useModalStore } from '@/app/stores/useModalStore';
 
 const { PRODUCT_IMAGE_LIMIT_ERROR } = modalMsgConstants;
 
 const ProductImages = () => {
   const product = useProductStore((state) => state.product);
   const productId = useProductIdStore((state) => state.productId);
-  const { increment, decrement } = useImgCancelCount((state) => state);
+  const { incrementCancelCount, decrementCancelCount } = useImgCancelCountStore(
+    (state) => state
+  );
+  const { imgLimitCount, incrementLimitCount } = useImgLimitCountStore(
+    (state) => state
+  );
+  const { modal, setModal } = useModalStore((state) => state);
+  const { open, close, isOpen } = useModal();
 
   const queryClient = useQueryClient();
-
-  const [countImages, setCountImages] = useState<number>(0);
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
-
   const {
     mutate: mutateUpdateImg,
     data: updatedImages,
@@ -39,10 +41,10 @@ const ProductImages = () => {
     useProductDeleteImg();
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCountImages(countImages + 1); // image arr limit = 4, track images added
-    increment(); // to delete added images if cancel product create/update
-    if (countImages >= 4) {
-      setModalDetails({
+    incrementLimitCount(); // image arr limit = 4, track images added
+    incrementCancelCount(); // to delete added images if cancel product create/update
+    if (imgLimitCount >= 4) {
+      setModal({
         type: 'alert',
         content: PRODUCT_IMAGE_LIMIT_ERROR,
         onClose: close,
@@ -66,7 +68,7 @@ const ProductImages = () => {
   };
 
   const handleDeleteImg = (url: string) => {
-    decrement();
+    decrementCancelCount();
     mutateDeleteImg(
       { id: productId!, imageUrl: url },
       {
@@ -84,7 +86,6 @@ const ProductImages = () => {
   return (
     <>
       {(pendingUpdateImg || pendingDeleteImg) && <Spinner />}
-
       <div className={styles['product-images']}>
         {product.productImages && product.productImages.length <= 0 && (
           <div className={styles.centered}>No Images</div>
@@ -120,6 +121,13 @@ const ProductImages = () => {
           changeFunc={handleImageUpload}
         />
       </div>
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={modal.type}
+        content={modal.content}
+        onClose={modal.onClose}
+      />
     </>
   );
 };

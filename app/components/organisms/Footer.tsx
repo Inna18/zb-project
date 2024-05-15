@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
 
 const Footer = () => {
-  const { isLoading, isError, data: organization } = useOrganizationGet();
+  const { isLoading, data: organization } = useOrganizationGet();
 
   return (
     <>

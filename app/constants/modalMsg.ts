@@ -10,6 +10,7 @@ export const modalMsgConstants = {
   CATEGORY_LIMIT_ERROR: 'Only up to 10 categories can be created.',
   PRODUCT_IMAGE_LIMIT_ERROR: 'Only up to 4 images can be added.',
   PRODUCT_CREATE_SUCCESS: 'Product created successfully.',
+  PRODUCT_UPDATE_SUCCESS: 'Product updated successfully.',
   PRODUCT_CREATE_CANCEL:
     'Return to Product List? All unsaved changes will be lost.',
 };

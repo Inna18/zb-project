@@ -26,6 +26,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
   const { isLoading, data: productList } = useProductList('_createdAt');
   const { mutate: mutateDelete, isPending: pendingDelete } =
     useProductDeleteById();
+  const isLoadingOrPending = isLoading || pendingDelete;
 
   const page = searchParams?.get('page') ?? '1';
   const perPage = searchParams?.get('per_page') ?? '5';
@@ -53,7 +54,7 @@ const ProductsList = (productsListProps: ProductsListProps) => {
 
   return (
     <>
-      {(isLoading || pendingDelete) && <Spinner />}
+      {isLoadingOrPending && <Spinner />}
       {!isLoading && (
         <div className={styles['product-list']}>
           {productList && productList.length <= 0 && (

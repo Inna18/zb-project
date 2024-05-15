@@ -271,51 +271,51 @@
 .best-items-list .empty {
   grid-column-end: span 5;
 }
-.best-item-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
-  padding: 10px;
-  cursor: pointer;
+
+/* details description */
+.upper {
+  height: 420px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 0 140px;
 }
-.best-item-card:hover {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px;
-  padding: 10px;
-  cursor: pointer;
-  box-shadow: 0 0 20px rgb(36, 34, 32, 0.2);
+.upper .description div {
+  padding: 10px 0;
 }
-.best-item-card .image-section {
-  width: 200px;
-  height: 200px;
-}
-.best-item-card .caption {
-  font-size: 12px;
-  color: #8e8e8e;
-}
-.best-item-card .image-section img {
-  object-fit: contain;
-}
-.best-item-card .decription-section {
-  width: 200px;
-  font-size: 12px;
-}
-.best-item-card .decription-section div {
-  margin: 8px 0;
-}
-.best-item-card .decription-section .name {
+.upper .description .brand {
+  font-weight: 600;
   font-size: 16px;
-  font-weight: 500;
-  margin: 4px 0;
+  color: rgb(36, 34, 32, 0.3);
 }
-.best-item-card .decription-section div .category {
+.upper .description .category {
+  font-size: 14px;
   padding: 4px;
   background-color: rgb(99, 96, 93, 0.1);
 }
-.best-item-card .decription-section .rating {
+.upper .description .name {
+  font-size: 30px;
+  font-weight: 600;
+  color: #e58025;
+}
+.upper .description .rating {
   display: flex;
   align-items: center;
+}
+.upper .description .price-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 20px;
+  margin: 20px 0;
+  border-top: 1px solid rgb(99, 96, 93, 0.1);
+}
+.upper .description .price {
+  font-size: 20px;
+}
+.upper .description .btn-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.upper .description .btn-section button:nth-child(1) {
+  margin-right: 30px;
 }

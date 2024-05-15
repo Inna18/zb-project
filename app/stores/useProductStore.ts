@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import Product from '@/app/service/useProductApi';
 
-type State = {
+interface State {
   product: Product;
-};
-type Action = {
+}
+interface Action {
   updateProduct: (updatedProduct: Product) => void;
   resetProduct: () => void;
-};
+}
 const initialState: Product = {
   _id: '',
   category: '',

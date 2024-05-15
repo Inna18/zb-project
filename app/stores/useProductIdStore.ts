@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 
-type State = {
+interface State {
   productId: string;
-};
-type Action = {
+}
+interface Action {
   updateId: (updatedId: string) => void;
   resetId: () => void;
-};
+}
 
 export const useProductIdStore = create<State & Action>()((set) => ({
   productId: '',

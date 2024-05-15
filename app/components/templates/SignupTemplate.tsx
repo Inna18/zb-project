@@ -17,6 +17,7 @@ import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
 import { useQueryClient } from '@tanstack/react-query';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useModalStore } from '@/app/stores/useModalStore';
 
 const LIST = [
   { id: 1, value: 'email' },
@@ -28,6 +29,7 @@ const { USER_CREATE_SUCCESS, USER_CREATE_ERROR } = modalMsgConstants;
 const SignupTemplate = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { modal, setModal } = useModalStore((state) => state);
   const [signUser, setSignUser] = useState<User>({
     email: '',
     password: '',
@@ -42,7 +44,7 @@ const SignupTemplate = () => {
     signUser.role,
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
-  const { mutate, isPending, status } = useUserCreate();
+  const { mutate, isPending } = useUserCreate();
   const { open, close, isOpen } = useModal();
 
   const handleInputChange = (
@@ -63,9 +65,20 @@ const SignupTemplate = () => {
       mutate(signUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
+          setModal({
+            type: 'confirm',
+            content: USER_CREATE_SUCCESS,
+            onOk: handleMove,
+            onClose: handleReset,
+          });
           open();
         },
         onError: () => {
+          setModal({
+            type: 'alert',
+            content: USER_CREATE_ERROR,
+            onClose: close,
+          });
           open();
         },
       });
@@ -114,25 +127,14 @@ const SignupTemplate = () => {
           <Link href={'/login'}>Login</Link>
         </div>
       </form>
-      {status === 'success' && (
-        <Modal
-          selector={'portal'}
-          show={isOpen}
-          type={'confirm'}
-          content={USER_CREATE_SUCCESS}
-          onOk={handleMove}
-          onClose={handleReset}
-        />
-      )}
-      {status === 'error' && (
-        <Modal
-          selector={'portal'}
-          show={isOpen}
-          type={'alert'}
-          content={USER_CREATE_ERROR}
-          onClose={close}
-        />
-      )}
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={modal.type}
+        content={modal.content}
+        onOk={modal.onOk}
+        onClose={modal.onClose}
+      />
     </>
   );
 };

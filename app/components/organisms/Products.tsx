@@ -3,13 +3,12 @@ import styles from './organisms.module.css';
 import { Schema } from '@sanity/schema';
 import React, { useEffect, useState } from 'react';
 import Editor from '../atoms/editor/Editor';
-import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
 import productSchema from '@/sanity/schemas/product';
 import Modal from '../atoms/modal/Modal';
 import Spinner from '../atoms/spinner/Spinner';
-import Select from '../atoms/select/Select';
 import ProductImages from '../molecules/ProductImages';
+import ProductForm from '../molecules/ProductForm';
 
 import { toHTML } from '@portabletext/to-html';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
@@ -19,31 +18,34 @@ import { useQueryClient } from '@tanstack/react-query';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { commonConstants } from '@/app/constants/common';
-import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
-import { useImgCancelCount } from '@/app/stores/useImgCancelCount';
+import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
+import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
+import { useModalStore } from '@/app/stores/useModalStore';
 import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
   formType: string;
 }
-const { PRODUCT_CREATE_SUCCESS, PRODUCT_CREATE_CANCEL } = modalMsgConstants;
-const { FIELD_EMPTY } = commonConstants;
-const PRODUCT_TITLES = [
-  { id: 1, value: 'brand' },
-  { id: 2, value: 'name' },
-  { id: 3, value: 'price' },
-  { id: 4, value: 'quantity' },
-];
+const {
+  PRODUCT_CREATE_SUCCESS,
+  PRODUCT_UPDATE_SUCCESS,
+  PRODUCT_CREATE_CANCEL,
+} = modalMsgConstants;
 
 const Products = (productProps: ProductsProps) => {
   const { product, updateProduct } = useProductStore((state) => state);
   const productId = useProductIdStore((state) => state.productId);
-  const imgCancelCount = useImgCancelCount((state) => state.imgCancleCount);
+  const imgCancelCount = useImgCancelCountStore(
+    (state) => state.imgCancleCount
+  );
+  const setImgLimitCount = useImgLimitCountStore(
+    (state) => state.setImgLimitCount
+  );
+  const { modal, setModal } = useModalStore((state) => state);
 
   const queryClient = useQueryClient();
   const { renderSubMenu, formType } = productProps;
@@ -53,56 +55,21 @@ const Products = (productProps: ProductsProps) => {
     useProductDeleteById();
   const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
     useProductDeleteImgs();
-  const { isLoading: loadingCategories, data: categories } = useCategoryList();
   const { isLoading: loadingProduct, data: existingProduct } =
     useProductGetById(productId!);
 
-  const productValues = [
-    product?.brand,
-    product?.name,
-    product?.price,
-    product?.quantity,
-  ];
-  const [modalDetails, setModalDetails] = useState<{
-    type: string;
-    content: string;
-    onOk?: () => void;
-    onClose?: () => void;
-  }>({ type: '', content: '' });
-  const [error, setError] = useState<boolean>(false);
-  const [countImages, setCountImages] = useState<number>(0);
-  const [categoryList, setCategoryList] = useState<
-    { id: number; value: string }[] | null
-  >(null);
+  const isLoadingOrPending =
+    loadingProduct || pendingDelete || pendingDeleteImgs;
+  const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
-
-  useEffect(() => {
-    // load categories
-    if (!loadingCategories) {
-      setCategoryList(
-        categories.map((category: { _id: ''; name: '' }) => {
-          return { id: category._id, value: category.name };
-        })
-      );
-    }
-  }, [loadingCategories]);
 
   useEffect(() => {
     // move data from db to product object
     if (existingProduct) {
       updateProduct(existingProduct);
-      setCountImages(existingProduct.productImages.length);
+      setImgLimitCount(existingProduct.productImages.length);
     }
   }, [existingProduct]);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === 'name' && value === '') setError(true);
-    else setError(false);
-    updateProduct({ ...product, [name]: value });
-  };
 
   const handleContentChange = (contentDescription: string) => {
     contentDescription = '<html>' + contentDescription + '</html>';
@@ -118,31 +85,18 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleSave = () => {
-    if (product.name === '') setError(true);
-    else if (productId) {
+    let content =
+      formType === 'create' ? PRODUCT_CREATE_SUCCESS : PRODUCT_UPDATE_SUCCESS;
+    if (product.name === '') setEmptyName(true);
+    else {
       mutateUpdate(
         { id: productId, product: product },
         {
           onSuccess: () => {
             queryClient.refetchQueries({ queryKey: ['products'] });
-            setModalDetails({
+            setModal({
               type: 'alert',
-              content: PRODUCT_CREATE_SUCCESS,
-              onClose: routeBack,
-            });
-            open();
-          },
-        }
-      );
-    } else {
-      mutateUpdate(
-        { id: productId!, product: product },
-        {
-          onSuccess: () => {
-            queryClient.refetchQueries({ queryKey: ['products'] });
-            setModalDetails({
-              type: 'alert',
-              content: PRODUCT_CREATE_SUCCESS,
+              content: content,
               onClose: routeBack,
             });
             open();
@@ -153,7 +107,7 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleCancel = () => {
-    setModalDetails({
+    setModal({
       type: 'confirm',
       content: PRODUCT_CREATE_CANCEL,
       onOk: cancelModal,
@@ -191,49 +145,15 @@ const Products = (productProps: ProductsProps) => {
 
   return (
     <>
-      {(loadingProduct || pendingDelete || pendingDeleteImgs) && <Spinner />}
+      {isLoadingOrPending && <Spinner />}
       {!loadingProduct && (
         <>
           <div className={styles['product-details']}>
             <ProductImages />
-            <div className={styles.titles}>
-              <div>Category:</div>
-              <div>Brand:</div>
-              <div>
-                Name: <span className={styles['required-mark']}>*</span>
-              </div>
-              <div>Price:</div>
-              <div>Quantity:</div>
-            </div>
-            <div className={styles.updates}>
-              {categoryList && (
-                <Select
-                  className={'category-select'}
-                  type={'category'}
-                  optionList={categoryList}
-                  changeFunc={handleInputChange}
-                  hasLabel={false}
-                  value={product.category}
-                />
-              )}
-              {PRODUCT_TITLES.map((title, idx) => (
-                <div key={title.id}>
-                  <>
-                    <Input
-                      type={title.value}
-                      changeFunc={handleInputChange}
-                      hasLabel={false}
-                      value={productValues[idx]}
-                      className='input'
-                      name={title.value}
-                    />
-                    {error && title.value === 'name' && (
-                      <span className={styles.error}>{FIELD_EMPTY}</span>
-                    )}
-                  </>
-                </div>
-              ))}
-            </div>
+            <ProductForm
+              emptyName={emptyName}
+              checkName={(result: boolean) => setEmptyName(result)}
+            />
           </div>
           <div className={styles.editor}>
             <Editor
@@ -252,10 +172,10 @@ const Products = (productProps: ProductsProps) => {
           <Modal
             selector={'portal'}
             show={isOpen}
-            type={modalDetails.type}
-            content={modalDetails.content}
-            onOk={modalDetails.onOk}
-            onClose={modalDetails.onClose}
+            type={modal.type}
+            content={modal.content}
+            onOk={modal.onOk}
+            onClose={modal.onClose}
           />
         </>
       )}
