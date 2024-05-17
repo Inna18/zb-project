@@ -1,7 +1,7 @@
-import Organization from '@/app/service/useOrganizationApi';
-
 import { useMutation } from '@tanstack/react-query';
-import { updateOrganization } from '@/app/service/useOrganizationApi';
+import Organization, {
+  updateOrganization,
+} from '@/app/service/useOrganizationApi';
 
 export const useOrganizationUpdate = () => {
   return useMutation({

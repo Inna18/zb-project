@@ -15,3 +15,7 @@ export const PRODUCT_KEYS = {
   list: () => ['products'],
   get: (id: string | undefined) => ['product', id],
 };
+
+export const SHIPPING_POLICY_KEYS = {
+  get: () => ['policy'],
+};

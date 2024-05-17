@@ -13,4 +13,5 @@ export const modalMsgConstants = {
   PRODUCT_UPDATE_SUCCESS: 'Product updated successfully.',
   PRODUCT_CREATE_CANCEL:
     'Return to Product List? All unsaved changes will be lost.',
+  POLICY_UPDATE_SUCCESS: 'Policy updated.',
 };

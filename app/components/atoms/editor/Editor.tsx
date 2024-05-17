@@ -1,11 +1,10 @@
 import styles from '@/app/components/atoms/atoms.module.css';
 
 import React, { useEffect } from 'react';
+import { EditorContent, useEditor } from '@tiptap/react';
 import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
-import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
 
 const MenuBar = ({ editor }) => {
   if (!editor) {
@@ -87,9 +86,7 @@ const Editor = (editorProps: EditorProps) => {
     content: '',
   });
 
-  useEffect(() => {
-    editor?.commands.setContent(content);
-  }, [content]);
+  editor?.commands.setContent(content);
 
   return (
     <div>

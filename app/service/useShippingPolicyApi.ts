@@ -17,10 +17,10 @@ async function getShippingPolicy() {
   return shippingPolicy;
 }
 
-async function createShippingPolicy(shippingPolicy: ShippingPolicy) {
+async function createShippingPolicy() {
   const sanityShippingPolicy = {
     _type: 'shippingPolicy',
-    content: shippingPolicy.content,
+    content: [],
   };
   const createdShippingPolicy = await client.create(sanityShippingPolicy);
   console.log('Shipping policy created: ', createdShippingPolicy);
@@ -41,4 +41,16 @@ async function updateShippingPolicy(
   return updatedShippingPolicy;
 }
 
-export { getShippingPolicy, createShippingPolicy, updateShippingPolicy };
+async function deleteShippingPolicy() {
+  const deleteResult = await client.delete({
+    query: `*[_type == 'shippingPolicy'][0...999]`,
+  });
+  console.log(deleteResult);
+}
+
+export {
+  getShippingPolicy,
+  createShippingPolicy,
+  updateShippingPolicy,
+  deleteShippingPolicy,
+};

@@ -1,6 +1,5 @@
 import styles from './organisms.module.css';
 
-import { Schema } from '@sanity/schema';
 import React, { useEffect, useState } from 'react';
 import Editor from '../atoms/editor/Editor';
 import Button from '../atoms/button/Button';
@@ -10,6 +9,7 @@ import Spinner from '../atoms/spinner/Spinner';
 import ProductImages from '../molecules/ProductImages';
 import ProductForm from '../molecules/ProductForm';
 
+import { Schema } from '@sanity/schema';
 import { toHTML } from '@portabletext/to-html';
 import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';

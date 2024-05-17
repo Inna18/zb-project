@@ -15,7 +15,8 @@
 .profile-section,
 .organization-section,
 .categories-section,
-.product-section {
+.product-section,
+.policy-section {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -143,6 +144,12 @@
 .editor {
   width: 100%;
   margin: 20px 0;
+}
+
+/* policy */
+.editor-l {
+  width: 100%;
+  margin: 20px;
 }
 
 /* navbar */

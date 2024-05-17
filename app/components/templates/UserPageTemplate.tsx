@@ -8,12 +8,12 @@ import Link from 'next/link';
 import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import ProductsAll from '../organisms/ProductsAll';
+import Policy from '../organisms/Policy';
 import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
 import { useTabRenderer } from '@/app/hooks/useTabRenderer';
-import ShippingPolicy from '../organisms/ShippingPolicy';
 
 const UserPageTemplate = () => {
   const session = useSession();
@@ -30,7 +30,7 @@ const UserPageTemplate = () => {
         { id: 2, value: 'organization', component: <Organization /> },
         { id: 3, value: 'categories', component: <Categories /> },
         { id: 4, value: 'products', component: <ProductsAll /> },
-        { id: 5, value: 'policy', component: <ShippingPolicy /> },
+        { id: 5, value: 'policy', component: <Policy /> },
       ]);
     else if (user && user.role === 'USER') {
       setList([
