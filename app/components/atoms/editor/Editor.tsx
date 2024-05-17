@@ -88,6 +88,11 @@ const Editor = (editorProps: EditorProps) => {
 
   editor?.commands.setContent(content);
 
+  // useEffect(() => {
+  //   console.log(content)
+  //   editor?.commands.setContent(content);
+  // }, [content]);
+
   return (
     <div>
       <MenuBar editor={editor} />

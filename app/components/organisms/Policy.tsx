@@ -22,31 +22,17 @@ import Modal from '../atoms/modal/Modal';
 
 const { POLICY_UPDATE_SUCCESS } = modalMsgConstants;
 
-const Policy = () => {
+interface PolicyProps {
+  rerender: (menu: string) => void;
+}
+const Policy = ({ rerender }: PolicyProps) => {
   const { shippingPolicy, updatePolicy } = useShippingPolicyStore(
     (state) => state
   );
   const { modal, setModal } = useModalStore((state) => state);
   const { open, close, isOpen } = useModal();
   const queryClient = useQueryClient();
-  const { data: shippingPolicyData, isLoading: loadingGet } =
-    useShippingPolicyGet();
-  const { mutate: mutateCreate } = useShippingPolicyCreate();
   const { mutate: mutateUpdate } = useShippingPolicyUpdate();
-
-  useEffect(() => {
-    // need to move from useEffect...?
-    if (!loadingGet && shippingPolicyData === null) {
-      mutateCreate(undefined, {
-        onSuccess: (data) => {
-          updatePolicy(data);
-          queryClient.setQueryData(['policy'], () => ({ ...data }));
-        },
-      });
-    } else if (!loadingGet && shippingPolicyData !== null) {
-      updatePolicy(shippingPolicyData);
-    }
-  }, [shippingPolicyData]);
 
   const handleContentChange = (contentDescription: string) => {
     contentDescription = '<html>' + contentDescription + '</html>';
@@ -61,6 +47,11 @@ const Policy = () => {
     updatePolicy({ ...shippingPolicy, content: blocks });
   };
 
+  const returnToList = () => {
+    close();
+    rerender('list');
+  };
+
   const handleSave = () => {
     mutateUpdate(shippingPolicy, {
       onSuccess: () => {
@@ -68,7 +59,7 @@ const Policy = () => {
         setModal({
           type: 'alert',
           content: POLICY_UPDATE_SUCCESS,
-          onClose: close,
+          onClose: returnToList,
         });
         open();
       },
@@ -77,8 +68,7 @@ const Policy = () => {
 
   return (
     <>
-      {loadingGet && <Spinner />}
-      {!loadingGet && (
+      {shippingPolicy && (
         <div className={styles['policy-section']}>
           <div className={styles['editor-l']}>
             <Editor

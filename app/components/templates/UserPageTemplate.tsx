@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import ProductsAll from '../organisms/ProductsAll';
-import Policy from '../organisms/Policy';
+import PolicyList from '../organisms/PolicyList';
 import withAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
@@ -30,7 +30,7 @@ const UserPageTemplate = () => {
         { id: 2, value: 'organization', component: <Organization /> },
         { id: 3, value: 'categories', component: <Categories /> },
         { id: 4, value: 'products', component: <ProductsAll /> },
-        { id: 5, value: 'policy', component: <Policy /> },
+        { id: 5, value: 'policy', component: <PolicyList /> },
       ]);
     else if (user && user.role === 'USER') {
       setList([

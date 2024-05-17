@@ -147,6 +147,19 @@
 }
 
 /* policy */
+.policy-btn {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.policy-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.policy-card div {
+  margin: 10px;
+}
 .editor-l {
   width: 100%;
   margin: 20px;
@@ -336,4 +349,8 @@
 }
 .upper .description .btn-section button:nth-child(1) {
   margin-right: 30px;
+}
+.about,
+.delivery-return {
+  padding: 30px 20px 40px;
 }
