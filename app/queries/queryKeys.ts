@@ -19,3 +19,7 @@ export const PRODUCT_KEYS = {
 export const SHIPPING_POLICY_KEYS = {
   get: () => ['policy'],
 };
+
+export const COMMENT_KEYS = {
+  list: (id: string) => ['comments', { postId: id}]
+}

@@ -4,7 +4,8 @@ import organization from './schemas/organization';
 import category from './schemas/category';
 import product from './schemas/product';
 import shippingPolicy from './schemas/shippingPolicy';
+import comment from './schemas/comment';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [user, organization, category, product, shippingPolicy],
+  types: [user, organization, category, product, shippingPolicy, comment],
 };
