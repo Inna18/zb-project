@@ -52,7 +52,9 @@ const DetailsTemplate = () => {
                 </Link>
               ))}
             </div>
-            <div className={styles['details-tabs']}>{TABS && tabRenderer()}</div>
+            <div className={styles['details-tabs']}>
+              {TABS && tabRenderer()}
+            </div>
           </div>
         </div>
       )}

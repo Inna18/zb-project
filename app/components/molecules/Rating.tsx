@@ -8,7 +8,7 @@ import BarChart from '../atoms/barChart/BarChart';
 
 const Rating = () => {
   return (
-    <div className={styles.rating}>
+    <div className={styles['comment-rating']}>
       <div className={styles['rating-title']}>REVIEWS 1,000</div>
       <div className={styles['rating-container']}>
         <div className={styles.left}>
@@ -16,18 +16,22 @@ const Rating = () => {
             <Image src={starIcon} alt={'item-image'} width={38} height={38} />
             <span>4.8</span>
           </div>
-            <div>
-                <Button value='리뷰 작성하기' className='button-long' onClick={() => {}}/>
-            </div>
+          <div>
+            <Button
+              value='리뷰 작성하기'
+              className='button-long'
+              onClick={() => {}}
+            />
+          </div>
         </div>
         <div className={styles.right}>
-            <div>
-                <BarChart />
-            </div>
+          <div>
+            <BarChart />
+          </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Rating
+export default Rating;
