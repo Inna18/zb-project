@@ -58,7 +58,7 @@ const Comments = () => {
             commentsData.map((comment: Comment, idx: number) => (
               <div className={styles['comment-card']} key={comment._id}>
                 <div>
-                  <div>
+                  <div className={styles['rating-section']}>
                     {starNumArr &&
                       starNumArr[idx].map((star) => (
                         <Image
@@ -68,19 +68,21 @@ const Comments = () => {
                           height={18}
                         />
                       ))}
-                    {_getDescriptionByRating(starNumArr[idx].length)}
-                    <div>{comment.content}</div>
-                    <div>
-                      <Image
-                        src={comment.commentImage!}
-                        alt={''}
-                        width={100}
-                        height={100}
-                      />
-                    </div>
+                    <span>
+                      {_getDescriptionByRating(starNumArr[idx].length)}
+                    </span>
+                  </div>
+                  <div className={styles.content}>{comment.content}</div>
+                  <div>
+                    <Image
+                      src={comment.commentImage!}
+                      alt={''}
+                      width={100}
+                      height={100}
+                    />
                   </div>
                 </div>
-                <div>
+                <div className={styles['user-createdAt']}>
                   <div>{comment.createdBy}</div>
                   <div>
                     {moment(comment._createdAt).format('YYYY-MM-DD, HH:mm')}

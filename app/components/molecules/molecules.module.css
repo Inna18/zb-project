@@ -312,6 +312,21 @@
   padding: 20px 0;
   border-bottom: 1px solid rgb(99, 96, 93, 0.1);
 }
+
 .comment-card:last-child {
   border-bottom: none;
+}
+.comment-card div {
+  margin-bottom: 10px;
+}
+.comment-card .rating-section {
+  display: flex;
+  align-items: center;
+}
+.comment-card .rating-section span {
+  margin-left: 4px;
+  font-size: 11px;
+}
+.comment-card .user-createdAt {
+  font-size: 11px;
 }
