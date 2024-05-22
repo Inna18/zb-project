@@ -17,12 +17,12 @@ const RATING_DESCRIPTION = [
   { rating: 4, description: 'Good' },
   { rating: 5, description: 'Excellent' },
 ];
-
-const Comments = () => {
-  const searchParams = useSearchParams();
-  const productId = searchParams?.get('productId');
-  const { data: commentsData, isLoading: loadingGet } =
-    useCommentsGetByProductId(productId!);
+interface CommentsProps {
+  productId: string;
+  commentsData: Comment[];
+}
+const Comments = (commentsProps: CommentsProps) => {
+  const { productId, commentsData } = commentsProps;
   const [starNumArr, setStarNumArr] = useState<number[][]>();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const Comments = () => {
     let array1 = [];
     let array2 = [];
     for (let i = 0; i < commentsData.length; i++) {
-      for (let j = 1; j <= commentsData[i]?.rating; j++) {
+      for (let j = 1; j <= Number(commentsData[i]?.rating); j++) {
         array2.push(j);
       }
       array1.push(array2);
@@ -51,8 +51,7 @@ const Comments = () => {
 
   return (
     <>
-      {loadingGet && <Spinner />}
-      {!loadingGet && starNumArr && (
+      {starNumArr && (
         <div className={styles['comment-list']}>
           {commentsData &&
             commentsData.map((comment: Comment, idx: number) => (
@@ -60,27 +59,33 @@ const Comments = () => {
                 <div>
                   <div className={styles['rating-section']}>
                     {starNumArr &&
+                      starNumArr[idx] &&
                       starNumArr[idx].map((star) => (
                         <Image
+                          key={star}
                           src={starIcon}
                           alt={'item-image'}
                           width={18}
                           height={18}
                         />
                       ))}
-                    <span>
-                      {_getDescriptionByRating(starNumArr[idx].length)}
-                    </span>
+                    {starNumArr && starNumArr[idx] && (
+                      <span>
+                        {_getDescriptionByRating(starNumArr[idx].length)}
+                      </span>
+                    )}
                   </div>
                   <div className={styles.content}>{comment.content}</div>
-                  <div>
-                    <Image
-                      src={comment.commentImage!}
-                      alt={''}
-                      width={100}
-                      height={100}
-                    />
-                  </div>
+                  {comment.commentImage && (
+                    <div>
+                      <Image
+                        src={comment.commentImage!}
+                        alt={''}
+                        width={100}
+                        height={100}
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className={styles['user-createdAt']}>
                   <div>{comment.createdBy}</div>

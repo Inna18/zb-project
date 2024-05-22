@@ -4,7 +4,7 @@ export default interface Comment {
   _id?: string;
   rating?: number;
   content?: string;
-  commentImage?: string;
+  commentImage?: string | File;
   productId?: string;
   createdBy?: string;
   _createdAt?: string;

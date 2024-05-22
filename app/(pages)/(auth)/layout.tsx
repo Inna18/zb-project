@@ -20,6 +20,7 @@ export default function RootLayout({
       <div className={`${inter.className}`}>
         <SessionProvider>{children}</SessionProvider>
         <div id='portal'></div>
+        <div id='portal2'></div>
       </div>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

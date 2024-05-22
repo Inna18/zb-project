@@ -304,7 +304,6 @@
   width: 100%;
   padding: 20px;
   border-top: 2px solid rgb(99, 96, 93, 0.1);
-  border-bottom: 2px solid rgb(99, 96, 93, 0.1);
 }
 .comment-card {
   display: grid;
@@ -319,6 +318,9 @@
 .comment-card div {
   margin-bottom: 10px;
 }
+.comment-card div:nth-child(1) {
+  border-right: 1px solid rgb(99, 96, 93, 0.1);
+}
 .comment-card .rating-section {
   display: flex;
   align-items: center;
@@ -329,4 +331,5 @@
 }
 .comment-card .user-createdAt {
   font-size: 11px;
+  padding: 0 10px;
 }

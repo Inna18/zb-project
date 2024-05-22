@@ -3,17 +3,27 @@ import styles from './organisms.module.css';
 import React from 'react';
 import Rating from '../molecules/Rating';
 import Comments from '../molecules/Comments';
-import Button from '../atoms/button/Button';
-import { deleteAllCommentsByProductId } from '@/app/service/useCommentApi';
+import { useSearchParams } from 'next/navigation';
+import { useCommentsGetByProductId } from '@/app/queries/queryHooks/comment/useCommentsGetByProductId';
+import Spinner from '../atoms/spinner/Spinner';
 
 const Reviews = () => {
-  return (
-    <div className={styles.reviews}>
-      <Rating />
-      <Comments />
+  const searchParams = useSearchParams();
+  const productId = searchParams?.get('productId');
 
-      {/* <Button value='delete' onClick={() => deleteAllCommentsByProductId('dHyRhgmarNZHlsvDU4JpP6')} /> */}
-    </div>
+  const { data: commentsData, isLoading: loadingGet } =
+    useCommentsGetByProductId(productId!);
+
+  return (
+    <>
+      {loadingGet && <Spinner />}
+      {!loadingGet && (
+        <div className={styles.reviews}>
+          <Rating productId={productId!} commentsData={commentsData} />
+          <Comments productId={productId!} commentsData={commentsData} />
+        </div>
+      )}
+    </>
   );
 };
 

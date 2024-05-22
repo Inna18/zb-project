@@ -2,10 +2,16 @@ import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 
-const BarChart = () => {
+interface BarChart {
+  data: number[];
+}
+const BarChart = ({ data }: BarChart) => {
+  const totalNum = data.reduce((sum, val) => {
+    return sum + val;
+  }, 0);
   const series = [
     {
-      data: [60, 20, 30, 10, 5],
+      data: data,
     },
   ];
   const options: ApexOptions = {
@@ -53,7 +59,7 @@ const BarChart = () => {
         show: false,
       },
       min: 0,
-      max: 100,
+      max: totalNum,
     },
     grid: {
       show: false,
