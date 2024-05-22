@@ -15,4 +15,5 @@ export const modalMsgConstants = {
     'Return to Product List? All unsaved changes will be lost.',
   POLICY_UPDATE_SUCCESS: 'Policy updated.',
   COMMENT_CREATE_SUCCESS: 'Comment created successfully.',
+  COMMENT_DELETE_SUCCESS: 'Comment deleted successfully.',
 };

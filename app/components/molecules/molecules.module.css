@@ -311,12 +311,19 @@
   padding: 20px 0;
   border-bottom: 1px solid rgb(99, 96, 93, 0.1);
 }
-
 .comment-card:last-child {
   border-bottom: none;
 }
 .comment-card div {
   margin-bottom: 10px;
+}
+.comment-card div .top {
+  display: flex;
+  justify-content: space-between;
+}
+.comment-card div .top div:nth-child(2) {
+  margin-right: 10px;
+  cursor: pointer;
 }
 .comment-card div:nth-child(1) {
   border-right: 1px solid rgb(99, 96, 93, 0.1);

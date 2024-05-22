@@ -1,14 +1,18 @@
 import styles from './molecules.module.css';
 
 import React, { useEffect, useState } from 'react';
-import Spinner from '../atoms/spinner/Spinner';
 import Comment from '@/app/service/useCommentApi';
 import Image from 'next/image';
+import Modal from '../atoms/modal/Modal';
 import moment from 'moment';
 import starIcon from '@/public/icons/star-solid.svg';
+import removeIcon from '@/public/icons/xmark-solid.svg';
 
-import { useCommentsGetByProductId } from '@/app/queries/queryHooks/comment/useCommentsGetByProductId';
-import { useSearchParams } from 'next/navigation';
+import { hideInfo } from '@/app/utils/text';
+import { useCommentDeleteById } from '@/app/queries/queryHooks/comment/useCommentDeleteById';
+import { useModal } from '@/app/hooks/useModal';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useQueryClient } from '@tanstack/react-query';
 
 const RATING_DESCRIPTION = [
   { rating: 1, description: 'Worse' },
@@ -17,13 +21,20 @@ const RATING_DESCRIPTION = [
   { rating: 4, description: 'Good' },
   { rating: 5, description: 'Excellent' },
 ];
+const { COMMENT_DELETE_SUCCESS } = modalMsgConstants;
 interface CommentsProps {
   productId: string;
   commentsData: Comment[];
+  email: string;
 }
 const Comments = (commentsProps: CommentsProps) => {
-  const { productId, commentsData } = commentsProps;
+  ('');
+  const { productId, commentsData, email } = commentsProps;
+  const queryClient = useQueryClient();
   const [starNumArr, setStarNumArr] = useState<number[][]>();
+  const { mutate: mutateDelete, isPending: pendingDelete } =
+    useCommentDeleteById();
+  const { open, close, isOpen } = useModal();
 
   useEffect(() => {
     if (commentsData) _getRatingArray();
@@ -49,6 +60,18 @@ const Comments = (commentsProps: CommentsProps) => {
     )[0].description;
   };
 
+  const handleDelete = (commentId: string) => {
+    mutateDelete(commentId, {
+      onSuccess: () => {
+        open();
+        queryClient.setQueryData(
+          ['comments', { productId: productId }],
+          (old: Comment[]) => old.filter((c) => c._id !== commentId)
+        );
+      },
+    });
+  };
+
   return (
     <>
       {starNumArr && (
@@ -57,22 +80,36 @@ const Comments = (commentsProps: CommentsProps) => {
             commentsData.map((comment: Comment, idx: number) => (
               <div className={styles['comment-card']} key={comment._id}>
                 <div>
-                  <div className={styles['rating-section']}>
-                    {starNumArr &&
-                      starNumArr[idx] &&
-                      starNumArr[idx].map((star) => (
-                        <Image
-                          key={star}
-                          src={starIcon}
-                          alt={'item-image'}
-                          width={18}
-                          height={18}
-                        />
-                      ))}
-                    {starNumArr && starNumArr[idx] && (
-                      <span>
-                        {_getDescriptionByRating(starNumArr[idx].length)}
-                      </span>
+                  <div className={styles.top}>
+                    <div className={styles['rating-section']}>
+                      {starNumArr &&
+                        starNumArr[idx] &&
+                        starNumArr[idx].map((star) => (
+                          <Image
+                            key={star}
+                            src={starIcon}
+                            alt={'item-image'}
+                            width={18}
+                            height={18}
+                          />
+                        ))}
+                      {starNumArr && starNumArr[idx] && (
+                        <span>
+                          {_getDescriptionByRating(starNumArr[idx].length)}
+                        </span>
+                      )}
+                    </div>
+                    {email !== '' && email === comment.createdBy && (
+                      <div>
+                        <a onClick={() => handleDelete(comment._id!)}>
+                          <Image
+                            src={removeIcon}
+                            alt={'remove-icon'}
+                            width={18}
+                            height={18}
+                          />
+                        </a>
+                      </div>
                     )}
                   </div>
                   <div className={styles.content}>{comment.content}</div>
@@ -88,13 +125,24 @@ const Comments = (commentsProps: CommentsProps) => {
                   )}
                 </div>
                 <div className={styles['user-createdAt']}>
-                  <div>{comment.createdBy}</div>
+                  <div>
+                    {comment.createdBy !== ''
+                      ? hideInfo(comment.createdBy, 4)
+                      : 'Anonymous'}
+                  </div>
                   <div>
                     {moment(comment._createdAt).format('YYYY-MM-DD, HH:mm')}
                   </div>
                 </div>
               </div>
             ))}
+          <Modal
+            selector={'portal'}
+            show={isOpen}
+            type={'alert'}
+            content={COMMENT_DELETE_SUCCESS}
+            onClose={close}
+          />
         </div>
       )}
     </>

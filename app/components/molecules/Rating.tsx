@@ -9,7 +9,6 @@ import Popup from '../atoms/popup/Popup';
 import Comment from '@/app/service/useCommentApi';
 
 import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCreate';
-import { useSession } from 'next-auth/react';
 import { useModal } from '@/app/hooks/useModal';
 import Modal from '../atoms/modal/Modal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
@@ -20,11 +19,11 @@ const { COMMENT_CREATE_SUCCESS } = modalMsgConstants;
 interface RatingProps {
   productId: string;
   commentsData: Comment[];
+  email: string;
 }
 const Rating = (ratingProps: RatingProps) => {
-  const { productId, commentsData } = ratingProps;
+  const { productId, commentsData, email } = ratingProps;
   const queryClient = useQueryClient();
-  const session = useSession();
 
   const { open, close, isOpen } = useModal();
   const { mutate: mutateSave } = useCommentCreate();
@@ -44,7 +43,7 @@ const Rating = (ratingProps: RatingProps) => {
       {
         ...comment,
         rating: Number(comment.rating),
-        createdBy: session.data ? session.data.user?.name! : 'Anonymous',
+        createdBy: email,
         productId: productId!,
       },
       {
