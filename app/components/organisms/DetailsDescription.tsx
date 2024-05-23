@@ -24,7 +24,7 @@ const DetailsDescription = () => {
           <div className={styles.name}>{product.name}</div>
           <div className={styles.rating}>
             <Image src={starIcon} alt={'item-image'} width={18} height={18} />
-            <span>{product.rating}</span>
+            <span>{product.rating ? product.rating : 0}</span>
           </div>
           <div className={styles['price-section']}>
             <div>Price: </div>

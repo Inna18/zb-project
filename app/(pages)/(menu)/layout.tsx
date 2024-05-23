@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import UrlChange from '@/app/components/UrlChange';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <div>
         <div className={styles.container}>
           <SessionProvider>
+            <UrlChange />
             <Navbar />
             <div className={styles.overflow}>{children}</div>
             <Footer />

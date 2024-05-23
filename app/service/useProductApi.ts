@@ -75,7 +75,6 @@ async function getShopProductList(orderBy: string, filter?: string | null) {
       posted,
     }`;
   } else {
-    console.log('here');
     query = `*[_type == 'product' && posted == true] | order(${orderBy} asc) {
       _id,
       category,
@@ -110,10 +109,12 @@ async function getBestProductList(count: number) {
 
 async function createProduct(product: Product) {
   let productImages: SanityImageAssetDocument[] = [];
-  const promises = product.productImages!.map(async (productImage: string) => {
-    return await client.assets.upload('image', productImage);
-  });
-  productImages = await Promise.all(promises);
+  if (product.productImages) {
+    const promises = product.productImages.map(async (productImage: string) => {
+      return await client.assets.upload('image', productImage);
+    });
+    productImages = await Promise.all(promises);
+  }
 
   const sanityProduct = {
     _type: 'product',
@@ -200,6 +201,12 @@ async function updateProductStatus(id: string, posted: boolean) {
   return updatedProductStatus;
 }
 
+async function updateProductRating(id: string, rating: number) {
+  const updatedProductRating = await client.patch(id).set({rating: rating}).commit();
+  console.log(updatedProductRating);
+  return updatedProductRating;
+}
+
 async function deleteProductImage(id: string, imageUrl: string) {
   const key = `image-${imageUrl.split('/').pop()?.replace('.', '-')}`;
   const imagesToRemove = [`productImages[_key==\"${key}\"]`];
@@ -258,6 +265,7 @@ export {
   updateProduct,
   updateProductImages,
   updateProductStatus,
+  updateProductRating,
   getProductImages,
   deleteProducts,
   deleteProductById,

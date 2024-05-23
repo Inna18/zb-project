@@ -13,6 +13,8 @@ import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCre
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useQueryClient } from '@tanstack/react-query';
+import { useProductUpdateRating } from '@/app/queries/queryHooks/product/useProductUpdateRating';
+import Product from '@/app/service/useProductApi';
 
 const { COMMENT_CREATE_SUCCESS } = modalMsgConstants;
 
@@ -27,6 +29,7 @@ const Rating = (ratingProps: RatingProps) => {
 
   const { open, close, isOpen } = useModal();
   const { mutate: mutateSave } = useCommentCreate();
+  const { mutate: mutateUpdate } = useProductUpdateRating();
 
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [ratingCount, setRatingCount] = useState<
@@ -84,6 +87,11 @@ const Rating = (ratingProps: RatingProps) => {
         return sum + value.rating!;
       }, 0) / commentsData.length;
     setRatingAverage(calc);
+    mutateUpdate({ id: productId, rating: calc }, {
+      onSuccess: (data) => {
+        queryClient.setQueryData(['product', productId], (old: Product) => ({...old, rating: data.rating}))
+      }
+    })
   };
 
   return (
@@ -114,13 +122,13 @@ const Rating = (ratingProps: RatingProps) => {
         </div>
       </div>
       {isOpenPopup && (
-      <Popup
-        selector='portal2'
-        show={isOpenPopup}
-        title='Comment'
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+        <Popup
+          selector='portal2'
+          show={isOpenPopup}
+          title='Comment'
+          onSave={handleSave}
+          onCancel={handleCancel}
+        />
       )}
       <Modal
         selector={'portal'}

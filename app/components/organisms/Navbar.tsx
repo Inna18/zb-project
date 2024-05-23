@@ -39,11 +39,19 @@ const Navbar = () => {
     console.log('sessionInfo: ', session);
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      setProfileMenu([
-        { id: 1, value: 'logout' },
-        { id: 2, value: 'myPage' },
-        { id: 3, value: 'cart' },
-      ]);
+      if (session.data.user?.role === 'ADMIN') {
+        setProfileMenu([
+          { id: 1, value: 'logout' },
+          { id: 2, value: 'myPage' },
+        ]);
+      }
+      if (session.data.user?.role === 'USER') {
+        setProfileMenu([
+          { id: 1, value: 'logout' },
+          { id: 2, value: 'myPage' },
+          { id: 3, value: 'cart' },
+        ]);
+      }
     } else {
       setUsername('Guest');
       setProfileMenu([
