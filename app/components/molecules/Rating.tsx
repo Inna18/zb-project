@@ -7,10 +7,10 @@ import starIcon from '@/public/icons/star-solid.svg';
 import BarChart from '../atoms/barChart/BarChart';
 import Popup from '../atoms/popup/Popup';
 import Comment from '@/app/service/useCommentApi';
+import Modal from '../atoms/modal/Modal';
 
 import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCreate';
 import { useModal } from '@/app/hooks/useModal';
-import Modal from '../atoms/modal/Modal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -113,6 +113,7 @@ const Rating = (ratingProps: RatingProps) => {
           </div>
         </div>
       </div>
+      {isOpenPopup && (
       <Popup
         selector='portal2'
         show={isOpenPopup}
@@ -120,6 +121,7 @@ const Rating = (ratingProps: RatingProps) => {
         onSave={handleSave}
         onCancel={handleCancel}
       />
+      )}
       <Modal
         selector={'portal'}
         show={isOpen}

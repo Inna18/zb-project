@@ -13,6 +13,7 @@ import { useCommentDeleteById } from '@/app/queries/queryHooks/comment/useCommen
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useQueryClient } from '@tanstack/react-query';
+import { commonConstants } from '@/app/constants/common';
 
 const RATING_DESCRIPTION = [
   { rating: 1, description: 'Worse' },
@@ -22,13 +23,14 @@ const RATING_DESCRIPTION = [
   { rating: 5, description: 'Excellent' },
 ];
 const { COMMENT_DELETE_SUCCESS } = modalMsgConstants;
+const { LIST_EMPTY } = commonConstants;
+
 interface CommentsProps {
   productId: string;
   commentsData: Comment[];
   email: string;
 }
 const Comments = (commentsProps: CommentsProps) => {
-  ('');
   const { productId, commentsData, email } = commentsProps;
   const queryClient = useQueryClient();
   const [starNumArr, setStarNumArr] = useState<number[][]>();
@@ -76,6 +78,9 @@ const Comments = (commentsProps: CommentsProps) => {
     <>
       {starNumArr && (
         <div className={styles['comment-list']}>
+          {commentsData && commentsData.length <= 0 && (
+            <div className={styles.centered}>{LIST_EMPTY}</div>
+          )}
           {commentsData &&
             commentsData.map((comment: Comment, idx: number) => (
               <div className={styles['comment-card']} key={comment._id}>
@@ -116,7 +121,7 @@ const Comments = (commentsProps: CommentsProps) => {
                   {comment.commentImage && (
                     <div>
                       <Image
-                        src={comment.commentImage!}
+                        src={comment.commentImage}
                         alt={''}
                         width={100}
                         height={100}

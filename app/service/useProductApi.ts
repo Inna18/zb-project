@@ -1,5 +1,6 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
+import { deleteAllCommentsByProductId } from '@/app/service/useCommentApi';
 
 export default interface Product {
   _id?: string;
@@ -240,6 +241,7 @@ async function deleteProductById(id: string) {
   const inDB = await getProductById(id);
   if (inDB) {
     const productDeleted = await client.delete(id);
+    await deleteAllCommentsByProductId(id);
     console.log(productDeleted);
   } else {
     console.log('No such Product');
