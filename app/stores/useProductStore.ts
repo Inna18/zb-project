@@ -14,7 +14,7 @@ const initialState: Product = {
   brand: '',
   name: '',
   price: '',
-  quantity: '',
+  quantity: 0,
   content: [],
   productImages: [],
   _createdAt: '',

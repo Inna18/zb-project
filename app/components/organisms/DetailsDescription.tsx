@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import starIcon from '@/public/icons/star-solid.svg';
 import Button from '../atoms/button/Button';
@@ -8,9 +8,22 @@ import Button from '../atoms/button/Button';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { toUpper } from '@/app/utils/text';
 import DescriptionImages from '../molecules/DescriptionImages';
+import { useSession } from 'next-auth/react';
 
 const DetailsDescription = () => {
+  const session = useSession();
   const { product } = useProductStore((state) => state);
+  const [count, setCount] = useState<number>(1);
+  const [disabled, setDisabled] = useState<boolean>(
+    session.data?.user?.role === 'ADMIN' || product.quantity! <= 0
+  );
+
+  const handleDecrease = () => {
+    if (count >= 2) setCount(count - 1);
+  };
+  const handleIncrease = () => {
+    if (count < product.quantity!) setCount(count + 1);
+  };
 
   return (
     <div className={styles.details}>
@@ -30,9 +43,24 @@ const DetailsDescription = () => {
             <div>Price: </div>
             <div className={styles.price}>{product.price}won</div>
           </div>
+          <div className={styles['count-section']}>
+            {disabled ? (
+              <div className={styles.soldout}>Sold Out</div>
+            ) : (
+              <div className={styles.count}>
+                <a onClick={handleDecrease}>-</a>
+                <div>{count}</div>
+                <a onClick={handleIncrease}>+</a>
+              </div>
+            )}
+          </div>
           <div className={styles['btn-section']}>
-            <Button value={'Add to Cart'} className='button2-long' />
-            <Button value={'Buy'} className='button-long' />
+            <Button
+              value={'Add to Cart'}
+              className='button2-long'
+              disabled={disabled}
+            />
+            <Button value={'Buy'} className='button-long' disabled={disabled} />
           </div>
         </div>
       </div>

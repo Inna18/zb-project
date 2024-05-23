@@ -87,11 +87,17 @@ const Rating = (ratingProps: RatingProps) => {
         return sum + value.rating!;
       }, 0) / commentsData.length;
     setRatingAverage(calc);
-    mutateUpdate({ id: productId, rating: calc }, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(['product', productId], (old: Product) => ({...old, rating: data.rating}))
+    mutateUpdate(
+      { id: productId, rating: calc },
+      {
+        onSuccess: (data) => {
+          queryClient.setQueryData(['product', productId], (old: Product) => ({
+            ...old,
+            rating: data.rating,
+          }));
+        },
       }
-    })
+    );
   };
 
   return (

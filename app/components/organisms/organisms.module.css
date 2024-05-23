@@ -313,7 +313,8 @@
 .upper .description div {
   padding: 10px 0;
 }
-.upper .description .brand {
+.upper .description .brand,
+.upper .description .count-section .soldout {
   font-weight: 600;
   font-size: 16px;
   color: rgb(36, 34, 32, 0.3);
@@ -336,11 +337,24 @@
   display: flex;
   justify-content: space-between;
   padding: 20px 20px;
-  margin: 20px 0;
   border-top: 1px solid rgb(99, 96, 93, 0.1);
 }
 .upper .description .price {
   font-size: 20px;
+}
+.upper .description .count-section {
+  padding: 0 10px 20px 10px;
+}
+.upper .description .count-section .count {
+  display: flex;
+  align-items: center;
+}
+.upper .description .count-section .count a {
+  margin: 0 10px;
+  color: #e58025;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .upper .description .btn-section {
   display: flex;

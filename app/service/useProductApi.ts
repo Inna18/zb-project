@@ -8,7 +8,8 @@ export default interface Product {
   brand?: string;
   name?: string;
   price?: string;
-  quantity?: string;
+  quantity?: number;
+  count?: number;
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
@@ -108,6 +109,7 @@ async function getBestProductList(count: number) {
 }
 
 async function createProduct(product: Product) {
+  product.productImages = [];
   let productImages: SanityImageAssetDocument[] = [];
   if (product.productImages) {
     const promises = product.productImages.map(async (productImage: string) => {
@@ -202,7 +204,10 @@ async function updateProductStatus(id: string, posted: boolean) {
 }
 
 async function updateProductRating(id: string, rating: number) {
-  const updatedProductRating = await client.patch(id).set({rating: rating}).commit();
+  const updatedProductRating = await client
+    .patch(id)
+    .set({ rating: rating })
+    .commit();
   console.log(updatedProductRating);
   return updatedProductRating;
 }

@@ -151,3 +151,38 @@
   color: inherit;
   background-color: rgb(36, 34, 32, 0.1);
 }
+
+/* cart */
+.cart-table {
+  margin: 50px;
+  width: 1000px;
+}
+.header th {
+  font-weight: 400;
+  /* border-bottom: 2px solid rgb(99, 96, 93, 0.1); */
+  border: none;
+  padding: 10px;
+  background-color: rgb(99, 96, 93, 0.1);
+}
+.body td {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  border-bottom: 1px solid rgb(99, 96, 93, 0.1);
+}
+.body .buttons {
+  display: flex;
+  flex-direction: column;
+}
+.body .buttons a:nth-child(1) {
+  margin-bottom: 6px;
+}
+.cart-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.cart-bottom div {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
