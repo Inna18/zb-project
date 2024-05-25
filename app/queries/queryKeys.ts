@@ -23,3 +23,7 @@ export const SHIPPING_POLICY_KEYS = {
 export const COMMENT_KEYS = {
   list: (id: string) => ['comments', { productId: id }],
 };
+
+export const CART_KEYS = {
+  get: (id: string) => ['cart', { userId: id }],
+};

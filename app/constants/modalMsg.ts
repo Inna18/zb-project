@@ -16,4 +16,6 @@ export const modalMsgConstants = {
   POLICY_UPDATE_SUCCESS: 'Policy updated.',
   COMMENT_CREATE_SUCCESS: 'Comment created successfully.',
   COMMENT_DELETE_SUCCESS: 'Comment deleted successfully.',
+  CART_UPDATE_SUCCESS:
+    'Product added to cart successfully. Would you like to check the cart?',
 };

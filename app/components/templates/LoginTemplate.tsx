@@ -4,7 +4,7 @@ import styles from './templates.module.css';
 import Form from '@/app/components/molecules/Form';
 import Button from '@/app/components/atoms/button/Button';
 import Checkbox from '@/app/components/atoms/checkbox/Checkbox';
-import User from '@/app/service/useUserApi';
+import User, { getUserByEmailAndPassword } from '@/app/service/useUserApi';
 import Link from 'next/link';
 import Modal from '../atoms/modal/Modal';
 
@@ -14,6 +14,7 @@ import { signIn } from 'next-auth/react';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useUserStore } from '@/app/stores/useUserStore';
 
 const LIST = [
   { id: 1, value: 'email' },
@@ -23,6 +24,7 @@ const { USER_LOGIN_ERROR } = modalMsgConstants;
 
 const LoginTemplate = () => {
   const router = useRouter();
+  const { user, updateUser } = useUserStore((state) => state);
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
   const { validateForm, emailError, passwordError } = useFormValidator();
@@ -45,8 +47,14 @@ const LoginTemplate = () => {
         redirect: false,
       });
       console.log('authUser: ', authUser);
-      if (authUser?.ok) router.push('/home');
-      else open();
+      if (authUser?.ok) {
+        router.push('/home');
+        const loggedUser = await getUserByEmailAndPassword(
+          loginUser.email,
+          loginUser.password
+        );
+        if (loggedUser) updateUser(loggedUser);
+      } else open();
     }
   };
 

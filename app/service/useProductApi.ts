@@ -7,9 +7,8 @@ export default interface Product {
   category?: string;
   brand?: string;
   name?: string;
-  price?: string;
+  price?: number;
   quantity?: number;
-  count?: number;
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
@@ -212,6 +211,15 @@ async function updateProductRating(id: string, rating: number) {
   return updatedProductRating;
 }
 
+async function updateProductQuantity(id: string, quantity: number) {
+  const updatedProductQuantity = await client
+    .patch(id)
+    .set({ quantity: quantity })
+    .commit();
+  console.log(updatedProductQuantity);
+  return updatedProductQuantity;
+}
+
 async function deleteProductImage(id: string, imageUrl: string) {
   const key = `image-${imageUrl.split('/').pop()?.replace('.', '-')}`;
   const imagesToRemove = [`productImages[_key==\"${key}\"]`];
@@ -271,6 +279,7 @@ export {
   updateProductImages,
   updateProductStatus,
   updateProductRating,
+  updateProductQuantity,
   getProductImages,
   deleteProducts,
   deleteProductById,

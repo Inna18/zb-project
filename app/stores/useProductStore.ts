@@ -13,7 +13,7 @@ const initialState: Product = {
   category: '',
   brand: '',
   name: '',
-  price: '',
+  price: 0,
   quantity: 0,
   content: [],
   productImages: [],

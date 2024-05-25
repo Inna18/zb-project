@@ -164,25 +164,28 @@
   padding: 10px;
   background-color: rgb(99, 96, 93, 0.1);
 }
-.body td {
-  text-align: center;
-  vertical-align: middle;
-  padding: 10px;
-  border-bottom: 1px solid rgb(99, 96, 93, 0.1);
-}
-.body .buttons {
-  display: flex;
-  flex-direction: column;
-}
 .body .buttons a:nth-child(1) {
   margin-bottom: 6px;
 }
 .cart-bottom {
+  width: 1000px;
+  display: flex;
+  justify-content: space-around;
+  font-size: 18px;
+  padding: 20px;
+}
+.cart-bottom .cost {
+  display: flex;
+}
+.cart-bottom .cost div {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
-.cart-bottom div {
-  font-size: 20px;
-  margin-bottom: 16px;
+.cart-bottom .cost div:nth-child(1) {
+  margin-right: 20px;
+}
+.cart-bottom .cost div .description {
+  font-size: 11px;
 }

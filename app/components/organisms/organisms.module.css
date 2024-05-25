@@ -369,3 +369,17 @@
 .delivery-return {
   padding: 30px 20px 40px;
 }
+
+/* cart product */
+.body td {
+  text-align: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(99, 96, 93, 0.1);
+}
+/* .body td img {
+  margin-top: 10px;
+} */
+.buttons {
+  display: flex;
+  flex-direction: column;
+}

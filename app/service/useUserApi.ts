@@ -47,6 +47,7 @@ async function getUserByEmailAndPassword(
   passwordProp: string
 ) {
   const query = `*[_type == 'user' && email == '${emailProp}' && password == '${passwordProp}'][0]{
+    _id,
     email,
     password,
     name, 

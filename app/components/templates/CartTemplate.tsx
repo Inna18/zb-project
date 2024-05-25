@@ -1,54 +1,83 @@
 'use client';
-
-import React from 'react';
-import Image from 'next/image';
 import styles from './templates.module.css';
-import payIcon from '@/public/icons/money-check-dollar-solid.svg';
-import removeIcon from '@/public/icons/xmark-solid.svg';
+
+import React, { useEffect, useState } from 'react';
 import Button from '../atoms/button/Button';
+import CartProduct from '../organisms/CartProduct';
+import Spinner from '../atoms/spinner/Spinner';
+
+import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
+import { useUserStore } from '@/app/stores/useUserStore';
+import { numberWithCommas } from '@/app/utils/number';
 
 const CartTemplate = () => {
+  const { user } = useUserStore((state) => state);
+  const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
+  const [deliveryFee, setDeliveryFee] = useState<number>(3500);
+  const [productTotal, setProductTotal] = useState<number>(0);
+
+  const countTotalProductCost = (cost: number) =>
+    setProductTotal((prevState) => prevState + cost);
+
+  useEffect(() => {
+    if (productTotal > 50000) setDeliveryFee(0);
+  }, [productTotal]);
+
   return (
-    <div className={styles.container}>
-      <div className={styles.title}>Cart</div>
-      <div>
-        <table className={styles['cart-table']} cellSpacing='0'>
-          <tbody>
-          <tr className={styles.header}>
-            <th>NO</th>
-            <th>Image</th>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Delivery Fee</th>
-            <th>Total</th>
-            <th>Select</th>
-          </tr>
-          <tr className={styles.body}>
-            <td>1</td>
-            <td>No Image</td>
-            <td>Adult</td>
-            <td>32,000won</td>
-            <td>2</td>
-            <td>3,500</td>
-            <td>64,000</td>
-            <td className={styles.buttons}>
-              <a onClick={()=>{}}>
-                <Image src={payIcon} alt={'pay-icon'} width={20} height={20}/>
-              </a>
-              <a onClick={()=>{}}>
-              <Image src={removeIcon} alt={'remove-icon'} width={20} height={20}/>
-              </a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-      <div className={styles['cart-bottom']}>
-        <div>Total: 67,500won</div>
-        <Button value='Buy All' />
-      </div>
-    </div>
+    <>
+      {loadingCart && <Spinner />}
+      {!loadingCart && (
+        <div className={styles.container}>
+          <div className={styles.title}>Cart</div>
+          <div>
+            <table className={styles['cart-table']} cellSpacing='0'>
+              <tbody>
+                <tr className={styles.header}>
+                  <th>NO</th>
+                  <th>Image</th>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>Select</th>
+                </tr>
+                {cart.productCountSet &&
+                  cart.productCountSet.map(
+                    (
+                      productCount: { productId: string; count: number },
+                      idx: number
+                    ) => (
+                      <CartProduct
+                        productId={productCount.productId}
+                        count={productCount.count}
+                        idx={idx + 1}
+                        countTotalProductCost={countTotalProductCost}
+                      />
+                    )
+                  )}
+              </tbody>
+            </table>
+          </div>
+          <div className={styles['cart-bottom']}>
+            <div>Total: </div>
+            <div className={styles.cost}>
+              <div>
+                <div>₩{numberWithCommas(productTotal)}</div>
+                <div className={styles.description}>total product cost</div>
+              </div>
+              <div>
+                <div>₩{numberWithCommas(deliveryFee)}</div>
+                <div className={styles.description}>
+                  delivery fee (free over ₩50,000)
+                </div>
+              </div>
+            </div>
+            <div>₩{numberWithCommas(productTotal + deliveryFee)}</div>
+          </div>
+          <Button value='Buy All' />
+        </div>
+      )}
+    </>
   );
 };
 

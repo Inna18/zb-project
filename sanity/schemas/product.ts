@@ -6,9 +6,8 @@ export default {
     { name: 'category', title: 'Category', type: 'string' },
     { name: 'brand', title: 'Brand', type: 'string' },
     { name: 'name', title: 'Name', type: 'string' },
-    { name: 'price', title: 'Price', type: 'string' },
+    { name: 'price', title: 'Price', type: 'number' },
     { name: 'quantity', title: 'Quantity', type: 'number' },
-    { name: 'count', title: 'Count', type: 'number' },
     { name: 'rating', title: 'Rating', type: 'number' },
     {
       name: 'content',
