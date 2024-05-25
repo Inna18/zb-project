@@ -12,15 +12,16 @@ import { numberWithCommas } from '@/app/utils/number';
 
 const CartTemplate = () => {
   const { user } = useUserStore((state) => state);
-  const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
+  const { data: cart, isLoading: loadingCart } = useCartGet(user._id ? user._id : '');
   const [deliveryFee, setDeliveryFee] = useState<number>(3500);
   const [productTotal, setProductTotal] = useState<number>(0);
 
-  const countTotalProductCost = (cost: number) =>
+  const countTotalProductCost = (cost: number) => {
     setProductTotal((prevState) => prevState + cost);
+  };
 
   useEffect(() => {
-    if (productTotal > 50000) setDeliveryFee(0);
+    if (productTotal === 0 || productTotal > 50000) setDeliveryFee(0);
   }, [productTotal]);
 
   return (
@@ -41,20 +42,24 @@ const CartTemplate = () => {
                   <th>Total</th>
                   <th>Select</th>
                 </tr>
-                {cart.productCountSet &&
+                {cart.productCountSet && cart.productCountSet.length > 0 ? (
                   cart.productCountSet.map(
                     (
                       productCount: { productId: string; count: number },
                       idx: number
                     ) => (
                       <CartProduct
+                        key={productCount.productId}
                         productId={productCount.productId}
                         count={productCount.count}
                         idx={idx + 1}
                         countTotalProductCost={countTotalProductCost}
                       />
                     )
-                  )}
+                  )
+                ) : (
+                  <div className={styles.centered}>Cart empty</div>
+                )}
               </tbody>
             </table>
           </div>

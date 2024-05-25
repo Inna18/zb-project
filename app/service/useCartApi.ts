@@ -37,27 +37,31 @@ async function addToCart(
   userId: string,
   prodCountSet: { productId: string; count: number }
 ) {
-  const inDB = await getCartByUserId(userId);
-  if (!inDB) await createCart(userId, prodCountSet);
+  const existingCart = await getCartByUserId(userId);
+  if (!existingCart) await createCart(userId, prodCountSet);
   else {
-    const existingCart = await getCartByUserId(userId);
     let existingSet = existingCart.productCountSet;
-    if (
-      existingSet.filter(
-        (set: { productId: string; count: number; _key: string }) =>
-          set.productId === prodCountSet.productId
-      ).length > 0
-    ) {
-      existingSet.map(
-        (set: { productId: string; count: number; _key: string }) => {
-          // if product with this Id already exists -> increase count
-          if (set.productId === prodCountSet.productId)
-            set.count += prodCountSet.count;
-          return set;
-        }
-      );
+    if (existingSet === null) {
+      // if cart exists but empty
+      existingSet = [prodCountSet];
     } else {
-      existingSet = [...existingSet, prodCountSet]; // else push new set to existingSet
+      if (
+        existingSet.filter(
+          (set: { productId: string; count: number; _key: string }) =>
+            set.productId === prodCountSet.productId
+        ).length > 0
+      ) {
+        existingSet.map(
+          (set: { productId: string; count: number; _key: string }) => {
+            // if product with this Id already exists -> increase count
+            if (set.productId === prodCountSet.productId)
+              set.count += prodCountSet.count;
+            return set;
+          }
+        );
+      } else {
+        existingSet = [...existingSet, prodCountSet]; // else push new set to existingSet
+      }
     }
 
     const updatedCart = await client
@@ -71,4 +75,23 @@ async function addToCart(
   }
 }
 
-export { getCartByUserId, createCart, addToCart };
+async function removeFromCart(userId: string, productId: string) {
+  const existingCart = await getCartByUserId(userId);
+  if (existingCart) {
+    console.log(existingCart)
+    const newProdCountSet = existingCart.productCountSet
+    .filter((productCount: { productId: string; count: number; _key: string }) => productCount.productId !== productId)
+    console.log(newProdCountSet)
+
+    const updatedCart = await client
+      .patch(existingCart._id)
+      .set({
+        productCountSet: newProdCountSet,
+      })
+      .commit();
+    console.log('Updated cart: ', updatedCart);
+    return updatedCart;
+  }
+}
+
+export { getCartByUserId, createCart, addToCart, removeFromCart };

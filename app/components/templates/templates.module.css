@@ -1,4 +1,4 @@
-/* all */
+/* common */
 .container {
   display: flex;
   flex-direction: column;
@@ -9,6 +9,15 @@
   font-size: 20px;
   margin: 30px;
   font-weight: 500;
+}
+.centered {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  height: 50px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 /* login/signup form */
 .form {

@@ -8,6 +8,10 @@ import Spinner from '../atoms/spinner/Spinner';
 
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
 import { numberWithCommas } from '@/app/utils/number';
+import { useCartDelete } from '@/app/queries/queryHooks/cart/useCartDelete';
+import { useUserStore } from '@/app/stores/useUserStore';
+import { useQueryClient } from '@tanstack/react-query';
+import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 
 interface CartProductProps {
   productId: string;
@@ -17,17 +21,37 @@ interface CartProductProps {
 }
 
 const CartProduct = (cartProductProps: CartProductProps) => {
+  const queryClient = useQueryClient();
+  const { user } = useUserStore((state) => state);
   const { productId, count, idx, countTotalProductCost } = cartProductProps;
   const { data: product, isLoading: loadingProduct } =
     useProductGetById(productId);
+  const { mutate: mutateDelete, isPending: pendingDelete } = useCartDelete();
+  const { mutate: mutateUpdate, isPending: pendingUpdate } = useProductUpdateQuantity();
 
   useEffect(() => {
     if (product) countTotalProductCost(product.price * count);
   }, [product]);
 
+  const handleDelete = () => {
+    if (user._id) {
+      mutateDelete({
+        userId: user._id ?? user._id,
+        productId: productId
+      }, {
+        onSuccess: (data) => {
+          queryClient.setQueryData(['cart', { userId: user._id }], () => data );
+          mutateUpdate( // add to product quantity again
+            { id: productId, quantity: product.quantity + count }
+          )
+        }
+      });
+    }
+  }
+
   return (
     <>
-      {loadingProduct && <Spinner />}
+      {(loadingProduct || pendingDelete) && <Spinner />}
       {!loadingProduct && (
         <tr className={styles.body}>
           <td>{idx}</td>
@@ -50,9 +74,12 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           <td>
             <div className={styles.buttons}>
               <a onClick={() => {}}>
-                <Image src={payIcon} alt={'pay-icon'} width={20} height={20} />
+                <Image src={payIcon} 
+                alt={'pay-icon'} 
+                width={20}
+                 height={20} />
               </a>
-              <a onClick={() => {}}>
+              <a onClick={handleDelete}>
                 <Image
                   src={removeIcon}
                   alt={'remove-icon'}
