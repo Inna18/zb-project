@@ -17,8 +17,8 @@ const UrlChange = () => {
     )
       router.replace('/'); // if ADMIN or GUEST - deny access to /cart
     if (
-      (session.status === 'authenticated' && pathname === '/login') ||
-      pathname === '/signup'
+      session.status === 'authenticated' &&
+      (pathname === '/login' || pathname === '/signup')
     )
       router.replace('/'); // if user authorized - deny access to /login & /signup, need to logout first
   }, [pathname, session]);

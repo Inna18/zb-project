@@ -19,6 +19,15 @@
   justify-content: center;
   align-items: center;
 }
+/* required-mark */
+.required-mark {
+  color: #e58025;
+}
+/* error */
+.error {
+  font-size: 10px;
+  color: #e58025;
+}
 /* login/signup form */
 .form {
   display: flex;
@@ -200,4 +209,58 @@
 }
 .cart-bottom .cost div .description {
   font-size: 11px;
+}
+
+/* checkout */
+.title {
+  font-size: 20px;
+}
+.subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  padding: 10px 30px;
+}
+.checkout-user-section {
+  width: 1000px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 40px;
+  margin-bottom: 30px;
+}
+.checkout-user-section .titles {
+  width: 300px;
+  margin-right: 50px;
+}
+.checkout-user-section .titles div {
+  margin: 26px 0;
+}
+.checkout-user-section .inputs div {
+  margin: 15px 0;
+}
+.checkout-product-section,
+.checkout-payment-section {
+  width: 1000px;
+  padding: 0 40px;
+  margin-bottom: 30px;
+}
+.checkout-product-section .product {
+  width: 600px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+  justify-content: center;
+}
+.checkout-product-section .product div div {
+  margin: 10px 0;
+}
+.checkout-payment-section .payment {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+.checkout-payment-section .payment div {
+  margin: 10px 0;
+}
+.button-section {
+  margin: 46px 0;
 }

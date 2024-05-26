@@ -9,12 +9,12 @@ import Spinner from '../atoms/spinner/Spinner';
 import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { numberWithCommas } from '@/app/utils/number';
+import { useRouter } from 'next/navigation';
 
 const CartTemplate = () => {
+  const router = useRouter();
   const { user } = useUserStore((state) => state);
-  const { data: cart, isLoading: loadingCart } = useCartGet(
-    user._id ? user._id : ''
-  );
+  const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
   const [deliveryFee, setDeliveryFee] = useState<number>(3500);
   const [productTotal, setProductTotal] = useState<number>(0);
 
@@ -24,7 +24,12 @@ const CartTemplate = () => {
 
   useEffect(() => {
     if (productTotal === 0 || productTotal > 50000) setDeliveryFee(0);
+    else setDeliveryFee(3500);
   }, [productTotal]);
+
+  const handleBuyAll = () => {
+    router.push('/checkout');
+  };
 
   return (
     <>
@@ -83,7 +88,7 @@ const CartTemplate = () => {
             </div>
             <div>₩{numberWithCommas(productTotal + deliveryFee)}</div>
           </div>
-          <Button value='Buy All' />
+          <Button value='Buy All' onClick={handleBuyAll} />
         </div>
       )}
     </>

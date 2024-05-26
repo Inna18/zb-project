@@ -7,7 +7,6 @@ export default interface Cart {
 }
 
 async function getCartByUserId(userId: string) {
-  console.log(userId);
   const query = `*[_type == 'cart' && userId == '${userId}'][0]{
         _id, 
         userId, 

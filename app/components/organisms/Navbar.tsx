@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
+
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -21,7 +22,7 @@ const MENU_LIST = [
 const Navbar = () => {
   const session = useSession();
   const router = useRouter();
-  const { user, resetUser } = useUserStore();
+  const { user, resetUser } = useUserStore((state) => state);
 
   const [profileMenu, setProfileMenu] = useState<
     { id: number; value: string }[]
@@ -60,7 +61,6 @@ const Navbar = () => {
         { id: 1, value: 'login' },
         { id: 2, value: 'signup' },
       ]);
-      resetUser();
     }
   }, [session]);
 
@@ -86,6 +86,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     signOut();
+    resetUser();
   };
 
   return (

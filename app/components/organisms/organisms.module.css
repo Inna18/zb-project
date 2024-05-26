@@ -172,9 +172,6 @@
   align-items: center;
   padding: 30px;
   background-color: #f5efeb;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
-  box-shadow: 0 4px 20px -2px rgb(36, 34, 32, 0.3);
   font-size: 14px;
 }
 .navbar div a {
@@ -199,9 +196,6 @@
   font-size: 10px;
   padding: 10px;
   background-color: #f5efeb;
-  border-top-left-radius: 16px;
-  border-top-right-radius: 16px;
-  box-shadow: 0 4px 20px 4px rgb(36, 34, 32, 0.3);
 }
 .footer-section {
   display: grid;

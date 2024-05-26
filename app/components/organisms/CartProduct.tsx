@@ -12,6 +12,7 @@ import { useCartDelete } from '@/app/queries/queryHooks/cart/useCartDelete';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
+import { useRouter } from 'next/navigation';
 
 interface CartProductProps {
   productId: string;
@@ -21,6 +22,7 @@ interface CartProductProps {
 }
 
 const CartProduct = (cartProductProps: CartProductProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useUserStore((state) => state);
   const { productId, count, idx, countTotalProductCost } = cartProductProps;
@@ -31,7 +33,9 @@ const CartProduct = (cartProductProps: CartProductProps) => {
     useProductUpdateQuantity();
 
   useEffect(() => {
-    if (product) countTotalProductCost(product.price * count);
+    if (product) {
+      countTotalProductCost(product.price * count);
+    }
   }, [product]);
 
   const handleDelete = () => {
@@ -54,6 +58,12 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           },
         }
       );
+    }
+  };
+
+  const handleBuy = () => {
+    if (user._id) {
+      router.push(`/checkout?productId=${productId}`);
     }
   };
 
@@ -81,7 +91,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           <td>₩{numberWithCommas(product.price * count)}</td>
           <td>
             <div className={styles.buttons}>
-              <a onClick={() => {}}>
+              <a onClick={handleBuy}>
                 <Image src={payIcon} alt={'pay-icon'} width={20} height={20} />
               </a>
               <a onClick={handleDelete}>
