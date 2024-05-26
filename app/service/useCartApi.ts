@@ -78,10 +78,10 @@ async function addToCart(
 async function removeFromCart(userId: string, productId: string) {
   const existingCart = await getCartByUserId(userId);
   if (existingCart) {
-    console.log(existingCart)
-    const newProdCountSet = existingCart.productCountSet
-    .filter((productCount: { productId: string; count: number; _key: string }) => productCount.productId !== productId)
-    console.log(newProdCountSet)
+    const newProdCountSet = existingCart.productCountSet.filter(
+      (productCount: { productId: string; count: number; _key: string }) =>
+        productCount.productId !== productId
+    );
 
     const updatedCart = await client
       .patch(existingCart._id)

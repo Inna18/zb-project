@@ -10,8 +10,12 @@ const UrlChange = () => {
   useEffect(() => {
     console.log(`The page is now: ${pathname}`);
 
-    if (session.data?.user?.role === 'ADMIN' && pathname === '/cart')
-      router.replace('/'); // if ADMIN - deny access to /cart
+    if (
+      (session.data?.user?.role === 'ADMIN' ||
+        session.status === 'unauthenticated') &&
+      pathname === '/cart'
+    )
+      router.replace('/'); // if ADMIN or GUEST - deny access to /cart
     if (
       (session.status === 'authenticated' && pathname === '/login') ||
       pathname === '/signup'

@@ -20,7 +20,7 @@ import { useModal } from '@/app/hooks/useModal';
 import { useRouter } from 'next/navigation';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
-const { CART_UPDATE_SUCCESS } = modalMsgConstants;
+const { CART_UPDATE_SUCCESS, LOGIN_REQUEST } = modalMsgConstants;
 
 const DetailsDescription = () => {
   const router = useRouter();
@@ -36,7 +36,7 @@ const DetailsDescription = () => {
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
-    setDisabled(session.data?.user?.role === 'ADMIN' || product.quantity! <= 0);
+    setDisabled(product.quantity! <= 0);
   }, [product.quantity]);
 
   const handleDecrease = () => {
@@ -47,44 +47,55 @@ const DetailsDescription = () => {
   };
 
   const handleMove = () => router.push('/cart');
+  const handleLogin = () => router.push('/login');
 
   const handleAddCart = () => {
-    const productCountSet = {
-      productId: product._id!,
-      count: count,
-      _key: product._id!,
-    };
-    mutateUpdate(
-      { userId: user._id!, prodCountSet: productCountSet },
-      {
-        onSuccess: () => {
-          mutateUpdateQuantity(
-            { id: product._id!, quantity: product.quantity! - count },
-            {
-              onSuccess: (data) => {
-                queryClient.setQueryData(
-                  ['product', product._id!],
-                  (old: Product) => ({
-                    ...old,
-                    quantity: data.quantity,
-                  })
-                );
-                updateProduct({ ...product, quantity: data.quantity });
-                product.quantity! > 0 ? setCount(1) : setCount(0);
+    if (session.status === 'unauthenticated') {
+      setModal({
+        type: 'confirm',
+        content: LOGIN_REQUEST,
+        onOk: handleLogin,
+        onClose: close,
+      });
+      open();
+    } else {
+      const productCountSet = {
+        productId: product._id!,
+        count: count,
+        _key: product._id!,
+      };
+      mutateUpdate(
+        { userId: user._id!, prodCountSet: productCountSet },
+        {
+          onSuccess: () => {
+            mutateUpdateQuantity(
+              { id: product._id!, quantity: product.quantity! - count },
+              {
+                onSuccess: (data) => {
+                  queryClient.setQueryData(
+                    ['product', product._id!],
+                    (old: Product) => ({
+                      ...old,
+                      quantity: data.quantity,
+                    })
+                  );
+                  updateProduct({ ...product, quantity: data.quantity });
+                  product.quantity! > 0 ? setCount(1) : setCount(0);
 
-                setModal({
-                  type: 'confirm',
-                  content: CART_UPDATE_SUCCESS,
-                  onOk: handleMove,
-                  onClose: close,
-                });
-                open();
-              },
-            }
-          );
-        },
-      }
-    );
+                  setModal({
+                    type: 'confirm',
+                    content: CART_UPDATE_SUCCESS,
+                    onOk: handleMove,
+                    onClose: close,
+                  });
+                  open();
+                },
+              }
+            );
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -105,26 +116,34 @@ const DetailsDescription = () => {
             <div>Price: </div>
             <div className={styles.price}>{product.price}won</div>
           </div>
-          <div className={styles['count-section']}>
-            {disabled ? (
-              <div className={styles.soldout}>Sold Out</div>
-            ) : (
-              <div className={styles.count}>
-                <a onClick={handleDecrease}>-</a>
-                <div>{count}</div>
-                <a onClick={handleIncrease}>+</a>
+          {session.data?.user?.role !== 'ADMIN' && (
+            <>
+              <div className={styles['count-section']}>
+                {disabled ? (
+                  <div className={styles.soldout}>Sold Out</div>
+                ) : (
+                  <div className={styles.count}>
+                    <a onClick={handleDecrease}>-</a>
+                    <div>{count}</div>
+                    <a onClick={handleIncrease}>+</a>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className={styles['btn-section']}>
-            <Button
-              value={'Add to Cart'}
-              className='button2-long'
-              disabled={disabled}
-              onClick={handleAddCart}
-            />
-            <Button value={'Buy'} className='button-long' disabled={disabled} />
-          </div>
+              <div className={styles['btn-section']}>
+                <Button
+                  value={'Add to Cart'}
+                  className='button2-long'
+                  disabled={disabled}
+                  onClick={handleAddCart}
+                />
+                <Button
+                  value={'Buy'}
+                  className='button-long'
+                  disabled={disabled}
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <Modal

@@ -8,6 +8,7 @@ import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useUserStore } from '@/app/stores/useUserStore';
 
 const MENU_LIST = [
   { id: 1, value: 'home' },
@@ -20,6 +21,7 @@ const MENU_LIST = [
 const Navbar = () => {
   const session = useSession();
   const router = useRouter();
+  const { user, resetUser } = useUserStore();
 
   const [profileMenu, setProfileMenu] = useState<
     { id: number; value: string }[]
@@ -57,8 +59,8 @@ const Navbar = () => {
       setProfileMenu([
         { id: 1, value: 'login' },
         { id: 2, value: 'signup' },
-        { id: 3, value: 'cart' },
       ]);
+      resetUser();
     }
   }, [session]);
 

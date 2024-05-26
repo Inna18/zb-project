@@ -1,4 +1,5 @@
 export const modalMsgConstants = {
+  LOGIN_REQUEST: 'Login is needed to use Cart.',
   USER_CREATE_SUCCESS: 'Sign-up was successfull. Navigate to Login page?',
   USER_CREATE_ERROR: 'User already exists.',
   USER_LOGIN_ERROR: 'No such user. Check credentials.',

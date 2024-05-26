@@ -166,6 +166,9 @@
   margin: 50px;
   width: 1000px;
 }
+.cart-table .centered {
+  width: 1000px;
+}
 .header th {
   font-weight: 400;
   /* border-bottom: 2px solid rgb(99, 96, 93, 0.1); */

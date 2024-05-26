@@ -27,7 +27,8 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const { data: product, isLoading: loadingProduct } =
     useProductGetById(productId);
   const { mutate: mutateDelete, isPending: pendingDelete } = useCartDelete();
-  const { mutate: mutateUpdate, isPending: pendingUpdate } = useProductUpdateQuantity();
+  const { mutate: mutateUpdate, isPending: pendingUpdate } =
+    useProductUpdateQuantity();
 
   useEffect(() => {
     if (product) countTotalProductCost(product.price * count);
@@ -35,19 +36,26 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   const handleDelete = () => {
     if (user._id) {
-      mutateDelete({
-        userId: user._id ?? user._id,
-        productId: productId
-      }, {
-        onSuccess: (data) => {
-          queryClient.setQueryData(['cart', { userId: user._id }], () => data );
-          mutateUpdate( // add to product quantity again
-            { id: productId, quantity: product.quantity + count }
-          )
+      mutateDelete(
+        {
+          userId: user._id ?? user._id,
+          productId: productId,
+        },
+        {
+          onSuccess: (data) => {
+            queryClient.setQueryData(
+              ['cart', { userId: user._id }],
+              () => data
+            );
+            mutateUpdate(
+              // add to product quantity again
+              { id: productId, quantity: product.quantity + count }
+            );
+          },
         }
-      });
+      );
     }
-  }
+  };
 
   return (
     <>
@@ -74,10 +82,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           <td>
             <div className={styles.buttons}>
               <a onClick={() => {}}>
-                <Image src={payIcon} 
-                alt={'pay-icon'} 
-                width={20}
-                 height={20} />
+                <Image src={payIcon} alt={'pay-icon'} width={20} height={20} />
               </a>
               <a onClick={handleDelete}>
                 <Image
