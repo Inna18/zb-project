@@ -13,30 +13,25 @@ import { useUserStore } from '@/app/stores/useUserStore';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 import { useRouter } from 'next/navigation';
+import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 
 interface CartProductProps {
   productId: string;
   count: number;
   idx: number;
-  countTotalProductCost: (total: number) => void;
 }
 
 const CartProduct = (cartProductProps: CartProductProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useUserStore((state) => state);
-  const { productId, count, idx, countTotalProductCost } = cartProductProps;
+  const { totalCost, substructFromTotalCost } = useTotalCostStore((state) => state);
+  const { productId, count, idx } = cartProductProps;
   const { data: product, isLoading: loadingProduct } =
     useProductGetById(productId);
   const { mutate: mutateDelete, isPending: pendingDelete } = useCartDelete();
   const { mutate: mutateUpdate, isPending: pendingUpdate } =
     useProductUpdateQuantity();
-
-  useEffect(() => {
-    if (product) {
-      countTotalProductCost(product.price * count);
-    }
-  }, [product]);
 
   const handleDelete = () => {
     if (user._id) {
@@ -55,6 +50,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
               // add to product quantity again
               { id: productId, quantity: product.quantity + count }
             );
+            substructFromTotalCost(product.price);
           },
         }
       );

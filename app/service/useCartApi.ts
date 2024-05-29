@@ -4,13 +4,15 @@ export default interface Cart {
   _id?: string;
   userId?: string;
   productCountSet?: { productId: string; count: number }[];
+  productTotalCost?: number;
 }
 
 async function getCartByUserId(userId: string) {
   const query = `*[_type == 'cart' && userId == '${userId}'][0]{
         _id, 
-        userId, 
-        productCountSet
+        userId,
+        productCountSet,
+        productTotalCost
     }`;
   const cartByUserId = await client.fetch(query);
   console.log('Cart by UserId: ', cartByUserId);
@@ -25,6 +27,7 @@ async function createCart(
     _type: 'cart',
     userId: userId,
     productCountSet: [productCountSet],
+    productTotalCost: 0
   };
 
   const createdCart = await client.create(sanityCart);
@@ -93,4 +96,19 @@ async function removeFromCart(userId: string, productId: string) {
   }
 }
 
-export { getCartByUserId, createCart, addToCart, removeFromCart };
+async function setCartTotalCost(userId: string, cost: number) {
+  console.log(cost)
+  const existingCart = await getCartByUserId(userId);
+  if (existingCart) {
+    const updatedCart = await client
+    .patch(existingCart._id)
+    .set({
+      productTotalCost: cost
+    })
+    .commit();
+    console.log('Updated cart total product cost: ', updatedCart);
+    return updatedCart;
+  }
+}
+
+export { getCartByUserId, createCart, addToCart, removeFromCart, setCartTotalCost };

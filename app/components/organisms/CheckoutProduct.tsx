@@ -1,7 +1,15 @@
 import React from 'react';
 
-const CheckoutProduct = () => {
-  return <div></div>;
+interface CheckoutProductProps {
+  productId: string;
+  count: number;
+  idx: number;
+}
+
+const CheckoutProduct = (checkoutProductProps: CheckoutProductProps) => {
+  return (
+    <div></div>
+  );
 };
 
 export default CheckoutProduct;

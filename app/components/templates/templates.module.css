@@ -223,7 +223,7 @@
 .checkout-user-section {
   width: 1000px;
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   padding: 0 40px;
   margin-bottom: 30px;
@@ -236,7 +236,12 @@
   margin: 26px 0;
 }
 .checkout-user-section .inputs div {
-  margin: 15px 0;
+  margin: 4px 0;
+  display: flex;
+}
+.checkout-user-section .inputs div div:nth-child(2) {
+  align-items: center;
+  margin: 0 10px;
 }
 .checkout-product-section,
 .checkout-payment-section {

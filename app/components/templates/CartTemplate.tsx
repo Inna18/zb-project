@@ -8,24 +8,22 @@ import Spinner from '../atoms/spinner/Spinner';
 
 import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
 import { useUserStore } from '@/app/stores/useUserStore';
+import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { numberWithCommas } from '@/app/utils/number';
 import { useRouter } from 'next/navigation';
 
 const CartTemplate = () => {
   const router = useRouter();
   const { user } = useUserStore((state) => state);
+  const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
   const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
   const [deliveryFee, setDeliveryFee] = useState<number>(3500);
-  const [productTotal, setProductTotal] = useState<number>(0);
-
-  const countTotalProductCost = (cost: number) => {
-    setProductTotal((prevState) => prevState + cost);
-  };
 
   useEffect(() => {
-    if (productTotal === 0 || productTotal > 50000) setDeliveryFee(0);
+    if (cart && totalCost === 0) addToTotalCost(cart.productTotalCost);
+    if (totalCost === 0 || totalCost > 50000) setDeliveryFee(0);
     else setDeliveryFee(3500);
-  }, [productTotal]);
+  }, [totalCost, cart]);
 
   const handleBuyAll = () => {
     router.push('/checkout');
@@ -62,7 +60,6 @@ const CartTemplate = () => {
                         productId={productCount.productId}
                         count={productCount.count}
                         idx={idx + 1}
-                        countTotalProductCost={countTotalProductCost}
                       />
                     )
                   )
@@ -76,7 +73,7 @@ const CartTemplate = () => {
             <div>Total: </div>
             <div className={styles.cost}>
               <div>
-                <div>₩{numberWithCommas(productTotal)}</div>
+                <div>₩{numberWithCommas(totalCost)}</div>
                 <div className={styles.description}>total product cost</div>
               </div>
               <div>
@@ -86,7 +83,7 @@ const CartTemplate = () => {
                 </div>
               </div>
             </div>
-            <div>₩{numberWithCommas(productTotal + deliveryFee)}</div>
+            <div>₩{numberWithCommas(totalCost + deliveryFee)}</div>
           </div>
           <Button value='Buy All' onClick={handleBuyAll} />
         </div>

@@ -10,6 +10,7 @@ import Modal from '../atoms/modal/Modal';
 
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useUserStore } from '@/app/stores/useUserStore';
+import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -28,6 +29,7 @@ const DetailsDescription = () => {
   const session = useSession();
   const { product, updateProduct } = useProductStore((state) => state);
   const { user } = useUserStore((state) => state);
+  const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
   const { modal, setModal } = useModalStore((state) => state);
   const { mutate: mutateUpdate } = useCartUpdate();
   const { mutate: mutateUpdateQuantity } = useProductUpdateQuantity();
@@ -89,6 +91,7 @@ const DetailsDescription = () => {
                     onClose: close,
                   });
                   open();
+                  if (product.price) addToTotalCost(product.price * count)
                 },
               }
             );

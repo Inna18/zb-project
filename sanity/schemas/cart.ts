@@ -19,5 +19,6 @@ export default {
         },
       ],
     },
+    { name: 'productTotalCost', title: 'Product Total Cost', type: 'number' }
   ],
 };
