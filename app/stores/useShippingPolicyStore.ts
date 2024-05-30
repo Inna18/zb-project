@@ -6,7 +6,7 @@ interface State {
 }
 
 interface Action {
-  updatePolicy: (updatedPolicy: ShippingPolicy) => void;
+  setShippingPolicy: (updatedPolicy: ShippingPolicy) => void;
 }
 
 const initialState: ShippingPolicy = {
@@ -17,5 +17,5 @@ const initialState: ShippingPolicy = {
 
 export const useShippingPolicyStore = create<State & Action>()((set) => ({
   shippingPolicy: initialState,
-  updatePolicy: (updatedPolicy) => set({ shippingPolicy: updatedPolicy }),
+  setShippingPolicy: (updatedPolicy) => set({ shippingPolicy: updatedPolicy }),
 }));

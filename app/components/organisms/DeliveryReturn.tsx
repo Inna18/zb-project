@@ -6,12 +6,11 @@ import { PortableText } from '@portabletext/react';
 import { useShippingPolicyGet } from '@/app/queries/queryHooks/policy/useShippingPolicyGet';
 
 const DeliveryReturn = () => {
-  const { data: shippingPolicyData, isLoading: loadingGet } =
-    useShippingPolicyGet();
+  const { data: shippingPolicyData, isLoading } = useShippingPolicyGet();
 
   return (
     <>
-      {!loadingGet && (
+      {!isLoading && (
         <div className={styles['delivery-return']}>
           <PortableText value={shippingPolicyData.content} />
         </div>

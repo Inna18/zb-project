@@ -10,7 +10,7 @@ export default interface Product {
   price?: number;
   quantity?: number;
   rating?: number;
-  content?: any; // what is rich text type?
+  content?: any;
   productImages?: string[];
   posted?: boolean;
   _createdAt?: string;

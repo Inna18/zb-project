@@ -32,13 +32,12 @@ const ProductImages = () => {
   const { open, close, isOpen } = useModal();
 
   const queryClient = useQueryClient();
-  const {
-    mutate: mutateUpdateImg,
-    data: updatedImages,
-    isPending: pendingUpdateImg,
-  } = useProductUpdateImages();
-  const { mutate: mutateDeleteImg, isPending: pendingDeleteImg } =
+  const { mutate: mutateUpdate, isPending: pendingUpdate } =
+    useProductUpdateImages();
+  const { mutate: mutateDelete, isPending: pendingDelete } =
     useProductDeleteImg();
+
+  const isPending = pendingUpdate || pendingDelete;
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     incrementLimitCount(); // image arr limit = 4, track images added
@@ -52,25 +51,26 @@ const ProductImages = () => {
       open();
     } else {
       let file = e.currentTarget.files;
-      mutateUpdateImg(
-        { id: productId!, images: [file?.[0]!] },
-        {
-          onSuccess: async (data) => {
-            // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
-            queryClient.setQueryData(['product', productId], () => ({
-              ...product,
-              productImages: data,
-            }));
-          },
-        }
-      );
+      if (file)
+        mutateUpdate(
+          { id: productId, images: [file?.[0]] },
+          {
+            onSuccess: async (data) => {
+              // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
+              queryClient.setQueryData(['product', productId], () => ({
+                ...product,
+                productImages: data,
+              }));
+            },
+          }
+        );
     }
   };
 
   const handleDeleteImg = (url: string) => {
     decrementCancelCount();
-    mutateDeleteImg(
-      { id: productId!, imageUrl: url },
+    mutateDelete(
+      { id: productId, imageUrl: url },
       {
         onSuccess: (data) => {
           // invalidate -> setQueryData, reason - data in Form wasn't saved to db yet, so if we refetch from cache, data in form will disappear
@@ -85,7 +85,7 @@ const ProductImages = () => {
 
   return (
     <>
-      {(pendingUpdateImg || pendingDeleteImg) && <Spinner />}
+      {isPending && <Spinner />}
       <div className={styles['product-images']}>
         {product.productImages && product.productImages.length <= 0 && (
           <div className={styles.centered}>No Images</div>

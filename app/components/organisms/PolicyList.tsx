@@ -15,19 +15,18 @@ import { useQueryClient } from '@tanstack/react-query';
 const { LIST_EMPTY } = commonConstants;
 
 const PolicyList = () => {
-  const { shippingPolicy, updatePolicy } = useShippingPolicyStore(
-    (state) => state
+  const setShippingPolicy = useShippingPolicyStore(
+    (state) => state.setShippingPolicy
   );
   const queryClient = useQueryClient();
-  const { data: shippingPolicyData, isLoading: loadingGet } =
-    useShippingPolicyGet();
+  const { data: shippingPolicyData, isLoading } = useShippingPolicyGet();
   const { mutate: mutateCreate } = useShippingPolicyCreate();
   const [render, setRender] = useState<string>('list');
 
   const handleCreatePolicy = () => {
     mutateCreate(undefined, {
       onSuccess: (data) => {
-        updatePolicy(data);
+        setShippingPolicy(data);
         queryClient.setQueryData(['policy'], () => ({ ...data }));
         setRender('details');
       },
@@ -35,7 +34,7 @@ const PolicyList = () => {
   };
 
   const handleUpdate = () => {
-    updatePolicy(shippingPolicyData);
+    setShippingPolicy(shippingPolicyData);
     setRender('details');
   };
 
@@ -43,8 +42,8 @@ const PolicyList = () => {
 
   return (
     <>
-      {loadingGet && <Spinner />}
-      {!loadingGet && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
           {render === 'list' && (
             <div className={styles['policy-section']}>

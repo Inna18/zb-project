@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import payIcon from '@/public/icons/money-check-dollar-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
@@ -24,20 +24,23 @@ interface CartProductProps {
 const CartProduct = (cartProductProps: CartProductProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { user } = useUserStore((state) => state);
-  const { totalCost, substructFromTotalCost } = useTotalCostStore(
-    (state) => state
+  const user = useUserStore((state) => state.user);
+  const substructFromTotalCost = useTotalCostStore(
+    (state) => state.substructFromTotalCost
   );
   const { productId, count, idx } = cartProductProps;
-  const { data: product, isLoading: loadingProduct } =
-    useProductGetById(productId);
-  const { mutate: mutateDelete, isPending: pendingDelete } = useCartDelete();
-  const { mutate: mutateUpdate, isPending: pendingUpdate } =
+  const { data: product, isLoading } = useProductGetById(productId);
+  const { mutate: mutateCartDelete, isPending: pendingCartDelete } =
+    useCartDelete();
+  const { mutate: mutateQuantityUpdate, isPending: pendingQuantityUpdate } =
     useProductUpdateQuantity();
+
+  const isLoadingOrPending =
+    isLoading || pendingCartDelete || pendingQuantityUpdate;
 
   const handleDelete = () => {
     if (user._id) {
-      mutateDelete(
+      mutateCartDelete(
         {
           userId: user._id ?? user._id,
           productId: productId,
@@ -48,7 +51,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
               ['cart', { userId: user._id }],
               () => data
             );
-            mutateUpdate(
+            mutateQuantityUpdate(
               // add to product quantity again
               { id: productId, quantity: product.quantity + count }
             );
@@ -67,8 +70,8 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   return (
     <>
-      {(loadingProduct || pendingDelete) && <Spinner />}
-      {!loadingProduct && (
+      {isLoadingOrPending && <Spinner />}
+      {!isLoading && (
         <tr className={styles.body}>
           <td>{idx}</td>
           <td>

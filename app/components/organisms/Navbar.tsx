@@ -8,7 +8,6 @@ import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useCartTotalCostSet } from '@/app/queries/queryHooks/cart/useCartTotalCostSet';
@@ -23,11 +22,9 @@ const MENU_LIST = [
 
 const Navbar = () => {
   const session = useSession();
-  const router = useRouter();
   const { user, resetUser } = useUserStore((state) => state);
   const { totalCost, resetTotalCost } = useTotalCostStore((state) => state);
-  const { mutate: mutateUpdateCart, isPending: pendingUpdateCart } =
-    useCartTotalCostSet();
+  const { mutate: mutateUpdateCart } = useCartTotalCostSet();
 
   const [profileMenu, setProfileMenu] = useState<
     { id: number; value: string }[]
@@ -90,17 +87,18 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    mutateUpdateCart(
-      // when logout, save totalCost from Store -> Cart
-      { userId: user._id!, productTotalCost: totalCost },
-      {
-        onSuccess: () => {
-          signOut();
-          resetTotalCost(); // reset Stores
-          resetUser();
-        },
-      }
-    );
+    if (user._id)
+      mutateUpdateCart(
+        // when logout, save totalCost from Store -> Cart
+        { userId: user._id, productTotalCost: totalCost },
+        {
+          onSuccess: () => {
+            signOut();
+            resetTotalCost(); // reset Stores
+            resetUser();
+          },
+        }
+      );
   };
 
   return (

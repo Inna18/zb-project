@@ -78,10 +78,12 @@ const ProductsList = (productsListProps: ProductsListProps) => {
                     {moment(product._createdAt).format('YYYY-MM-DD, HH:mm')}
                   </div>
                 </div>
-                <ProductListIcons
-                  renderSubMenu={renderSubMenu}
-                  productId={product._id!}
-                />
+                {product._id && (
+                  <ProductListIcons
+                    renderSubMenu={renderSubMenu}
+                    productId={product._id}
+                  />
+                )}
               </div>
             ))}
         </div>

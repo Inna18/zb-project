@@ -8,13 +8,14 @@ import BarChart from '../atoms/barChart/BarChart';
 import Popup from '../atoms/popup/Popup';
 import Comment from '@/app/service/useCommentApi';
 import Modal from '../atoms/modal/Modal';
+import Product from '@/app/service/useProductApi';
 
 import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCreate';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateRating } from '@/app/queries/queryHooks/product/useProductUpdateRating';
-import Product from '@/app/service/useProductApi';
+import { calcAverage, calcCount } from '@/app/utils/number';
 
 const { COMMENT_CREATE_SUCCESS } = modalMsgConstants;
 
@@ -28,8 +29,8 @@ const Rating = (ratingProps: RatingProps) => {
   const queryClient = useQueryClient();
 
   const { open, close, isOpen } = useModal();
-  const { mutate: mutateSave } = useCommentCreate();
-  const { mutate: mutateUpdate } = useProductUpdateRating();
+  const { mutate: mutateCreateComment } = useCommentCreate();
+  const { mutate: mutateUpdateRating } = useProductUpdateRating();
 
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [ratingCount, setRatingCount] = useState<
@@ -42,12 +43,12 @@ const Rating = (ratingProps: RatingProps) => {
   const handleCancel = () => setIsOpenPopup(false);
 
   const handleSave = (comment: Comment) => {
-    mutateSave(
+    mutateCreateComment(
       {
         ...comment,
         rating: Number(comment.rating),
         createdBy: email,
-        productId: productId!,
+        productId: productId,
       },
       {
         onSuccess: (data) => {
@@ -67,38 +68,25 @@ const Rating = (ratingProps: RatingProps) => {
 
   useEffect(() => {
     if (commentsData) {
-      _calcCount();
-      _calcAverage();
+      setRatingCount(calcCount(commentsData));
+      setRatingAverage(calcAverage(commentsData));
+
+      mutateUpdateRating(
+        { id: productId, rating: ratingAverage },
+        {
+          onSuccess: (data) => {
+            queryClient.setQueryData(
+              ['product', productId],
+              (old: Product) => ({
+                ...old,
+                rating: data.rating,
+              })
+            );
+          },
+        }
+      );
     }
   }, [commentsData]);
-
-  const _calcCount = () => {
-    let tempCountArr = [];
-    for (let i = 5; i >= 1; i--) {
-      let num = commentsData.filter((comment) => comment.rating === i).length;
-      tempCountArr.push({ value: i, count: num });
-    }
-    setRatingCount(tempCountArr);
-  };
-
-  const _calcAverage = () => {
-    let calc =
-      commentsData.reduce((sum, value) => {
-        return sum + value.rating!;
-      }, 0) / commentsData.length;
-    setRatingAverage(calc);
-    mutateUpdate(
-      { id: productId, rating: calc },
-      {
-        onSuccess: (data) => {
-          queryClient.setQueryData(['product', productId], (old: Product) => ({
-            ...old,
-            rating: data.rating,
-          }));
-        },
-      }
-    );
-  };
 
   return (
     <>

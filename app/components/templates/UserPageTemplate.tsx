@@ -32,7 +32,7 @@ const UserPageTemplate = () => {
         { id: 4, value: 'products', component: <ProductsAll /> },
         { id: 5, value: 'policy', component: <PolicyList /> },
       ]);
-    else if (user && user.role === 'USER') {
+    if (user && user.role === 'USER') {
       setList([
         { id: 1, value: 'profile', component: <Profile /> },
         { id: 2, value: 'orders', component: <Orders /> },

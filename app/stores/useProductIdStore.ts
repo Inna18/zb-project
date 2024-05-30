@@ -4,12 +4,12 @@ interface State {
   productId: string;
 }
 interface Action {
-  updateId: (updatedId: string) => void;
+  setProductId: (updatedId: string) => void;
   resetId: () => void;
 }
 
 export const useProductIdStore = create<State & Action>()((set) => ({
   productId: '',
-  updateId: (updatedId) => set(() => ({ productId: updatedId })),
+  setProductId: (updatedId) => set(() => ({ productId: updatedId })),
   resetId: () => set({ productId: '' }),
 }));

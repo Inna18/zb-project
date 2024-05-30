@@ -44,7 +44,7 @@ const SignupTemplate = () => {
     signUser.role,
   ];
   const { validateForm, emailError, passwordError } = useFormValidator();
-  const { mutate, isPending } = useUserCreate();
+  const { mutate: mutateCreate, isPending } = useUserCreate();
   const { open, close, isOpen } = useModal();
 
   const handleInputChange = (
@@ -62,7 +62,7 @@ const SignupTemplate = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateForm(signUser.email, signUser.password)) {
-      mutate(signUser, {
+      mutateCreate(signUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
           setModal({

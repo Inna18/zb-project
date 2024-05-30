@@ -1,24 +1,20 @@
 import styles from './organisms.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Editor from '../atoms/editor/Editor';
 import policySchema from '@/sanity/schemas/shippingPolicy';
-import Spinner from '../atoms/spinner/Spinner';
 import Button from '../atoms/button/Button';
+import Modal from '../atoms/modal/Modal';
 
 import { Schema } from '@sanity/schema';
 import { useShippingPolicyStore } from '@/app/stores/useShippingPolicyStore';
-import { useShippingPolicyGet } from '@/app/queries/queryHooks/policy/useShippingPolicyGet';
-import { useShippingPolicyCreate } from '@/app/queries/queryHooks/policy/useShippingPolicyCreate';
 import { useShippingPolicyUpdate } from '@/app/queries/queryHooks/policy/useShippingPolicyUpdate';
-import { deleteShippingPolicy } from '@/app/service/useShippingPolicyApi';
 import { useQueryClient } from '@tanstack/react-query';
 import { toHTML } from '@portabletext/to-html';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModalStore } from '@/app/stores/useModalStore';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
-import Modal from '../atoms/modal/Modal';
 
 const { POLICY_UPDATE_SUCCESS } = modalMsgConstants;
 
@@ -26,7 +22,7 @@ interface PolicyProps {
   rerender: (menu: string) => void;
 }
 const Policy = ({ rerender }: PolicyProps) => {
-  const { shippingPolicy, updatePolicy } = useShippingPolicyStore(
+  const { shippingPolicy, setShippingPolicy } = useShippingPolicyStore(
     (state) => state
   );
   const { modal, setModal } = useModalStore((state) => state);
@@ -44,7 +40,7 @@ const Policy = ({ rerender }: PolicyProps) => {
       .get('shippingPolicy')
       .fields.find((field: any) => field.name === 'content').type;
     const blocks = htmlToBlocks(contentDescription, blockContentType);
-    updatePolicy({ ...shippingPolicy, content: blocks });
+    setShippingPolicy({ ...shippingPolicy, content: blocks });
   };
 
   const returnToList = () => {

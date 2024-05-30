@@ -6,7 +6,7 @@ import { useProductStore } from '@/app/stores/useProductStore';
 import { PortableText } from '@portabletext/react';
 
 const About = () => {
-  const { product } = useProductStore((state) => state);
+  const product = useProductStore((state) => state.product);
 
   return (
     <div className={styles.about}>

@@ -5,9 +5,10 @@ import styles from './templates.module.css';
 import React, { useEffect } from 'react';
 import Spinner from '../atoms/spinner/Spinner';
 import Product from '@/app/service/useProductApi';
+import ProductCard from '../molecules/ProductCard';
+
 import { useSearchParams } from 'next/navigation';
 import { useShopProductList } from '@/app/queries/queryHooks/product/useShopProductList';
-import ProductCard from '../molecules/ProductCard';
 
 const ShopTemplate = () => {
   const searchParams = useSearchParams()?.get('category');

@@ -2,7 +2,7 @@ import { client } from '@/sanity/lib/client';
 
 export default interface ShippingPolicy {
   _id?: string;
-  content?: any; // what is rich text type?
+  content?: any;
   _createdAt?: string;
 }
 

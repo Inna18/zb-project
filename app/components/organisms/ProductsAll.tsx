@@ -5,6 +5,7 @@ import Button from '../atoms/button/Button';
 import ProductsList from './ProductsList';
 import Products from './Products';
 import Spinner from '../atoms/spinner/Spinner';
+
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
 import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
@@ -12,12 +13,12 @@ import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCre
 
 const ProductsAll = () => {
   const { product, resetProduct } = useProductStore((state) => state);
-  const { productId, updateId } = useProductIdStore((state) => state);
+  const setProductId = useProductIdStore((state) => state.setProductId);
   const resetImageCount = useImgCancelCountStore(
     (state) => state.resetCancelCount
   );
 
-  const { mutate, isPending: pendingCreate } = useProductCreate();
+  const { mutate: mutateCreate, isPending: pendingCreate } = useProductCreate();
 
   const [subMenu, setSubMenu] = useState<string>('list');
   const [formType, setFormType] = useState<string>('');
@@ -26,16 +27,16 @@ const ProductsAll = () => {
     resetImageCount();
     resetProduct();
     setSubMenu(subMenuType);
-    updateId(id);
+    setProductId(id);
     setFormType('update');
   };
 
   const handleAddProduct = () => {
-    mutate(product, {
+    mutateCreate(product, {
       onSuccess: (data) => {
         resetImageCount();
         resetProduct();
-        updateId(data._id!);
+        setProductId(data._id);
         setFormType('create');
         setSubMenu('details');
       },

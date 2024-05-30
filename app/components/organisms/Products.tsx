@@ -37,7 +37,7 @@ const {
 } = modalMsgConstants;
 
 const Products = (productProps: ProductsProps) => {
-  const { product, updateProduct } = useProductStore((state) => state);
+  const { product, setProduct } = useProductStore((state) => state);
   const productId = useProductIdStore((state) => state.productId);
   const imgCancelCount = useImgCancelCountStore(
     (state) => state.imgCancleCount
@@ -49,24 +49,28 @@ const Products = (productProps: ProductsProps) => {
 
   const queryClient = useQueryClient();
   const { renderSubMenu, formType } = productProps;
-  const { mutate: mutateUpdate } = useProductUpdate();
+  const { mutate: mutateProductUpdate, isPending: pendingProductUpdate } =
+    useProductUpdate();
   const { data: updatedImages } = useProductUpdateImages();
-  const { mutate: mutateDelete, isPending: pendingDelete } =
+  const { mutate: mutateProductDelete, isPending: pendingProductDelete } =
     useProductDeleteById();
-  const { mutate: mutateDeleteImgs, isPending: pendingDeleteImgs } =
+  const { mutate: mutateImgsDelete, isPending: pendingImgsDelete } =
     useProductDeleteImgs();
-  const { isLoading: loadingProduct, data: existingProduct } =
-    useProductGetById(productId!);
+  const { isLoading: isLoadingProduct, data: existingProduct } =
+    useProductGetById(productId);
 
   const isLoadingOrPending =
-    loadingProduct || pendingDelete || pendingDeleteImgs;
+    isLoadingProduct ||
+    pendingProductUpdate ||
+    pendingProductDelete ||
+    pendingImgsDelete;
   const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
     // move data from db to product object
     if (existingProduct) {
-      updateProduct(existingProduct);
+      setProduct(existingProduct);
       setImgLimitCount(existingProduct.productImages.length);
     }
   }, [existingProduct]);
@@ -81,7 +85,7 @@ const Products = (productProps: ProductsProps) => {
       .get('product')
       .fields.find((field: any) => field.name === 'content').type;
     const blocks = htmlToBlocks(contentDescription, blockContentType);
-    updateProduct({ ...product, content: blocks });
+    setProduct({ ...product, content: blocks });
   };
 
   const handleSave = () => {
@@ -89,7 +93,7 @@ const Products = (productProps: ProductsProps) => {
       formType === 'create' ? PRODUCT_CREATE_SUCCESS : PRODUCT_UPDATE_SUCCESS;
     if (product.name === '') setEmptyName(true);
     else {
-      mutateUpdate(
+      mutateProductUpdate(
         { id: productId, product: product },
         {
           onSuccess: () => {
@@ -125,17 +129,17 @@ const Products = (productProps: ProductsProps) => {
     close();
     if (formType === 'create') {
       // if create new -> cancel -> delete whole product
-      mutateDelete(productId!, {
+      mutateProductDelete(productId, {
         onSuccess: () => renderSubMenu('list', ''),
       });
     } else {
       // if update product -> cancel -> delete attached images
       if (imgCancelCount > 0) {
-        mutateDeleteImgs(
-          { id: productId!, numToDelete: imgCancelCount },
+        mutateImgsDelete(
+          { id: productId, numToDelete: imgCancelCount },
           {
             onSuccess: () =>
-              updateProduct({ ...product, productImages: updatedImages }),
+              setProduct({ ...product, productImages: updatedImages }),
           }
         );
       }
@@ -146,7 +150,7 @@ const Products = (productProps: ProductsProps) => {
   return (
     <>
       {isLoadingOrPending && <Spinner />}
-      {!loadingProduct && (
+      {!isLoadingProduct && (
         <>
           <div className={styles['product-details']}>
             <ProductImages />

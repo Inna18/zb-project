@@ -53,7 +53,7 @@ const Profile = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
-  const { mutate } = useUserUpdate();
+  const { mutate: mutateUpdate } = useUserUpdate();
   const { open, close, isOpen } = useModal();
 
   const handleInputChange = (
@@ -84,7 +84,7 @@ const Profile = () => {
     let valid = passwordValidation(updatedUser.password);
     setPasswordValid(valid);
     if (valid && updatedUser.name !== '') {
-      mutate(updatedUser, {
+      mutateUpdate(updatedUser, {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ['users'] });
           setModal({
@@ -102,8 +102,9 @@ const Profile = () => {
   const handleCheckDisabled = (name: string | undefined) =>
     name === 'role' || name === 'email';
 
-  const handleCheckType = (name: string) =>
-    name === 'password' ? 'password' : 'string';
+  const handleCheckType = (name: string | undefined) => {
+    if (name) return name === 'password' ? 'password' : 'string';
+  };
 
   const handleHidePassword = (password: string) => '*'.repeat(password.length);
 
@@ -199,7 +200,7 @@ const Profile = () => {
                   {userProperties.map((property) => (
                     <div key={property.id}>
                       <Input
-                        type={handleCheckType(property.value[1]!)}
+                        type={handleCheckType(property.value[1])}
                         changeFunc={handleInputChange}
                         hasLabel={false}
                         value={property.value[0]}

@@ -13,15 +13,15 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const { push } = useRouter();
 
-  const handleShopDetails = (productId: string) => {
-    push(`/shop/details?productId=${productId}`);
+  const handleShopDetails = (productId: string | undefined) => {
+    if (productId) push(`/shop/details?productId=${productId}`);
   };
 
   return (
     <div>
       <div
         className={styles['product-card']}
-        onClick={() => handleShopDetails(product._id!)}
+        onClick={() => handleShopDetails(product._id)}
       >
         <div className={styles['image-section']}>
           {product.productImages &&

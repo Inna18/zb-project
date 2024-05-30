@@ -14,13 +14,12 @@ interface CheckoutProductProps {
 
 const CheckoutProduct = (checkoutProductProps: CheckoutProductProps) => {
   const { productId, count } = checkoutProductProps;
-  const { data: product, isLoading: loadingProduct } =
-    useProductGetById(productId);
+  const { data: product, isLoading } = useProductGetById(productId);
 
   return (
     <>
-      {loadingProduct && <Spinner />}
-      {!loadingProduct && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
           <div>
             <div className={styles['checkout-product-section']}>

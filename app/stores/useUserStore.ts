@@ -6,7 +6,7 @@ interface State {
   user: User;
 }
 interface Action {
-  updateUser: (updatedUser: User) => void;
+  setUser: (updatedUser: User) => void;
   resetUser: () => void;
 }
 const initialState: User = {
@@ -24,7 +24,7 @@ export const useUserStore = create<State & Action>()(
     persist(
       (set) => ({
         user: initialState,
-        updateUser: (updatedUser: User) => set({ user: updatedUser }),
+        setUser: (updatedUser: User) => set({ user: updatedUser }),
         resetUser: () => set({ user: initialState }),
       }),
       { name: 'userStore' }

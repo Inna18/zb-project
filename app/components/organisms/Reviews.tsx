@@ -13,24 +13,29 @@ const Reviews = () => {
   const searchParams = useSearchParams();
   const productId = searchParams?.get('productId');
 
-  const { data: commentsData, isLoading: loadingGet } =
-    useCommentsGetByProductId(productId!);
+  const { data: commentsData, isLoading } = useCommentsGetByProductId(
+    productId!
+  );
 
   return (
     <>
-      {loadingGet && <Spinner />}
-      {!loadingGet && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <div className={styles.reviews}>
-          <Rating
-            productId={productId!}
-            commentsData={commentsData}
-            email={session.data ? session.data.user?.email! : ''}
-          />
-          <Comments
-            productId={productId!}
-            commentsData={commentsData}
-            email={session.data ? session.data.user?.email! : ''}
-          />
+          {productId && session.data?.user?.email && (
+            <>
+              <Rating
+                productId={productId}
+                commentsData={commentsData}
+                email={session.data ? session.data.user?.email : ''}
+              />
+              <Comments
+                productId={productId}
+                commentsData={commentsData}
+                email={session.data ? session.data.user?.email : ''}
+              />
+            </>
+          )}
         </div>
       )}
     </>

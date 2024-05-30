@@ -8,6 +8,7 @@ import updateIcon from '@/public/icons/pen-to-square-solid.svg';
 import removeIcon from '@/public/icons/delete-left-solid.svg';
 import uploadIcon from '@/public/icons/file-arrow-up-solid.svg';
 import hideIcon from '@/public/icons/file-arrow-down-solid.svg';
+
 import { useQueryClient } from '@tanstack/react-query';
 import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductUpdateStatus } from '@/app/queries/queryHooks/product/useProductUpdateStatus';
@@ -21,16 +22,16 @@ const ProductListIcons = (productsListIconsProps: ProductsListIconsProps) => {
   const { renderSubMenu, productId } = productsListIconsProps;
 
   const queryClient = useQueryClient();
-  const { isPending: pendingDelete, mutate: mutateDelete } =
+  const { isPending: pendingDeleteProduct, mutate: mutateDeleteProduct } =
     useProductDeleteById();
   const { isPending: pendingUpdateStatus, mutate: mutateUpdateStatus } =
     useProductUpdateStatus();
-  const isPending = pendingDelete || pendingUpdateStatus;
+  const isPending = pendingDeleteProduct || pendingUpdateStatus;
 
   const handleUpdate = (id: string) => renderSubMenu('details', id);
 
   const handleRemove = (id: string) => {
-    mutateDelete(id, {
+    mutateDeleteProduct(id, {
       onSuccess: () => {
         const prevProducts = queryClient.getQueryData(['products']);
         queryClient.setQueryData(['products'], (old: Product[]) =>

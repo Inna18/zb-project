@@ -11,7 +11,7 @@ const BarChart = ({ data }: BarChart) => {
   }, 0);
   const series = [
     {
-      data: data,
+      data,
     },
   ];
   const options: ApexOptions = {

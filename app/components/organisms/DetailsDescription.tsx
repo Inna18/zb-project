@@ -27,25 +27,25 @@ const DetailsDescription = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const session = useSession();
-  const { product, updateProduct } = useProductStore((state) => state);
-  const { user } = useUserStore((state) => state);
-  const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
+  const { product, setProduct } = useProductStore((state) => state);
+  const user = useUserStore((state) => state.user);
+  const addToTotalCost = useTotalCostStore((state) => state.addToTotalCost);
   const { modal, setModal } = useModalStore((state) => state);
-  const { mutate: mutateUpdate } = useCartUpdate();
+  const { mutate: mutateUpdateCart } = useCartUpdate();
   const { mutate: mutateUpdateQuantity } = useProductUpdateQuantity();
   const [count, setCount] = useState<number>(1);
   const [disabled, setDisabled] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
-    setDisabled(product.quantity! <= 0);
+    if (product.quantity) setDisabled(product.quantity <= 0);
   }, [product.quantity]);
 
   const handleDecrease = () => {
     if (count >= 2) setCount(count - 1);
   };
   const handleIncrease = () => {
-    if (count < product.quantity!) setCount(count + 1);
+    if (product.quantity && count < product.quantity) setCount(count + 1);
   };
 
   const handleMove = () => router.push('/cart');
@@ -61,43 +61,48 @@ const DetailsDescription = () => {
       });
       open();
     } else {
-      const productCountSet = {
-        productId: product._id!,
-        count: count,
-        _key: product._id!,
-      };
-      mutateUpdate(
-        { userId: user._id!, prodCountSet: productCountSet },
-        {
-          onSuccess: () => {
-            mutateUpdateQuantity(
-              { id: product._id!, quantity: product.quantity! - count },
-              {
-                onSuccess: (data) => {
-                  queryClient.setQueryData(
-                    ['product', product._id!],
-                    (old: Product) => ({
-                      ...old,
-                      quantity: data.quantity,
-                    })
-                  );
-                  updateProduct({ ...product, quantity: data.quantity });
-                  product.quantity! > 0 ? setCount(1) : setCount(0);
+      if (product._id && user._id) {
+        const productCountSet = {
+          productId: product._id,
+          count: count,
+          _key: product._id,
+        };
+        mutateUpdateCart(
+          { userId: user._id, prodCountSet: productCountSet },
+          {
+            onSuccess: () => {
+              if (product._id && product.quantity)
+                mutateUpdateQuantity(
+                  { id: product._id, quantity: product.quantity - count },
+                  {
+                    onSuccess: (data) => {
+                      queryClient.setQueryData(
+                        ['product', product._id],
+                        (old: Product) => ({
+                          ...old,
+                          quantity: data.quantity,
+                        })
+                      );
+                      setProduct({ ...product, quantity: data.quantity });
+                      product.quantity && product.quantity > 0
+                        ? setCount(1)
+                        : setCount(0);
 
-                  setModal({
-                    type: 'confirm',
-                    content: CART_UPDATE_SUCCESS,
-                    onOk: handleMove,
-                    onClose: close,
-                  });
-                  open();
-                  if (product.price) addToTotalCost(product.price * count);
-                },
-              }
-            );
-          },
-        }
-      );
+                      setModal({
+                        type: 'confirm',
+                        content: CART_UPDATE_SUCCESS,
+                        onOk: handleMove,
+                        onClose: close,
+                      });
+                      open();
+                      if (product.price) addToTotalCost(product.price * count);
+                    },
+                  }
+                );
+            },
+          }
+        );
+      }
     }
   };
 

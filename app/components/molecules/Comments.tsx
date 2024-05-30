@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Comment from '@/app/service/useCommentApi';
 import Image from 'next/image';
 import Modal from '../atoms/modal/Modal';
+import Spinner from '../atoms/spinner/Spinner';
 import moment from 'moment';
 import starIcon from '@/public/icons/star-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
@@ -62,20 +63,23 @@ const Comments = (commentsProps: CommentsProps) => {
     )[0].description;
   };
 
-  const handleDelete = (commentId: string) => {
-    mutateDelete(commentId, {
-      onSuccess: () => {
-        open();
-        queryClient.setQueryData(
-          ['comments', { productId: productId }],
-          (old: Comment[]) => old.filter((c) => c._id !== commentId)
-        );
-      },
-    });
+  const handleDelete = (commentId: string | undefined) => {
+    if (commentId) {
+      mutateDelete(commentId, {
+        onSuccess: () => {
+          open();
+          queryClient.setQueryData(
+            ['comments', { productId: productId }],
+            (old: Comment[]) => old.filter((c) => c._id !== commentId)
+          );
+        },
+      });
+    }
   };
 
   return (
     <>
+      {pendingDelete && <Spinner />}
       {starNumArr && (
         <div className={styles['comment-list']}>
           {commentsData && commentsData.length <= 0 && (
@@ -106,7 +110,7 @@ const Comments = (commentsProps: CommentsProps) => {
                     </div>
                     {email !== '' && email === comment.createdBy && (
                       <div>
-                        <a onClick={() => handleDelete(comment._id!)}>
+                        <a onClick={() => handleDelete(comment._id)}>
                           <Image
                             src={removeIcon}
                             alt={'remove-icon'}

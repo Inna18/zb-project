@@ -5,7 +5,7 @@ interface State {
   product: Product;
 }
 interface Action {
-  updateProduct: (updatedProduct: Product) => void;
+  setProduct: (updatedProduct: Product) => void;
   resetProduct: () => void;
 }
 const initialState: Product = {
@@ -22,6 +22,6 @@ const initialState: Product = {
 };
 export const useProductStore = create<State & Action>()((set) => ({
   product: initialState,
-  updateProduct: (updatedProduct) => set({ product: updatedProduct }),
+  setProduct: (updatedProduct) => set({ product: updatedProduct }),
   resetProduct: () => set({ product: initialState }),
 }));

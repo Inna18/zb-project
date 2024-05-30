@@ -15,13 +15,16 @@ import { useRouter } from 'next/navigation';
 
 const CartTemplate = () => {
   const router = useRouter();
-  const { user } = useUserStore((state) => state);
+  const user = useUserStore((state) => state.user);
   const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
   const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
-  const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
+  const { data: cart, isLoading } = useCartGet(user._id!);
 
   useEffect(() => {
-    if (cart && totalCost === 0) addToTotalCost(cart.productTotalCost);
+    if (cart && totalCost === 0) {
+      console.log(cart);
+      addToTotalCost(cart.productTotalCost);
+    }
     if (totalCost === 0 || totalCost > 50000) setDeliveryFee(0);
     else setDeliveryFee(3500);
   }, [totalCost, cart]);
@@ -32,8 +35,8 @@ const CartTemplate = () => {
 
   return (
     <>
-      {loadingCart && <Spinner />}
-      {!loadingCart && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <div className={styles.container}>
           <div className={styles.title}>Cart</div>
           <div>

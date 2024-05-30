@@ -3,6 +3,7 @@ import styles from './molecules.module.css';
 import React, { useEffect, useState } from 'react';
 import Select from '../atoms/select/Select';
 import Input from '../atoms/input/Input';
+
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
 import { commonConstants } from '@/app/constants/common';
@@ -23,8 +24,8 @@ interface ProductFormProps {
 const ProductForm = (productFormProps: ProductFormProps) => {
   const { emptyName, checkName } = productFormProps;
 
-  const { product, updateProduct } = useProductStore((state) => state);
-  const { isLoading: loadingCategories, data: categories } = useCategoryList();
+  const { product, setProduct } = useProductStore((state) => state);
+  const { isLoading, data: categories } = useCategoryList();
   const [categoryList, setCategoryList] = useState<
     { id: number; value: string }[] | null
   >(null);
@@ -38,21 +39,21 @@ const ProductForm = (productFormProps: ProductFormProps) => {
 
   useEffect(() => {
     // load categories
-    if (!loadingCategories) {
+    if (!isLoading) {
       setCategoryList(
         categories.map((category: { _id: ''; name: '' }) => {
           return { id: category._id, value: category.name };
         })
       );
     }
-  }, [loadingCategories]);
+  }, [isLoading]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     if (name === 'name' && value !== '') checkName(false);
-    updateProduct({ ...product, [name]: value });
+    setProduct({ ...product, [name]: value });
   };
 
   return (

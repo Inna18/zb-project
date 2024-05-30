@@ -24,7 +24,7 @@ const { USER_LOGIN_ERROR } = modalMsgConstants;
 
 const LoginTemplate = () => {
   const router = useRouter();
-  const { user, updateUser } = useUserStore((state) => state);
+  const setUser = useUserStore((state) => state.setUser);
   const [loginUser, setLoginUser] = useState<User>({ email: '', password: '' });
   const userProperties = [loginUser.email, loginUser.password];
   const { validateForm, emailError, passwordError } = useFormValidator();
@@ -53,7 +53,7 @@ const LoginTemplate = () => {
           loginUser.email,
           loginUser.password
         );
-        if (loggedUser) updateUser(loggedUser);
+        if (loggedUser) setUser(loggedUser);
       } else open();
     }
   };

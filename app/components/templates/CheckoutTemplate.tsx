@@ -21,14 +21,14 @@ const { FIELD_EMPTY } = commonConstants;
 const CheckoutTemplate = () => {
   const productId = useSearchParams()?.get('productId');
   // need user & existingUser for address & phoneNum(which aren't mandatory)
-  const { user, updateUser } = useUserStore((state) => state);
-  const { totalCost } = useTotalCostStore((state) => state);
-  const { deliveryFee } = useDeliveryFeeStore((state) => state);
+  const { user, setUser } = useUserStore((state) => state);
+  const totalCost = useTotalCostStore((state) => state.totalCost);
+  const deliveryFee = useDeliveryFeeStore((state) => state.deliveryFee);
   const { data: existingUser, isLoading: loadingGetUser } = useUserByEmail(
     user.email
   );
-  const { data: cart, isLoading: loadingGetCart } = useCartGet(user._id!);
-  const isLoading = loadingGetCart || loadingGetUser;
+  const { data: cart, isLoading: isLoadingGetCart } = useCartGet(user._id!);
+  const isLoading = isLoadingGetCart || loadingGetUser;
 
   const userProperties = [
     { id: 1, value: [user.email, 'email'] },
@@ -38,17 +38,14 @@ const CheckoutTemplate = () => {
   ];
 
   useEffect(() => {
-    if (existingUser) updateUser(existingUser);
+    if (existingUser) setUser(existingUser);
   }, [existingUser]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    e.preventDefault();
     const { name, value } = e.target;
-    console.log(name);
-    console.log(value);
-    updateUser({ ...user, [name]: value });
+    setUser({ ...user, [name]: value });
   };
 
   const handleCheckout = () => {

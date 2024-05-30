@@ -5,15 +5,14 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Spinner from '../atoms/spinner/Spinner';
 import DetailsDescription from '../organisms/DetailsDescription';
-
+import About from '../organisms/About';
+import Reviews from '../organisms/Reviews';
+import DeliveryReturn from '../organisms/DeliveryReturn';
 import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
 import { useSearchParams } from 'next/navigation';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { toUpper } from '@/app/utils/text';
 import { useTabRenderer } from '@/app/hooks/useTabRenderer';
-import About from '../organisms/About';
-import Reviews from '../organisms/Reviews';
-import DeliveryReturn from '../organisms/DeliveryReturn';
 
 const TABS = [
   { id: 1, value: 'about', component: <About /> },
@@ -22,21 +21,20 @@ const TABS = [
 ];
 
 const DetailsTemplate = () => {
-  const { product, updateProduct } = useProductStore((state) => state);
+  const { product, setProduct } = useProductStore((state) => state);
   const productId = useSearchParams()?.get('productId');
-  const { isLoading: loadingProduct, data: existingProduct } =
-    useProductGetById(productId!);
+  const { isLoading, data: existingProduct } = useProductGetById(productId!);
 
   const { handleActiveTab, tabRenderer, activeTab } = useTabRenderer(TABS);
 
   useEffect(() => {
-    updateProduct(existingProduct);
+    setProduct(existingProduct);
   }, [existingProduct]);
 
   return (
     <>
-      {loadingProduct && <Spinner />}
-      {!loadingProduct && product && (
+      {isLoading && <Spinner />}
+      {!isLoading && product && (
         <div className={styles.details}>
           <DetailsDescription />
           <div className={styles.lower}>
