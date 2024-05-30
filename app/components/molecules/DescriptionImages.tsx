@@ -7,10 +7,13 @@ import { useProductStore } from '@/app/stores/useProductStore';
 
 const DescriptionImages = () => {
   const product = useProductStore((state) => state.product);
-  const [mainImage, setMainImage] = useState<string | undefined>('');
+  const [mainImage, setMainImage] = useState<string>('');
 
   useEffect(() => {
-    product.productImages ? setMainImage(product.productImages[0]) : '';
+    if (product.productImages) {
+      if (product.productImages.length <= 0) return;
+      else setMainImage(product.productImages[0]);
+    }
   }, [product]);
 
   const handleShowImage = (image: string) => {
@@ -23,13 +26,17 @@ const DescriptionImages = () => {
         <div className={styles.centered}>No Images</div>
       )}
       <div className={styles['images-section']}>
-        <Image
-          key={mainImage}
-          src={mainImage ? mainImage : ''}
-          alt={'product-img'}
-          width={250}
-          height={250}
-        />
+        {product.productImages &&
+          product.productImages.length > 0 &&
+          mainImage && (
+            <Image
+              key={mainImage}
+              src={mainImage}
+              alt={'product-img'}
+              width={250}
+              height={250}
+            />
+          )}
         {product.productImages &&
           product.productImages.map((image: string) => (
             <span key={image}>

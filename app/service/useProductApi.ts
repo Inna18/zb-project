@@ -1,5 +1,6 @@
 import { client } from '@/sanity/lib/client';
 import { SanityImageAssetDocument } from 'next-sanity';
+import { deleteAllCommentsByProductId } from '@/app/service/useCommentApi';
 
 export default interface Product {
   _id?: string;
@@ -7,23 +8,14 @@ export default interface Product {
   brand?: string;
   name?: string;
   price?: string;
-  quantity?: string;
+  quantity?: number;
+  count?: number;
   rating?: number;
   content?: any; // what is rich text type?
   productImages?: string[];
+  posted?: boolean;
   _createdAt?: string;
 }
-
-const BASE_QUERY = `*[_type == 'product']{
-    category,
-    brand,
-    name,
-    price,
-    quantity,
-    rating,
-    content,
-    "productImages": productImages[].asset->url,
-}`;
 
 async function getProductById(id: string) {
   const query = `*[_type == 'product' && _id == '${id}'][0]{
@@ -36,6 +28,7 @@ async function getProductById(id: string) {
     rating,
     content,
     "productImages": productImages[].asset->url,
+    posted,
   }`;
   const productById = await client.fetch(query);
   console.log('Product by Id: ', productById);
@@ -45,22 +38,24 @@ async function getProductById(id: string) {
 async function getProductList(orderBy: string, filter?: string | null) {
   let query;
   if (filter) {
-    query = `*[_type == 'product' && category == '${filter}'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+    query = `*[_type == 'product' && category == '${filter}'] | order(${orderBy} desc) {
       _id,
       category,
       brand,
       name,
       _createdAt,
-      "productImages": productImages[].asset->url
+      "productImages": productImages[].asset->url,
+      posted,
     }`;
   } else {
-    query = `*[_type == 'product'] | order(${orderBy} ${orderBy === 'name' ? 'asc' : 'desc'}) {
+    query = `*[_type == 'product'] | order(${orderBy} desc) {
       _id,
       category,
       brand,
       name,
       _createdAt,
-      "productImages": productImages[].asset->url
+      "productImages": productImages[].asset->url,
+      posted,
     }`;
   }
   const productList = await client.fetch(query);
@@ -68,8 +63,36 @@ async function getProductList(orderBy: string, filter?: string | null) {
   return productList;
 }
 
+async function getShopProductList(orderBy: string, filter?: string | null) {
+  let query;
+  if (filter) {
+    query = `*[_type == 'product' && category == '${filter}' && posted == true] | order(${orderBy} asc) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url,
+      posted,
+    }`;
+  } else {
+    query = `*[_type == 'product' && posted == true] | order(${orderBy} asc) {
+      _id,
+      category,
+      brand,
+      name,
+      _createdAt,
+      "productImages": productImages[].asset->url,
+      posted,
+    }`;
+  }
+  const postedProductList = await client.fetch(query);
+  console.log('Posted product list: ', postedProductList);
+  return postedProductList;
+}
+
 async function getBestProductList(count: number) {
-  const query = `*[_type == 'product'] | order(rating desc, _createdAt desc) [0...${count}]{
+  const query = `*[_type == 'product' && posted == true] | order(rating desc, _createdAt desc) [0...${count}]{
     _id,
     category,
     brand,
@@ -77,7 +100,8 @@ async function getBestProductList(count: number) {
     price,
     rating,
     _createdAt,
-    "productImages": productImages[].asset->url
+    "productImages": productImages[].asset->url,
+    posted,
   }`;
   const productList = await client.fetch(query);
   console.log('Product list: ', productList);
@@ -85,11 +109,14 @@ async function getBestProductList(count: number) {
 }
 
 async function createProduct(product: Product) {
+  product.productImages = [];
   let productImages: SanityImageAssetDocument[] = [];
-  const promises = product.productImages!.map(async (productImage: string) => {
-    return await client.assets.upload('image', productImage);
-  });
-  productImages = await Promise.all(promises);
+  if (product.productImages) {
+    const promises = product.productImages.map(async (productImage: string) => {
+      return await client.assets.upload('image', productImage);
+    });
+    productImages = await Promise.all(promises);
+  }
 
   const sanityProduct = {
     _type: 'product',
@@ -112,6 +139,7 @@ async function createProduct(product: Product) {
           };
         })
       : null,
+    posted: false,
   };
   const productCreated = await client.create(sanityProduct);
   console.log('Product created ', productCreated._id);
@@ -128,6 +156,7 @@ async function updateProduct(id: string, updateProduct: Product) {
       price: updateProduct.price,
       quantity: updateProduct.quantity,
       content: updateProduct.content,
+      posted: updateProduct.posted,
     })
     .commit();
   console.log(updatedProduct);
@@ -161,6 +190,26 @@ async function updateProductImages(id: string, images: File[]) {
   const imagesFromDb = await getProductImages(id);
   console.log(imagesFromDb.productImages);
   return imagesFromDb.productImages;
+}
+
+async function updateProductStatus(id: string, posted: boolean) {
+  const updatedProductStatus = await client
+    .patch(id)
+    .set({
+      posted: posted,
+    })
+    .commit();
+  console.log(updatedProductStatus);
+  return updatedProductStatus;
+}
+
+async function updateProductRating(id: string, rating: number) {
+  const updatedProductRating = await client
+    .patch(id)
+    .set({ rating: rating })
+    .commit();
+  console.log(updatedProductRating);
+  return updatedProductRating;
 }
 
 async function deleteProductImage(id: string, imageUrl: string) {
@@ -204,6 +253,7 @@ async function deleteProductById(id: string) {
   const inDB = await getProductById(id);
   if (inDB) {
     const productDeleted = await client.delete(id);
+    await deleteAllCommentsByProductId(id);
     console.log(productDeleted);
   } else {
     console.log('No such Product');
@@ -214,10 +264,13 @@ async function deleteProductById(id: string) {
 export {
   getProductById,
   getProductList,
+  getShopProductList,
   getBestProductList,
   createProduct,
   updateProduct,
   updateProductImages,
+  updateProductStatus,
+  updateProductRating,
   getProductImages,
   deleteProducts,
   deleteProductById,

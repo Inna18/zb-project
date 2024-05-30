@@ -3,16 +3,15 @@ import styles from './organisms.module.css';
 import React from 'react';
 import Image from 'next/image';
 import Spinner from '../atoms/spinner/Spinner';
-import updateIcon from '@/public/icons/pen-to-square-solid.svg';
-import removeIcon from '@/public/icons/delete-left-solid.svg';
+import statusUp from '@/public/icons/status-up.svg';
+import statusDown from '@/public/icons/status-down.svg';
 import Product from '@/app/service/useProductApi';
 import Pagination from '../atoms/pagination/Pagination';
+import moment from 'moment';
+import ProductListIcons from '../molecules/ProductListIcons';
 import { useProductList } from '@/app/queries/queryHooks/product/useProductList';
-import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { commonConstants } from '@/app/constants/common';
 import { useSearchParams } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
-import moment from 'moment';
 
 interface ProductsListProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -20,13 +19,9 @@ interface ProductsListProps {
 const { LIST_EMPTY } = commonConstants;
 
 const ProductsList = (productsListProps: ProductsListProps) => {
-  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const { renderSubMenu } = productsListProps;
   const { isLoading, data: productList } = useProductList('_createdAt');
-  const { mutate: mutateDelete, isPending: pendingDelete } =
-    useProductDeleteById();
-  const isLoadingOrPending = isLoading || pendingDelete;
 
   const page = searchParams?.get('page') ?? '1';
   const perPage = searchParams?.get('per_page') ?? '5';
@@ -36,25 +31,9 @@ const ProductsList = (productsListProps: ProductsListProps) => {
   const end = start + Number(perPage);
   const list = productList && productList.slice(start, end);
 
-  const handleUpdate = (id: string) => {
-    renderSubMenu('details', id);
-  };
-
-  const handleRemove = (id: string) => {
-    mutateDelete(id, {
-      onSuccess: () => {
-        const prevProducts = queryClient.getQueryData(['products']);
-        queryClient.setQueryData(['products'], (old: Product[]) =>
-          old.filter((p) => p._id !== id)
-        );
-        return { prevProducts };
-      },
-    });
-  };
-
   return (
     <>
-      {isLoadingOrPending && <Spinner />}
+      {isLoading && <Spinner />}
       {!isLoading && (
         <div className={styles['product-list']}>
           {productList && productList.length <= 0 && (
@@ -63,6 +42,21 @@ const ProductsList = (productsListProps: ProductsListProps) => {
           {list &&
             list.map((product: Product) => (
               <div className={styles['product-card']} key={product._id}>
+                <div className={styles.status}>
+                  {product.posted === true ? (
+                    <Image
+                      className={styles['icon']}
+                      src={statusUp}
+                      alt={'status-icon'}
+                    />
+                  ) : (
+                    <Image
+                      className={styles['icon']}
+                      src={statusDown}
+                      alt={'status-icon'}
+                    />
+                  )}
+                </div>
                 {product.productImages &&
                   product.productImages.length === 0 && (
                     <div className={styles.centered}>No Image</div>
@@ -84,22 +78,10 @@ const ProductsList = (productsListProps: ProductsListProps) => {
                     {moment(product._createdAt).format('YYYY-MM-DD, HH:mm')}
                   </div>
                 </div>
-                <div className={styles['icons-section']}>
-                  <a onClick={() => handleUpdate(product._id!)}>
-                    <Image
-                      className={styles['icon']}
-                      src={updateIcon}
-                      alt={'update-icon'}
-                    />
-                  </a>
-                  <a onClick={() => handleRemove(product._id!)}>
-                    <Image
-                      className={styles['icon']}
-                      src={removeIcon}
-                      alt={'remove-icon'}
-                    />
-                  </a>
-                </div>
+                <ProductListIcons
+                  renderSubMenu={renderSubMenu}
+                  productId={product._id!}
+                />
               </div>
             ))}
         </div>

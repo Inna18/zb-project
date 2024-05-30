@@ -15,3 +15,11 @@ export const PRODUCT_KEYS = {
   list: () => ['products'],
   get: (id: string | undefined) => ['product', id],
 };
+
+export const SHIPPING_POLICY_KEYS = {
+  get: () => ['policy'],
+};
+
+export const COMMENT_KEYS = {
+  list: (id: string) => ['comments', { productId: id }],
+};

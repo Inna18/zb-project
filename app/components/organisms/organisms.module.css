@@ -15,7 +15,8 @@
 .profile-section,
 .organization-section,
 .categories-section,
-.product-section {
+.product-section,
+.policy-section {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,7 +33,7 @@
   padding: 10px;
   margin: 10px;
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-columns: 1fr 1fr 9fr 1fr;
   border: 1px solid;
   border-radius: 4px;
   align-items: center;
@@ -145,6 +146,25 @@
   margin: 20px 0;
 }
 
+/* policy */
+.policy-btn {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+.policy-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.policy-card div {
+  margin: 10px;
+}
+.editor-l {
+  width: 100%;
+  margin: 20px;
+}
+
 /* navbar */
 .navbar {
   display: flex;
@@ -204,13 +224,24 @@
 .icons-section div:nth-child(1) {
   margin-right: 6px;
 }
-.icons-section .icon {
+.icons-section .icon,
+.status .icon {
   width: 20px;
   height: 20px;
   cursor: pointer;
 }
 .icons-section .icon:nth-child(1) {
   margin-left: 16px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.status .icon {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
 }
 
 /* dropdown */
@@ -282,7 +313,8 @@
 .upper .description div {
   padding: 10px 0;
 }
-.upper .description .brand {
+.upper .description .brand,
+.upper .description .count-section .soldout {
   font-weight: 600;
   font-size: 16px;
   color: rgb(36, 34, 32, 0.3);
@@ -305,11 +337,24 @@
   display: flex;
   justify-content: space-between;
   padding: 20px 20px;
-  margin: 20px 0;
   border-top: 1px solid rgb(99, 96, 93, 0.1);
 }
 .upper .description .price {
   font-size: 20px;
+}
+.upper .description .count-section {
+  padding: 0 10px 20px 10px;
+}
+.upper .description .count-section .count {
+  display: flex;
+  align-items: center;
+}
+.upper .description .count-section .count a {
+  margin: 0 10px;
+  color: #e58025;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .upper .description .btn-section {
   display: flex;
@@ -318,4 +363,9 @@
 }
 .upper .description .btn-section button:nth-child(1) {
   margin-right: 30px;
+}
+.about,
+.reviews,
+.delivery-return {
+  padding: 30px 20px 40px;
 }

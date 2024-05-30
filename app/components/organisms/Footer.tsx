@@ -42,10 +42,12 @@ const Footer = () => {
             </div>
             <div>
               <h4>SNS</h4>
-              <div className={styles['icons-section']}>
+              <div>
                 <div>
                   <a href={organization.instagramUrl} target='_blank'>
                     <Image
+                      width={20}
+                      height={20}
                       className={styles.icon}
                       src={instagramIcn}
                       alt={'insta-icon'}
@@ -55,6 +57,8 @@ const Footer = () => {
                 <div>
                   <a href={organization.youTubeUrl} target='_blank'>
                     <Image
+                      width={20}
+                      height={20}
                       className={styles.icon}
                       src={youtubeIcn}
                       alt={'youtube-icon'}

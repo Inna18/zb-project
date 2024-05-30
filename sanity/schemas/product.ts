@@ -7,8 +7,9 @@ export default {
     { name: 'brand', title: 'Brand', type: 'string' },
     { name: 'name', title: 'Name', type: 'string' },
     { name: 'price', title: 'Price', type: 'string' },
-    { name: 'quantity', title: 'Quantity', type: 'string' },
-    { name: 'rating', title: 'Rating', type: 'number', initialValue: 0 },
+    { name: 'quantity', title: 'Quantity', type: 'number' },
+    { name: 'count', title: 'Count', type: 'number' },
+    { name: 'rating', title: 'Rating', type: 'number' },
     {
       name: 'content',
       title: 'Content',
@@ -34,5 +35,6 @@ export default {
       validation: (Rule: any) => Rule.max(4),
       options: { hotspot: true },
     },
+    { name: 'posted', title: 'Posted', type: 'boolean' },
   ],
 };
