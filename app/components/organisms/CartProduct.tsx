@@ -25,7 +25,9 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useUserStore((state) => state);
-  const { totalCost, substructFromTotalCost } = useTotalCostStore((state) => state);
+  const { totalCost, substructFromTotalCost } = useTotalCostStore(
+    (state) => state
+  );
   const { productId, count, idx } = cartProductProps;
   const { data: product, isLoading: loadingProduct } =
     useProductGetById(productId);

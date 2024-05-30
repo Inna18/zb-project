@@ -27,7 +27,7 @@ async function createCart(
     _type: 'cart',
     userId: userId,
     productCountSet: [productCountSet],
-    productTotalCost: 0
+    productTotalCost: 0,
   };
 
   const createdCart = await client.create(sanityCart);
@@ -97,18 +97,24 @@ async function removeFromCart(userId: string, productId: string) {
 }
 
 async function setCartTotalCost(userId: string, cost: number) {
-  console.log(cost)
+  console.log(cost);
   const existingCart = await getCartByUserId(userId);
   if (existingCart) {
     const updatedCart = await client
-    .patch(existingCart._id)
-    .set({
-      productTotalCost: cost
-    })
-    .commit();
+      .patch(existingCart._id)
+      .set({
+        productTotalCost: cost,
+      })
+      .commit();
     console.log('Updated cart total product cost: ', updatedCart);
     return updatedCart;
   }
 }
 
-export { getCartByUserId, createCart, addToCart, removeFromCart, setCartTotalCost };
+export {
+  getCartByUserId,
+  createCart,
+  addToCart,
+  removeFromCart,
+  setCartTotalCost,
+};

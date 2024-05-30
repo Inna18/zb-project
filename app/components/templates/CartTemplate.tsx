@@ -1,13 +1,14 @@
 'use client';
 import styles from './templates.module.css';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Button from '../atoms/button/Button';
 import CartProduct from '../organisms/CartProduct';
 import Spinner from '../atoms/spinner/Spinner';
 
 import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
 import { useUserStore } from '@/app/stores/useUserStore';
+import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { numberWithCommas } from '@/app/utils/number';
 import { useRouter } from 'next/navigation';
@@ -16,8 +17,8 @@ const CartTemplate = () => {
   const router = useRouter();
   const { user } = useUserStore((state) => state);
   const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
+  const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
   const { data: cart, isLoading: loadingCart } = useCartGet(user._id!);
-  const [deliveryFee, setDeliveryFee] = useState<number>(3500);
 
   useEffect(() => {
     if (cart && totalCost === 0) addToTotalCost(cart.productTotalCost);

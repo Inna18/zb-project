@@ -380,3 +380,20 @@
 .buttons a img {
   cursor: pointer;
 }
+
+/* checkout product */
+.checkout-product-section {
+  width: 1000px;
+  padding: 0 40px;
+  margin-bottom: 50px;
+}
+.checkout-product-section .product {
+  width: 600px;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  align-items: center;
+  justify-content: center;
+}
+.checkout-product-section .product div div {
+  margin: 10px 0;
+}

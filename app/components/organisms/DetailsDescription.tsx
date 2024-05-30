@@ -91,7 +91,7 @@ const DetailsDescription = () => {
                     onClose: close,
                   });
                   open();
-                  if (product.price) addToTotalCost(product.price * count)
+                  if (product.price) addToTotalCost(product.price * count);
                 },
               }
             );
