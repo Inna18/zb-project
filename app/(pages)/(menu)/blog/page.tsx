@@ -1,7 +1,12 @@
 import React from 'react';
+import BlogTemplate from '@/app/components/templates/BlogTemplate';
 
 const Blog = () => {
-  return <div>Blog</div>;
+  return (
+    <div>
+      <BlogTemplate />
+    </div>
+  );
 };
 
 export default Blog;

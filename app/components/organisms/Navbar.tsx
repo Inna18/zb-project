@@ -5,12 +5,15 @@ import React, { useEffect, useState } from 'react';
 import Links from '@/app/components/molecules/Links';
 import Link from 'next/link';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
+import logo from '@/public/icons/dog-solid.svg';
 
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useCartTotalCostSet } from '@/app/queries/queryHooks/cart/useCartTotalCostSet';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const MENU_LIST = [
   { id: 1, value: 'home' },
@@ -22,6 +25,7 @@ const MENU_LIST = [
 
 const Navbar = () => {
   const session = useSession();
+  const router = useRouter();
   const { user, resetUser } = useUserStore((state) => state);
   const { totalCost, resetTotalCost } = useTotalCostStore((state) => state);
   const { mutate: mutateUpdateCart } = useCartTotalCostSet();
@@ -96,6 +100,7 @@ const Navbar = () => {
             signOut();
             resetTotalCost(); // reset Stores
             resetUser();
+            router.push('/home');
           },
         }
       );
@@ -104,7 +109,9 @@ const Navbar = () => {
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
       <div>
-        <Link href={'/home'}>LOGO</Link>
+        <Link href={'/home'}>
+          <Image src={logo} alt='logo' width={40} height={40} />
+        </Link>
       </div>
       <div>
         <Links

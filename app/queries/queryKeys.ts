@@ -27,3 +27,8 @@ export const COMMENT_KEYS = {
 export const CART_KEYS = {
   get: (id: string) => ['cart', { userId: id }],
 };
+
+export const POST_KEYS = {
+  list: () => ['posts'],
+  get: (postId: string) => ['post', postId],
+};

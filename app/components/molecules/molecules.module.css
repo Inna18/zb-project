@@ -340,3 +340,69 @@
   font-size: 11px;
   padding: 0 10px;
 }
+
+/* post card */
+.post-card {
+  width: 80%;
+  height: 160px;
+  padding: 10px;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  column-gap: 30px;
+}
+.post-card .img {
+  display: flex;
+  justify-content: center;
+  min-width: 250px;
+}
+.post-card .img image {
+  object-fit: contain;
+}
+.post-card .img div {
+  color: rgb(99, 96, 93, 0.7);
+}
+.content div {
+  margin: 10px 0;
+}
+.title {
+  font-size: 30px;
+  font-weight: 500;
+}
+.small-text {
+  font-size: 11px;
+  color: rgb(99, 96, 93, 0.7);
+}
+
+/* post form */
+.post-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+}
+.post-form .title {
+  font-size: 20px;
+  margin: 30px;
+  font-weight: 500;
+}
+.post-form .form div {
+  margin: 20px 0;
+}
+.post-form .form div .img-section {
+  display: flex;
+  align-items: center;
+}
+.post-form .form div .img-section img {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.post-form .form div textarea {
+  resize: none;
+  border: 1px solid rgb(99, 96, 93, 0.4);
+}
+.post-form .form .btn {
+  display: flex;
+  justify-content: center;
+  margin: 50px 0;
+}

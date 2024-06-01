@@ -22,7 +22,6 @@ const CartTemplate = () => {
 
   useEffect(() => {
     if (cart && totalCost === 0) {
-      console.log(cart);
       addToTotalCost(cart.productTotalCost);
     }
     if (totalCost === 0 || totalCost > 50000) setDeliveryFee(0);

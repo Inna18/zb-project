@@ -6,7 +6,17 @@ import product from './schemas/product';
 import shippingPolicy from './schemas/shippingPolicy';
 import comment from './schemas/comment';
 import cart from './schemas/cart';
+import post from './schemas/post';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [user, organization, category, product, shippingPolicy, comment, cart],
+  types: [
+    user,
+    organization,
+    category,
+    product,
+    shippingPolicy,
+    comment,
+    cart,
+    post,
+  ],
 };
