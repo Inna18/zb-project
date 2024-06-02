@@ -32,3 +32,8 @@ export const POST_KEYS = {
   list: () => ['posts'],
   get: (postId: string) => ['post', postId],
 };
+
+export const CONTACT_KEYS = {
+  list: () => ['contact'],
+  get: (contactId: string) => ['contact', contactId],
+};

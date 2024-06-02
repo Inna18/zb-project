@@ -263,3 +263,12 @@
 .blog {
   width: 100%;
 }
+
+/* contact */
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}

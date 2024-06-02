@@ -16,8 +16,10 @@ import { usePostStore } from '@/app/stores/usePostStore';
 import { usePostCreate } from '@/app/queries/queryHooks/post/usePostCreate';
 import { usePostDelete } from '@/app/queries/queryHooks/post/usePostDelete';
 import { useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 
 const PostList = () => {
+  const session = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const user = useUserStore((state) => state.user);
@@ -69,9 +71,10 @@ const PostList = () => {
       {!isLoading && (
         <>
           <div className={styles['add-button']}>
-            {user.role === 'ADMIN' && (
-              <Button value='Add Post' onClick={() => handleRoute()} />
-            )}
+            {session.status === 'authenticated' &&
+              session.data.user?.role === 'ADMIN' && (
+                <Button value='Add Post' onClick={() => handleRoute()} />
+              )}
           </div>
           {postList.map((post: Post) => (
             <div className={styles['post-list']}>

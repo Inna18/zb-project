@@ -84,7 +84,7 @@ const PostForm = () => {
       {isLoadingOrPending && <Spinner />}
       {!isLoading && post && (
         <div className={styles['post-form']}>
-          <div className={styles.title}>Add Post</div>
+          <div className={styles.title}>Post Form</div>
           <div className={styles.form}>
             <div>
               {existingPost && existingPost.postImage && (
@@ -126,7 +126,7 @@ const PostForm = () => {
             <div>
               <Input
                 type='text'
-                placeholder={`Insert post title`}
+                placeholder={'Insert post title'}
                 hasLabel={false}
                 name={'title'}
                 value={post.title}
@@ -143,14 +143,12 @@ const PostForm = () => {
                 cols='100'
                 name='content'
                 value={post.content}
+                placeholder={'Insert post content'}
                 onChange={handleInput}
               />
             </div>
             <div className={styles.btn}>
-              <Button
-                value={existingPost ? 'Update' : 'Save'}
-                onClick={handleSaveOrUpdate}
-              />
+              <Button value={'Update'} onClick={handleSaveOrUpdate} />
             </div>
           </div>
         </div>
