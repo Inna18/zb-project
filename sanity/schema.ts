@@ -8,6 +8,7 @@ import comment from './schemas/comment';
 import cart from './schemas/cart';
 import post from './schemas/post';
 import contact from './schemas/contact';
+import payment from './schemas/payment';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -20,5 +21,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     cart,
     post,
     contact,
+    payment,
   ],
 };

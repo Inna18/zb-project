@@ -9,7 +9,7 @@ import CheckoutProduct from '../organisms/CheckoutProduct';
 
 import { useUserStore } from '@/app/stores/useUserStore';
 import { commonConstants } from '@/app/constants/common';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
 import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
@@ -19,6 +19,7 @@ import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
 const { FIELD_EMPTY } = commonConstants;
 
 const CheckoutTemplate = () => {
+  const router = useRouter();
   const productId = useSearchParams()?.get('productId');
   // need user & existingUser for address & phoneNum(which aren't mandatory)
   const { user, setUser } = useUserStore((state) => state);
@@ -57,9 +58,7 @@ const CheckoutTemplate = () => {
       user.phoneNumber !== '' &&
       user.phoneNumber !== null
     ) {
-      console.log('ok');
-    } else {
-      console.log('error');
+      router.push('/payment');
     }
   };
 

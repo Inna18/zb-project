@@ -285,14 +285,18 @@
   height: 74vh;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s linear 0ms, opacity 300ms;
+  transition:
+    visibility 0s linear 0ms,
+    opacity 300ms;
 }
 .banner-show {
   position: relative;
   height: 74vh;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 1s;
+  transition:
+    visibility 0s linear 0s,
+    opacity 1s;
 }
 .banner-label {
   width: 400px;
@@ -314,7 +318,9 @@
   margin: 50px 0;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 0s linear 0ms, opacity 300ms;
+  transition:
+    visibility 0s linear 0ms,
+    opacity 300ms;
 }
 .section-show {
   display: flex;
@@ -323,7 +329,9 @@
   margin: 50px 0;
   visibility: visible;
   opacity: 1;
-  transition: visibility 0s linear 0s, opacity 2s;
+  transition:
+    visibility 0s linear 0s,
+    opacity 2s;
 }
 .subtitle {
   font-size: 24px;

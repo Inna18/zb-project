@@ -91,19 +91,16 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    if (user._id)
+    if (user._id) {
       mutateUpdateCart(
         // when logout, save totalCost from Store -> Cart
-        { userId: user._id, productTotalCost: totalCost },
-        {
-          onSuccess: () => {
-            signOut();
-            resetTotalCost(); // reset Stores
-            resetUser();
-            router.push('/home');
-          },
-        }
+        { userId: user._id, productTotalCost: totalCost }
       );
+    }
+    signOut();
+    resetTotalCost(); // reset Stores
+    resetUser();
+    router.push('/home');
   };
 
   return (
