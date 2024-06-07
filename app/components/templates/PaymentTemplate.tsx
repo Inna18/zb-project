@@ -12,6 +12,9 @@ import { nanoid } from 'nanoid';
 import { useQuery } from '@tanstack/react-query';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
+import { useUserStore } from '@/app/stores/useUserStore';
+import { useSearchParams } from 'next/navigation';
 
 function usePaymentWidget(clientKey: string, customerKey: string) {
   return useQuery({
@@ -28,6 +31,7 @@ const PaymentTemplate = () => {
   const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm';
   const customerKey = 'vyaf184qyL_sIZ6u8IM2w';
 
+  const total = useSearchParams()?.get('total');
   const { data: paymentWidget } = usePaymentWidget(clientKey, customerKey);
   // const { data: paymentWidget } = usePaymentWidget(clientKey, ANONYMOUS); // 비회원 결제
   const paymentMethodsWidgetRef = useRef<ReturnType<
@@ -38,8 +42,10 @@ const PaymentTemplate = () => {
   > | null>(null);
   const [paymentMethodsWidgetReady, isPaymentMethodsWidgetReady] =
     useState(false);
+  const user = useUserStore((state) => state.user);
   const totalCost = useTotalCostStore((state) => state.totalCost);
   const deliveryFee = useDeliveryFeeStore((state) => state.deliveryFee);
+  const buyList = useBuyListStore((state) => state.buyList);
 
   useEffect(() => {
     if (paymentWidget == null) {
@@ -50,7 +56,7 @@ const PaymentTemplate = () => {
     // @docs https://docs.tosspayments.com/reference/widget-sdk#renderpaymentmethods선택자-결제-금액-옵션
     const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
       '#payment-widget',
-      { value: totalCost + deliveryFee },
+      { value: total ? parseInt(total) : totalCost + deliveryFee },
       { variantKey: 'DEFAULT' }
     );
 
@@ -76,8 +82,8 @@ const PaymentTemplate = () => {
 
     // ------ 금액 업데이트 ------
     // @docs https://docs.tosspayments.com/reference/widget-sdk#updateamount결제-금액
-    paymentMethodsWidget.updateAmount(totalCost + deliveryFee);
-  }, [totalCost]);
+    paymentMethodsWidget.updateAmount(total ? parseInt(total) : totalCost + deliveryFee);
+  }, [totalCost, total]);
 
   return (
     <main>
@@ -97,10 +103,10 @@ const PaymentTemplate = () => {
                   // @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
                   await paymentWidget?.requestPayment({
                     orderId: nanoid(),
-                    orderName: '토스 티셔츠 외 2건',
-                    customerName: '김토스',
-                    customerEmail: 'customer123@gmail.com',
-                    customerMobilePhone: '01012341234',
+                    orderName: `${buyList[0].name} ${buyList.length > 1 ? `외${buyList.length - 1}건` : ', etc'} `,
+                    customerName: `${user.name}`,
+                    customerEmail: `${user.email}`,
+                    customerMobilePhone: `${user.phoneNumber?.replaceAll('-', '')}`,
                     successUrl: `${window.location.origin}/payment/success`,
                     failUrl: `${window.location.origin}/payment/fail`,
                   });

@@ -10,6 +10,7 @@ import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
 import { numberWithCommas } from '@/app/utils/number';
 import { useRouter } from 'next/navigation';
 
@@ -18,6 +19,7 @@ const CartTemplate = () => {
   const user = useUserStore((state) => state.user);
   const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
   const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
+  const { setBuyList, resetBuyList } = useBuyListStore((state) => state);
   const { data: cart, isLoading } = useCartGet(user._id!);
 
   useEffect(() => {

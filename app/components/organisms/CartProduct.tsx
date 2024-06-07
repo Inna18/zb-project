@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import payIcon from '@/public/icons/money-check-dollar-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
@@ -14,6 +14,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 import { useRouter } from 'next/navigation';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
 
 interface CartProductProps {
   productId: string;
@@ -28,6 +29,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const substructFromTotalCost = useTotalCostStore(
     (state) => state.substructFromTotalCost
   );
+  const { setBuyList, addToBuyList, resetBuyList } = useBuyListStore((state) => state);
   const { productId, count, idx } = cartProductProps;
   const { data: product, isLoading } = useProductGetById(productId);
   const { mutate: mutateCartDelete, isPending: pendingCartDelete } =
@@ -37,6 +39,14 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   const isLoadingOrPending =
     isLoading || pendingCartDelete || pendingQuantityUpdate;
+
+  useEffect(() => {
+    resetBuyList();
+  }, [])
+  
+  useEffect(() => {
+    if (product) addToBuyList(product);
+  }, [product]);
 
   const handleDelete = () => {
     if (user._id) {
@@ -55,7 +65,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
               // add to product quantity again
               { id: productId, quantity: product.quantity + count }
             );
-            substructFromTotalCost(product.price);
+            substructFromTotalCost(product.price * count);
           },
         }
       );
@@ -64,7 +74,8 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   const handleBuy = () => {
     if (user._id) {
-      router.push(`/checkout?productId=${productId}`);
+      setBuyList(product);
+      router.push(`/checkout?productId=${productId}&count=${count}&type=cart`);
     }
   };
 

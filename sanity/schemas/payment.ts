@@ -4,7 +4,7 @@ export default {
   type: 'document',
   fields: [
     { name: 'orderName', title: 'Order Name', type: 'string' },
-    { name: 'apprivedAt', title: 'Approved At', type: 'string' },
+    { name: 'approvedAt', title: 'Approved At', type: 'string' },
     {
       name: 'receipt',
       title: 'Receipt',

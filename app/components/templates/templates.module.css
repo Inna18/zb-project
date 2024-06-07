@@ -373,3 +373,15 @@
 .last-section {
   width: 60%;
 }
+
+/* payment */
+.payment-section {
+  width: 40%;
+}
+.payment-desc {
+  display: flex;
+  justify-content: start;
+}
+.payment-desc div:nth-child(1) {
+  margin-right: 10px;
+}

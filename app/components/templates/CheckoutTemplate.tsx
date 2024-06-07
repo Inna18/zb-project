@@ -15,20 +15,24 @@ import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { numberWithCommas } from '@/app/utils/number';
 import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
+import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
 
 const { FIELD_EMPTY } = commonConstants;
 
 const CheckoutTemplate = () => {
   const router = useRouter();
   const productId = useSearchParams()?.get('productId');
+  const count = useSearchParams()?.get('count');
+  const type = useSearchParams()?.get('type');
   // need user & existingUser for address & phoneNum(which aren't mandatory)
   const { user, setUser } = useUserStore((state) => state);
   const totalCost = useTotalCostStore((state) => state.totalCost);
-  const deliveryFee = useDeliveryFeeStore((state) => state.deliveryFee);
+  const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
   const { data: existingUser, isLoading: loadingGetUser } = useUserByEmail(
     user.email
   );
   const { data: cart, isLoading: isLoadingGetCart } = useCartGet(user._id!);
+  const { data: product, isLoading: isLoadingProduct } = useProductGetById(productId!)
   const isLoading = isLoadingGetCart || loadingGetUser;
 
   const userProperties = [
@@ -41,6 +45,14 @@ const CheckoutTemplate = () => {
   useEffect(() => {
     if (existingUser) setUser(existingUser);
   }, [existingUser]);
+
+  useEffect(() => {
+    if (product && count) {
+      if (product.price * parseInt(count) === 0 || product.price * parseInt(count) > 50000) {
+        setDeliveryFee(0) 
+      } else setDeliveryFee(3500);
+    }
+  }, [product, count]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -58,7 +70,8 @@ const CheckoutTemplate = () => {
       user.phoneNumber !== '' &&
       user.phoneNumber !== null
     ) {
-      router.push('/payment');
+      if (type === 'buy') router.push(`/payment?total=${(product.price * parseInt(count!)) + deliveryFee}`);
+      else router.push('/payment')
     }
   };
 
@@ -111,7 +124,14 @@ const CheckoutTemplate = () => {
           </div>
           <div>
             <div className={styles.subtitle}>Products</div>
-            {productId && // if choose 1 item from cart to buy
+            {type === 'buy' && productId && (
+              <CheckoutProduct
+                    key={productId}
+                    productId={productId}
+                    count={parseInt(count!)}
+                  />
+            )}
+            {type === 'cart' && productId && // if choose 1 item from cart to buy
               cart &&
               cart.productCountSet &&
               cart.productCountSet.length > 0 &&
@@ -154,7 +174,7 @@ const CheckoutTemplate = () => {
             <div className={styles['checkout-payment-section']}>
               <div className={styles.payment}>
                 <div>Product Cost </div>
-                <div>₩{numberWithCommas(totalCost)}</div>
+                <div>{ (product && count) ? (`₩${numberWithCommas(product.price * parseInt(count))}`) : `₩${numberWithCommas(totalCost)}` }</div>
               </div>
               <div className={styles.payment}>
                 <div>Delivery Fee </div>
@@ -162,7 +182,8 @@ const CheckoutTemplate = () => {
               </div>
               <div className={styles.payment}>
                 <div>Total: </div>
-                <div>₩{numberWithCommas(totalCost + deliveryFee)}</div>
+                <div>{ (product && count) ? (`₩${numberWithCommas(product.price * parseInt(count) + deliveryFee)}`) : `₩${numberWithCommas(totalCost + deliveryFee)}` }
+                </div>
               </div>
             </div>
           </div>

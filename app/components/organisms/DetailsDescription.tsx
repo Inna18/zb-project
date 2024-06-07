@@ -20,6 +20,7 @@ import { useModalStore } from '@/app/stores/useModalStore';
 import { useModal } from '@/app/hooks/useModal';
 import { useRouter } from 'next/navigation';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
 
 const { CART_UPDATE_SUCCESS, LOGIN_REQUEST } = modalMsgConstants;
 
@@ -30,6 +31,7 @@ const DetailsDescription = () => {
   const { product, setProduct } = useProductStore((state) => state);
   const user = useUserStore((state) => state.user);
   const addToTotalCost = useTotalCostStore((state) => state.addToTotalCost);
+  const setBuyList = useBuyListStore((state) => state.setBuyList);
   const { modal, setModal } = useModalStore((state) => state);
   const { mutate: mutateUpdateCart } = useCartUpdate();
   const { mutate: mutateUpdateQuantity } = useProductUpdateQuantity();
@@ -106,6 +108,11 @@ const DetailsDescription = () => {
     }
   };
 
+  const handleRoute = () => {
+    setBuyList(product);
+    router.push(`/checkout?productId=${product._id}&count=${count}&type=buy`);
+  }
+
   return (
     <div className={styles.details}>
       <div className={styles.upper}>
@@ -148,6 +155,7 @@ const DetailsDescription = () => {
                   value={'Buy'}
                   className='button-long'
                   disabled={disabled}
+                  onClick={handleRoute}
                 />
               </div>
             </>
