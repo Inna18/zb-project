@@ -15,7 +15,6 @@ import { useUserStore } from '@/app/stores/useUserStore';
 import { usePostStore } from '@/app/stores/usePostStore';
 import { usePostCreate } from '@/app/queries/queryHooks/post/usePostCreate';
 import { usePostDelete } from '@/app/queries/queryHooks/post/usePostDelete';
-import { useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
 const PostList = () => {
@@ -24,7 +23,6 @@ const PostList = () => {
   const pathname = usePathname();
   const user = useUserStore((state) => state.user);
   const { post, resetPost } = usePostStore((state) => state);
-  const queryClient = useQueryClient();
   const { data: postList, isLoading } = usePostList();
   const { mutate: mutatePostSave, isPending: isPendingPostSave } =
     usePostCreate();
@@ -43,27 +41,10 @@ const PostList = () => {
 
   const handleRoute = (id?: string | undefined) => {
     if (id) router.push(`${pathname}/fix?postId=${id}`);
-    else {
-      mutatePostSave(
-        { ...post, createdBy: user.email },
-        {
-          onSuccess: (data) => {
-            router.push(`${pathname}/fix?postId=${data._id}`);
-          },
-        }
-      );
-    }
+    else mutatePostSave({ ...post, createdBy: user.email });
   };
 
-  const handleDelete = (id: string) => {
-    mutatePostDelete(id, {
-      onSuccess: () => {
-        queryClient.setQueryData(['posts'], (old: Post[]) =>
-          old.filter((p) => p._id !== id)
-        );
-      },
-    });
-  };
+  const handleDelete = (id: string) => mutatePostDelete(id);
 
   return (
     <>

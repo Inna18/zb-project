@@ -55,6 +55,7 @@ async function createComment(newComment: Comment) {
 async function deleteCommentById(commentId: string) {
   const commentDeleted = await client.delete(commentId);
   console.log(commentDeleted);
+  return commentId;
 }
 
 async function deleteAllCommentsByProductId(productId: string) {

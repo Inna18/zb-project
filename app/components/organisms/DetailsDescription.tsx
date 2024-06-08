@@ -5,7 +5,6 @@ import Image from 'next/image';
 import starIcon from '@/public/icons/star-solid.svg';
 import Button from '../atoms/button/Button';
 import DescriptionImages from '../molecules/DescriptionImages';
-import Product from '@/app/service/useProductApi';
 import Modal from '../atoms/modal/Modal';
 
 import { useProductStore } from '@/app/stores/useProductStore';
@@ -13,7 +12,6 @@ import { useUserStore } from '@/app/stores/useUserStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { useCartUpdate } from '@/app/queries/queryHooks/cart/useCartUpdate';
 import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 import { useModalStore } from '@/app/stores/useModalStore';
@@ -21,27 +19,38 @@ import { useModal } from '@/app/hooks/useModal';
 import { useRouter } from 'next/navigation';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
+import { PRODUCT_KEYS } from '@/app/queries/queryKeys';
 
 const { CART_UPDATE_SUCCESS, LOGIN_REQUEST } = modalMsgConstants;
 
 const DetailsDescription = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const session = useSession();
-  const { product, setProduct } = useProductStore((state) => state);
+  const product = useProductStore((state) => state.product);
   const user = useUserStore((state) => state.user);
   const addToTotalCost = useTotalCostStore((state) => state.addToTotalCost);
   const setBuyList = useBuyListStore((state) => state.setBuyList);
   const { modal, setModal } = useModalStore((state) => state);
   const { mutate: mutateUpdateCart } = useCartUpdate();
-  const { mutate: mutateUpdateQuantity } = useProductUpdateQuantity();
+  const { mutate: mutateUpdateQuantity, isSuccess } =
+    useProductUpdateQuantity();
   const [count, setCount] = useState<number>(1);
-  const [disabled, setDisabled] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
-    if (product.quantity) setDisabled(product.quantity <= 0);
-  }, [product.quantity]);
+    if (isSuccess) {
+      product.quantity && product.quantity > 0 ? setCount(1) : setCount(0);
+
+      setModal({
+        type: 'confirm',
+        content: CART_UPDATE_SUCCESS,
+        onOk: handleMove,
+        onClose: close,
+      });
+      open();
+      if (product.price) addToTotalCost(product.price * count);
+    }
+  }, [isSuccess]);
 
   const handleDecrease = () => {
     if (count >= 2) setCount(count - 1);
@@ -49,7 +58,6 @@ const DetailsDescription = () => {
   const handleIncrease = () => {
     if (product.quantity && count < product.quantity) setCount(count + 1);
   };
-
   const handleMove = () => router.push('/cart');
   const handleLogin = () => router.push('/login');
 
@@ -62,56 +70,43 @@ const DetailsDescription = () => {
         onClose: close,
       });
       open();
-    } else {
-      if (product._id && user._id) {
-        const productCountSet = {
-          productId: product._id,
-          count: count,
-          _key: product._id,
-        };
-        mutateUpdateCart(
-          { userId: user._id, prodCountSet: productCountSet },
-          {
-            onSuccess: () => {
-              if (product._id && product.quantity)
-                mutateUpdateQuantity(
-                  { id: product._id, quantity: product.quantity - count },
-                  {
-                    onSuccess: (data) => {
-                      queryClient.setQueryData(
-                        ['product', product._id],
-                        (old: Product) => ({
-                          ...old,
-                          quantity: data.quantity,
-                        })
-                      );
-                      setProduct({ ...product, quantity: data.quantity });
-                      product.quantity && product.quantity > 0
-                        ? setCount(1)
-                        : setCount(0);
-
-                      setModal({
-                        type: 'confirm',
-                        content: CART_UPDATE_SUCCESS,
-                        onOk: handleMove,
-                        onClose: close,
-                      });
-                      open();
-                      if (product.price) addToTotalCost(product.price * count);
-                    },
-                  }
-                );
-            },
-          }
-        );
-      }
+    }
+    if (session.status === 'authenticated' && product._id && user._id) {
+      const productCountSet = {
+        productId: product._id,
+        count: count,
+        _key: product._id,
+      };
+      mutateUpdateCart(
+        { userId: user._id, prodCountSet: productCountSet },
+        {
+          onSuccess: () => {
+            if (product._id && product.quantity)
+              mutateUpdateQuantity({
+                id: product._id,
+                quantity: product.quantity - count,
+              });
+          },
+        }
+      );
     }
   };
 
   const handleRoute = () => {
-    setBuyList(product);
-    router.push(`/checkout?productId=${product._id}&count=${count}&type=buy`);
-  }
+    if (session.status === 'unauthenticated') {
+      setModal({
+        type: 'confirm',
+        content: LOGIN_REQUEST,
+        onOk: handleLogin,
+        onClose: close,
+      });
+      open();
+    }
+    if (session.status === 'authenticated' && product._id && user._id) {
+      setBuyList(product);
+      router.push(`/checkout?productId=${product._id}&count=${count}&type=buy`);
+    }
+  };
 
   return (
     <div className={styles.details}>
@@ -125,7 +120,7 @@ const DetailsDescription = () => {
           <div className={styles.name}>{product.name}</div>
           <div className={styles.rating}>
             <Image src={starIcon} alt={'item-image'} width={18} height={18} />
-            <span>{product.rating ? product.rating : 0}</span>
+            <span>{product.rating ? product.rating.toFixed(1) : 0}</span>
           </div>
           <div className={styles['price-section']}>
             <div>Price: </div>
@@ -134,7 +129,7 @@ const DetailsDescription = () => {
           {session.data?.user?.role !== 'ADMIN' && (
             <>
               <div className={styles['count-section']}>
-                {disabled ? (
+                {product.quantity! <= 0 ? (
                   <div className={styles.soldout}>Sold Out</div>
                 ) : (
                   <div className={styles.count}>
@@ -148,13 +143,13 @@ const DetailsDescription = () => {
                 <Button
                   value={'Add to Cart'}
                   className='button2-long'
-                  disabled={disabled}
+                  disabled={product.quantity! <= 0}
                   onClick={handleAddCart}
                 />
                 <Button
                   value={'Buy'}
                   className='button-long'
-                  disabled={disabled}
+                  disabled={product.quantity! <= 0}
                   onClick={handleRoute}
                 />
               </div>

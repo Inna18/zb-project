@@ -15,6 +15,7 @@ import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/usePr
 import { useRouter } from 'next/navigation';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
+import { CART_KEYS } from '@/app/queries/queryKeys';
 
 interface CartProductProps {
   productId: string;
@@ -29,7 +30,9 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const substructFromTotalCost = useTotalCostStore(
     (state) => state.substructFromTotalCost
   );
-  const { setBuyList, addToBuyList, resetBuyList } = useBuyListStore((state) => state);
+  const { setBuyList, addToBuyList, resetBuyList } = useBuyListStore(
+    (state) => state
+  );
   const { productId, count, idx } = cartProductProps;
   const { data: product, isLoading } = useProductGetById(productId);
   const { mutate: mutateCartDelete, isPending: pendingCartDelete } =
@@ -42,8 +45,8 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   useEffect(() => {
     resetBuyList();
-  }, [])
-  
+  }, []);
+
   useEffect(() => {
     if (product) addToBuyList(product);
   }, [product]);
@@ -57,10 +60,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
         },
         {
           onSuccess: (data) => {
-            queryClient.setQueryData(
-              ['cart', { userId: user._id }],
-              () => data
-            );
+            queryClient.setQueryData(CART_KEYS.get(user._id!), () => data);
             mutateQuantityUpdate(
               // add to product quantity again
               { id: productId, quantity: product.quantity + count }
@@ -72,7 +72,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
     }
   };
 
-  const handleBuy = () => {
+  const handleRoute = () => {
     if (user._id) {
       setBuyList(product);
       router.push(`/checkout?productId=${productId}&count=${count}&type=cart`);
@@ -103,7 +103,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           <td>₩{numberWithCommas(product.price * count)}</td>
           <td>
             <div className={styles.buttons}>
-              <a onClick={handleBuy}>
+              <a onClick={handleRoute}>
                 <Image src={payIcon} alt={'pay-icon'} width={20} height={20} />
               </a>
               <a onClick={handleDelete}>

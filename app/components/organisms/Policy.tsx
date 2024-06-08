@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Editor from '../atoms/editor/Editor';
 import policySchema from '@/sanity/schemas/shippingPolicy';
 import Button from '../atoms/button/Button';
@@ -9,7 +9,6 @@ import Modal from '../atoms/modal/Modal';
 import { Schema } from '@sanity/schema';
 import { useShippingPolicyStore } from '@/app/stores/useShippingPolicyStore';
 import { useShippingPolicyUpdate } from '@/app/queries/queryHooks/policy/useShippingPolicyUpdate';
-import { useQueryClient } from '@tanstack/react-query';
 import { toHTML } from '@portabletext/to-html';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModalStore } from '@/app/stores/useModalStore';
@@ -27,8 +26,18 @@ const Policy = ({ rerender }: PolicyProps) => {
   );
   const { modal, setModal } = useModalStore((state) => state);
   const { open, close, isOpen } = useModal();
-  const queryClient = useQueryClient();
-  const { mutate: mutateUpdate } = useShippingPolicyUpdate();
+  const { mutate: mutateUpdate, isSuccess } = useShippingPolicyUpdate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModal({
+        type: 'alert',
+        content: POLICY_UPDATE_SUCCESS,
+        onClose: returnToList,
+      });
+      open();
+    }
+  }, [isSuccess]);
 
   const handleContentChange = (contentDescription: string) => {
     contentDescription = '<html>' + contentDescription + '</html>';
@@ -48,19 +57,7 @@ const Policy = ({ rerender }: PolicyProps) => {
     rerender('list');
   };
 
-  const handleSave = () => {
-    mutateUpdate(shippingPolicy, {
-      onSuccess: () => {
-        queryClient.setQueryData(['policy'], () => ({ ...shippingPolicy }));
-        setModal({
-          type: 'alert',
-          content: POLICY_UPDATE_SUCCESS,
-          onClose: returnToList,
-        });
-        open();
-      },
-    });
-  };
+  const handleSave = () => mutateUpdate(shippingPolicy);
 
   return (
     <>
@@ -82,7 +79,6 @@ const Policy = ({ rerender }: PolicyProps) => {
         content={modal.content}
         onClose={modal.onClose}
       />
-      {/* <button onClick={deleteShippingPolicy}>Delete</button> delete after tests */}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import styles from './organisms.module.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Policy from './Policy';
 import Spinner from '../atoms/spinner/Spinner';
 import Button from '../atoms/button/Button';
@@ -10,7 +10,6 @@ import { useShippingPolicyGet } from '@/app/queries/queryHooks/policy/useShippin
 import { commonConstants } from '@/app/constants/common';
 import { useShippingPolicyCreate } from '@/app/queries/queryHooks/policy/useShippingPolicyCreate';
 import { useShippingPolicyStore } from '@/app/stores/useShippingPolicyStore';
-import { useQueryClient } from '@tanstack/react-query';
 
 const { LIST_EMPTY } = commonConstants;
 
@@ -18,19 +17,18 @@ const PolicyList = () => {
   const setShippingPolicy = useShippingPolicyStore(
     (state) => state.setShippingPolicy
   );
-  const queryClient = useQueryClient();
   const { data: shippingPolicyData, isLoading } = useShippingPolicyGet();
-  const { mutate: mutateCreate } = useShippingPolicyCreate();
+  const { mutate: mutateCreate, isSuccess } = useShippingPolicyCreate();
   const [render, setRender] = useState<string>('list');
 
+  useEffect(() => {
+    if (isSuccess) {
+      setRender('details');
+    }
+  }, [isSuccess]);
+
   const handleCreatePolicy = () => {
-    mutateCreate(undefined, {
-      onSuccess: (data) => {
-        setShippingPolicy(data);
-        queryClient.setQueryData(['policy'], () => ({ ...data }));
-        setRender('details');
-      },
-    });
+    mutateCreate(undefined);
   };
 
   const handleUpdate = () => {

@@ -86,8 +86,8 @@ const Navbar = () => {
   const handlePath = (selectedElem: string) => {
     if (selectedElem === 'logout') {
       return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/home`);
-    }
-    return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`);
+    } else
+      return new URL(`${process.env.NEXT_PUBLIC_BASE_PATH}/${selectedElem}`);
   };
 
   const handleLogout = () => {
@@ -100,6 +100,7 @@ const Navbar = () => {
     signOut();
     resetTotalCost(); // reset Stores
     resetUser();
+    console.log('home');
     router.push('/home');
   };
 

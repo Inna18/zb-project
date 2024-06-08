@@ -8,12 +8,10 @@ import BarChart from '../atoms/barChart/BarChart';
 import Popup from '../atoms/popup/Popup';
 import Comment from '@/app/service/useCommentApi';
 import Modal from '../atoms/modal/Modal';
-import Product from '@/app/service/useProductApi';
 
 import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCreate';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useQueryClient } from '@tanstack/react-query';
 import { useProductUpdateRating } from '@/app/queries/queryHooks/product/useProductUpdateRating';
 import { calcAverage, calcCount } from '@/app/utils/number';
 
@@ -26,10 +24,8 @@ interface RatingProps {
 }
 const Rating = (ratingProps: RatingProps) => {
   const { productId, commentsData, email } = ratingProps;
-  const queryClient = useQueryClient();
-
   const { open, close, isOpen } = useModal();
-  const { mutate: mutateCreateComment } = useCommentCreate();
+  const { mutate: mutateCreateComment, isSuccess } = useCommentCreate();
   const { mutate: mutateUpdateRating } = useProductUpdateRating();
 
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
@@ -39,54 +35,30 @@ const Rating = (ratingProps: RatingProps) => {
   const [ratingAverage, setRatingAverage] = useState<number>(0);
 
   const handleOpen = () => setIsOpenPopup(true);
-
   const handleCancel = () => setIsOpenPopup(false);
-
   const handleSave = (comment: Comment) => {
-    mutateCreateComment(
-      {
-        ...comment,
-        rating: Number(comment.rating),
-        createdBy: email,
-        productId: productId,
-      },
-      {
-        onSuccess: (data) => {
-          setIsOpenPopup(false);
-          open();
-          queryClient.setQueryData(
-            ['comments', { productId: productId }],
-            (old: Comment[]) => [...old, data]
-          );
-          queryClient.refetchQueries({
-            queryKey: ['comments', { productId: productId }],
-          });
-        },
-      }
-    );
+    mutateCreateComment({
+      ...comment,
+      rating: Number(comment.rating),
+      createdBy: email,
+      productId: productId,
+    });
   };
 
   useEffect(() => {
     if (commentsData) {
       setRatingCount(calcCount(commentsData));
       setRatingAverage(calcAverage(commentsData));
-
-      mutateUpdateRating(
-        { id: productId, rating: ratingAverage },
-        {
-          onSuccess: (data) => {
-            queryClient.setQueryData(
-              ['product', productId],
-              (old: Product) => ({
-                ...old,
-                rating: data.rating,
-              })
-            );
-          },
-        }
-      );
+      mutateUpdateRating({ id: productId, rating: ratingAverage });
     }
   }, [commentsData]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsOpenPopup(false);
+      open();
+    }
+  }, [isSuccess]);
 
   return (
     <>
@@ -102,7 +74,7 @@ const Rating = (ratingProps: RatingProps) => {
             </div>
             <div>
               <Button
-                value='리뷰 작성하기'
+                value='Write Review'
                 className='button-long'
                 onClick={handleOpen}
               />

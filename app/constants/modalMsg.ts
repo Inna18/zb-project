@@ -1,5 +1,5 @@
 export const modalMsgConstants = {
-  LOGIN_REQUEST: 'Login is needed to use Cart.',
+  LOGIN_REQUEST: 'Login is needed.',
   USER_CREATE_SUCCESS: 'Sign-up was successfull. Navigate to Login page?',
   USER_CREATE_ERROR: 'User already exists.',
   USER_LOGIN_ERROR: 'No such user. Check credentials.',
@@ -19,4 +19,6 @@ export const modalMsgConstants = {
   COMMENT_DELETE_SUCCESS: 'Comment deleted successfully.',
   CART_UPDATE_SUCCESS:
     'Product added to cart successfully. Would you like to check the cart?',
+  CONTACT_CREATE_SUCCESS: 'You inquiry has been submitted.',
+  POST_UPDATE_SUCCESS: 'Post has been updated successfully.',
 };

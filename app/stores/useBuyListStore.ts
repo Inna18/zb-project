@@ -6,7 +6,7 @@ interface State {
   buyList: Product[];
 }
 interface Action {
-  setBuyList: (items: Product) => void; 
+  setBuyList: (items: Product) => void;
   addToBuyList: (item: Product) => void;
   resetBuyList: () => void;
 }
@@ -16,8 +16,9 @@ export const useBuyListStore = create<State & Action>()(
     persist(
       (set) => ({
         buyList: [],
-        setBuyList: (items) => set(() => ({ buyList: [items]})), 
-        addToBuyList: (item) => set((state) => ({ buyList: [...state.buyList, item] })),
+        setBuyList: (items) => set(() => ({ buyList: [items] })),
+        addToBuyList: (item) =>
+          set((state) => ({ buyList: [...state.buyList, item] })),
         resetBuyList: () => set({ buyList: [] }),
       }),
       { name: 'buyListStore' }

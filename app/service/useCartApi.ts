@@ -111,7 +111,9 @@ async function setCartTotalCost(userId: string, cost: number) {
 }
 
 async function emptyCart(userId: string) {
-  const deleteResult = client.delete({ query: `*[_type == 'cart' && userId == '${userId}'][0...999]`});
+  const deleteResult = client.delete({
+    query: `*[_type == 'cart' && userId == '${userId}'][0...999]`,
+  });
   return deleteResult;
 }
 
@@ -121,5 +123,5 @@ export {
   addToCart,
   removeFromCart,
   setCartTotalCost,
-  emptyCart
+  emptyCart,
 };

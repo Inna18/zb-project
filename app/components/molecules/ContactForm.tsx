@@ -1,13 +1,16 @@
 'use client';
 import styles from './molecules.module.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
 import Contact from '@/app/service/useContactApi';
 
 import { useContactCreate } from '@/app/queries/queryHooks/contact/useContact';
 import Spinner from '../atoms/spinner/Spinner';
+import { useModal } from '@/app/hooks/useModal';
+import Modal from '../atoms/modal/Modal';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
 
 const initState = {
   _id: '',
@@ -16,10 +19,23 @@ const initState = {
   message: '',
 };
 
+const { CONTACT_CREATE_SUCCESS } = modalMsgConstants;
+
 const ContactForm = () => {
+  const { open, close, isOpen } = useModal();
   const [contact, setContact] = useState<Contact>(initState);
-  const { mutate: mutateSaveContact, isPending: isPendingSaveContact } =
-    useContactCreate();
+  const {
+    mutate: mutateSaveContact,
+    isPending: isPendingSaveContact,
+    isSuccess,
+  } = useContactCreate();
+
+  useEffect(() => {
+    if (isSuccess) {
+      open();
+      setContact(initState);
+    }
+  }, [isSuccess]);
 
   const handleInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,13 +44,7 @@ const ContactForm = () => {
     setContact({ ...contact, [name]: value });
   };
 
-  const handleSubmit = () => {
-    mutateSaveContact(contact, {
-      onSuccess: () => {
-        setContact(initState);
-      },
-    });
-  };
+  const handleSubmit = () => mutateSaveContact(contact);
 
   return (
     <>
@@ -76,6 +86,13 @@ const ContactForm = () => {
           <Button value={'Submit'} onClick={handleSubmit} />
         </div>
       </div>
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={'alert'}
+        content={CONTACT_CREATE_SUCCESS}
+        onClose={close}
+      />
     </>
   );
 };

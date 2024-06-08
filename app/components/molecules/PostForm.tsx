@@ -3,27 +3,33 @@ import styles from './molecules.module.css';
 import React, { useEffect } from 'react';
 import Input from '../atoms/input/Input';
 import Spinner from '../atoms/spinner/Spinner';
-import Post from '@/app/service/usePostApi';
 import Image from 'next/image';
 import Button from '../atoms/button/Button';
+import Modal from '../atoms/modal/Modal';
 import deleteIcon from '@/public/icons/circle-xmark-solid.svg';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { usePostGet } from '@/app/queries/queryHooks/post/usePostGetById';
 import { usePostUpdate } from '@/app/queries/queryHooks/post/usePostUpdate';
 import { usePostDeleteImg } from '@/app/queries/queryHooks/post/usePostDeleteImg';
 import { usePostUpdateImg } from '@/app/queries/queryHooks/post/usePostUpdateImg';
-import { useQueryClient } from '@tanstack/react-query';
 import { limit } from '@/app/utils/text';
 import { usePostStore } from '@/app/stores/usePostStore';
+import { modalMsgConstants } from '@/app/constants/modalMsg';
+import { useModalStore } from '@/app/stores/useModalStore';
+import { useModal } from '@/app/hooks/useModal';
+import { useRouter } from 'next/navigation';
+
+const { POST_UPDATE_SUCCESS } = modalMsgConstants;
 
 const PostForm = () => {
   const router = useRouter();
-  const queryClient = useQueryClient();
   const postId = useSearchParams()?.get('postId');
   const { post, setPost } = usePostStore((state) => state);
+  const { modal, setModal } = useModalStore((state) => state);
+  const { open, close, isOpen } = useModal();
   const { data: existingPost, isLoading } = usePostGet(postId ? postId : '');
-  const { mutate: mutatePostUpdate } = usePostUpdate();
+  const { mutate: mutatePostUpdate, isSuccess } = usePostUpdate();
   const { mutate: mutateDeleteImg, isPending: isPendingDeleteImg } =
     usePostDeleteImg();
   const { mutate: mutateAddImg, isPending: isPendingAddImg } =
@@ -34,49 +40,30 @@ const PostForm = () => {
     setPost(existingPost);
   }, [existingPost]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      setModal({
+        type: 'alert',
+        content: POST_UPDATE_SUCCESS,
+        onClose: handleRoute,
+      });
+      open();
+    }
+  }, [isSuccess]);
+
+  const handleRoute = () => router.push('/blog');
   const handleInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
   };
-
-  const handleSaveOrUpdate = () => {
-    mutatePostUpdate(
-      { id: existingPost._id, post: post },
-      {
-        onSuccess: () => {
-          router.push('/blog');
-        },
-      }
-    );
-  };
-
-  const handleDeleteImg = () => {
-    mutateDeleteImg(existingPost._id, {
-      onSuccess: () => {
-        queryClient.setQueryData(['post', postId], (old: Post) => ({
-          ...old,
-          postImage: null,
-        }));
-      },
-    });
-  };
-
+  const handleSaveOrUpdate = () =>
+    mutatePostUpdate({ id: existingPost._id, post: post });
+  const handleDeleteImg = () => mutateDeleteImg(existingPost._id);
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     let file = e.currentTarget.files;
-    if (postId && file)
-      mutateAddImg(
-        { id: postId, image: file?.[0] },
-        {
-          onSuccess: (data) => {
-            queryClient.setQueryData(['post', postId], () => ({
-              ...post,
-              postImage: data.postImage,
-            }));
-          },
-        }
-      );
+    if (postId && file) mutateAddImg({ id: postId, image: file?.[0] });
   };
 
   return (
@@ -153,6 +140,13 @@ const PostForm = () => {
           </div>
         </div>
       )}
+      <Modal
+        selector={'portal'}
+        show={isOpen}
+        type={modal.type}
+        content={modal.content}
+        onClose={modal.onClose}
+      />
     </>
   );
 };

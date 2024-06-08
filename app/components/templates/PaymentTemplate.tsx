@@ -82,7 +82,9 @@ const PaymentTemplate = () => {
 
     // ------ 금액 업데이트 ------
     // @docs https://docs.tosspayments.com/reference/widget-sdk#updateamount결제-금액
-    paymentMethodsWidget.updateAmount(total ? parseInt(total) : totalCost + deliveryFee);
+    paymentMethodsWidget.updateAmount(
+      total ? parseInt(total) : totalCost + deliveryFee
+    );
   }, [totalCost, total]);
 
   return (
