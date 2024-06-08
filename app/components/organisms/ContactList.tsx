@@ -4,10 +4,10 @@ import React from 'react';
 import ContactCard from '../molecules/ContactCard';
 import Contact from '@/app/service/useContactApi';
 
-import { useContactList } from '@/app/queries/queryHooks/contact/useContact';
+import { useContact } from '@/app/queries/queryHooks/contact/useContact';
 
 const ContactList = () => {
-  const { data: contacts, isLoading } = useContactList();
+  const { data: contacts, isLoading } = useContact().useContactList();
 
   return (
     <div className={styles['contact-list']}>

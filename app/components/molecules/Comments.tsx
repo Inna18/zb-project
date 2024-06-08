@@ -10,7 +10,7 @@ import starIcon from '@/public/icons/star-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
 
 import { hideInfo } from '@/app/utils/text';
-import { useCommentDeleteById } from '@/app/queries/queryHooks/comment/useCommentDeleteById';
+import { useComment } from '@/app/queries/queryHooks/comment/useComment';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { commonConstants } from '@/app/constants/common';
@@ -37,7 +37,7 @@ const Comments = (commentsProps: CommentsProps) => {
     mutate: mutateDelete,
     isPending: pendingDelete,
     isSuccess,
-  } = useCommentDeleteById(productId);
+  } = useComment().useCommentDeleteById(productId);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {

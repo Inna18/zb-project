@@ -10,8 +10,7 @@ import Spinner from '@/app/components/atoms/spinner/Spinner';
 import Modal from '@/app/components/atoms/modal/Modal';
 
 import User from '@/app/service/useUserApi';
-import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
-import { useUserUpdate } from '@/app/queries/queryHooks/user/useUserUpdate';
+import { useUser } from '@/app/queries/queryHooks/user/useUser';
 import { useSession } from 'next-auth/react';
 import { limit } from '@/app/utils/text';
 import { passwordValidation } from '@/app/utils/validation';
@@ -50,8 +49,10 @@ const Profile = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
-  const { mutate: mutateUpdate, isSuccess } = useUserUpdate();
+  const { isLoading, data: user } = useUser().useUserByEmail(
+    session?.data?.user?.email
+  );
+  const { mutate: mutateUpdate, isSuccess } = useUser().useUserUpdate();
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {

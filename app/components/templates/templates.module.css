@@ -297,6 +297,7 @@
   transition:
     visibility 0s linear 0s,
     opacity 1s;
+  z-index: -5;
 }
 .banner-label {
   width: 400px;

@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Spinner from '../atoms/spinner/Spinner';
 
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { numberWithCommas } from '@/app/utils/number';
 
 interface CheckoutProductProps {
@@ -14,7 +14,8 @@ interface CheckoutProductProps {
 
 const CheckoutProduct = (checkoutProductProps: CheckoutProductProps) => {
   const { productId, count } = checkoutProductProps;
-  const { data: product, isLoading } = useProductGetById(productId);
+  const { data: product, isLoading } =
+    useProduct().useProductGetById(productId);
 
   return (
     <>

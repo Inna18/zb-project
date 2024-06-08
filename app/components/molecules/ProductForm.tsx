@@ -5,7 +5,7 @@ import Select from '../atoms/select/Select';
 import Input from '../atoms/input/Input';
 
 import { useProductStore } from '@/app/stores/useProductStore';
-import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
+import { useCategory } from '@/app/queries/queryHooks/category/useCategory';
 import { commonConstants } from '@/app/constants/common';
 
 const PRODUCT_TITLES = [
@@ -25,7 +25,7 @@ const ProductForm = (productFormProps: ProductFormProps) => {
   const { emptyName, checkName } = productFormProps;
 
   const { product, setProduct } = useProductStore((state) => state);
-  const { isLoading, data: categories } = useCategoryList();
+  const { isLoading, data: categories } = useCategory().useCategoryList();
   const [categoryList, setCategoryList] = useState<
     { id: number; value: string }[] | null
   >(null);

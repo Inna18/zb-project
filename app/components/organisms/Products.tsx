@@ -11,13 +11,10 @@ import ProductForm from '../molecules/ProductForm';
 
 import { Schema } from '@sanity/schema';
 import { toHTML } from '@portabletext/to-html';
-import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
-import { useProductDeleteImgs } from '@/app/queries/queryHooks/product/useProductDeleteImgs';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
 import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
@@ -50,16 +47,16 @@ const Products = (productProps: ProductsProps) => {
     mutate: mutateProductUpdate,
     isPending: pendingProductUpdate,
     isSuccess: isProductUpdateSuccess,
-  } = useProductUpdate();
+  } = useProduct().useProductUpdate();
   const {
     mutate: mutateProductDelete,
     isPending: pendingProductDelete,
     isSuccess: isProductDeleteSuccess,
-  } = useProductDeleteById();
+  } = useProduct().useProductDeleteById();
   const { mutate: mutateImgsDelete, isPending: pendingImgsDelete } =
-    useProductDeleteImgs();
+    useProduct().useProductDeleteImgs();
   const { isLoading: isLoadingProduct, data: existingProduct } =
-    useProductGetById(productId);
+    useProduct().useProductGetById(productId);
 
   const isLoadingOrPending =
     isLoadingProduct ||

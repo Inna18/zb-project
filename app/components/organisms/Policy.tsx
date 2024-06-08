@@ -8,7 +8,7 @@ import Modal from '../atoms/modal/Modal';
 
 import { Schema } from '@sanity/schema';
 import { useShippingPolicyStore } from '@/app/stores/useShippingPolicyStore';
-import { useShippingPolicyUpdate } from '@/app/queries/queryHooks/policy/useShippingPolicyUpdate';
+import { usePolicy } from '@/app/queries/queryHooks/policy/usePolicy';
 import { toHTML } from '@portabletext/to-html';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModalStore } from '@/app/stores/useModalStore';
@@ -26,7 +26,8 @@ const Policy = ({ rerender }: PolicyProps) => {
   );
   const { modal, setModal } = useModalStore((state) => state);
   const { open, close, isOpen } = useModal();
-  const { mutate: mutateUpdate, isSuccess } = useShippingPolicyUpdate();
+  const { mutate: mutateUpdate, isSuccess } =
+    usePolicy().useShippingPolicyUpdate();
 
   useEffect(() => {
     if (isSuccess) {

@@ -7,9 +7,8 @@ import Spinner from '../atoms/spinner/Spinner';
 import deleteImgIcon from '@/public/icons/circle-xmark-solid.svg';
 import Modal from '../atoms/modal/Modal';
 import { useProductStore } from '@/app/stores/useProductStore';
-import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useProductDeleteImg } from '@/app/queries/queryHooks/product/useProductDeleteImg';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
 import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
 import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
@@ -31,9 +30,9 @@ const ProductImages = () => {
   const { open, close, isOpen } = useModal();
 
   const { mutate: mutateUpdate, isPending: pendingUpdate } =
-    useProductUpdateImages();
+    useProduct().useProductUpdateImages();
   const { mutate: mutateDelete, isPending: pendingDelete } =
-    useProductDeleteImg();
+    useProduct().useProductDeleteImg();
 
   const isPending = pendingUpdate || pendingDelete;
 

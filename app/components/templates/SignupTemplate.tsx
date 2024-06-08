@@ -13,7 +13,7 @@ import Modal from '../atoms/modal/Modal';
 
 import { limit } from '@/app/utils/text';
 import { useFormValidator } from '@/app/hooks/useFormValidator';
-import { useUserCreate } from '@/app/queries/queryHooks/user/useUserCreate';
+import { useUser } from '@/app/queries/queryHooks/user/useUser';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModalStore } from '@/app/stores/useModalStore';
@@ -47,7 +47,7 @@ const SignupTemplate = () => {
     isPending,
     isSuccess,
     isError,
-  } = useUserCreate();
+  } = useUser().useUserCreate();
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {

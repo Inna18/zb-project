@@ -9,10 +9,7 @@ import Modal from '../atoms/modal/Modal';
 import deleteIcon from '@/public/icons/circle-xmark-solid.svg';
 
 import { useSearchParams } from 'next/navigation';
-import { usePostGet } from '@/app/queries/queryHooks/post/usePostGetById';
-import { usePostUpdate } from '@/app/queries/queryHooks/post/usePostUpdate';
-import { usePostDeleteImg } from '@/app/queries/queryHooks/post/usePostDeleteImg';
-import { usePostUpdateImg } from '@/app/queries/queryHooks/post/usePostUpdateImg';
+import { usePost } from '@/app/queries/queryHooks/post/usePost';
 import { limit } from '@/app/utils/text';
 import { usePostStore } from '@/app/stores/usePostStore';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
@@ -28,12 +25,14 @@ const PostForm = () => {
   const { post, setPost } = usePostStore((state) => state);
   const { modal, setModal } = useModalStore((state) => state);
   const { open, close, isOpen } = useModal();
-  const { data: existingPost, isLoading } = usePostGet(postId ? postId : '');
-  const { mutate: mutatePostUpdate, isSuccess } = usePostUpdate();
+  const { data: existingPost, isLoading } = usePost().usePostGet(
+    postId ? postId : ''
+  );
+  const { mutate: mutatePostUpdate, isSuccess } = usePost().usePostUpdate();
   const { mutate: mutateDeleteImg, isPending: isPendingDeleteImg } =
-    usePostDeleteImg();
+    usePost().usePostDeleteImg();
   const { mutate: mutateAddImg, isPending: isPendingAddImg } =
-    usePostUpdateImg();
+    usePost().usePostUpdateImg();
   const isLoadingOrPending = isLoading || isPendingDeleteImg || isPendingAddImg;
 
   useEffect(() => {

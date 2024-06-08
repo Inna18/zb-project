@@ -9,10 +9,10 @@ import Popup from '../atoms/popup/Popup';
 import Comment from '@/app/service/useCommentApi';
 import Modal from '../atoms/modal/Modal';
 
-import { useCommentCreate } from '@/app/queries/queryHooks/comment/useCommentCreate';
+import { useComment } from '@/app/queries/queryHooks/comment/useComment';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useProductUpdateRating } from '@/app/queries/queryHooks/product/useProductUpdateRating';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { calcAverage, calcCount } from '@/app/utils/number';
 
 const { COMMENT_CREATE_SUCCESS } = modalMsgConstants;
@@ -25,8 +25,9 @@ interface RatingProps {
 const Rating = (ratingProps: RatingProps) => {
   const { productId, commentsData, email } = ratingProps;
   const { open, close, isOpen } = useModal();
-  const { mutate: mutateCreateComment, isSuccess } = useCommentCreate();
-  const { mutate: mutateUpdateRating } = useProductUpdateRating();
+  const { mutate: mutateCreateComment, isSuccess } =
+    useComment().useCommentCreate();
+  const { mutate: mutateUpdateRating } = useProduct().useProductUpdateRating();
 
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [ratingCount, setRatingCount] = useState<

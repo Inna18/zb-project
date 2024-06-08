@@ -5,7 +5,7 @@ import Rating from '../molecules/Rating';
 import Comments from '../molecules/Comments';
 import Spinner from '../atoms/spinner/Spinner';
 import { useSearchParams } from 'next/navigation';
-import { useCommentsGetByProductId } from '@/app/queries/queryHooks/comment/useCommentsGetByProductId';
+import { useComment } from '@/app/queries/queryHooks/comment/useComment';
 import { useSession } from 'next-auth/react';
 
 const Reviews = () => {
@@ -13,9 +13,8 @@ const Reviews = () => {
   const searchParams = useSearchParams();
   const productId = searchParams?.get('productId');
 
-  const { data: commentsData, isLoading } = useCommentsGetByProductId(
-    productId!
-  );
+  const { data: commentsData, isLoading } =
+    useComment().useCommentsGetByProductId(productId!);
 
   return (
     <>

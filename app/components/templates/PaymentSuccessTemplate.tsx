@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { usePaymentCreate } from '@/app/queries/queryHooks/payment/usePayment';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
-import { useCartEmpty } from '@/app/queries/queryHooks/cart/useCartEmpty';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import { useUserStore } from '@/app/stores/useUserStore';
 
 const PaymentSuccessTemplate = () => {
@@ -18,7 +18,7 @@ const PaymentSuccessTemplate = () => {
   const orderId = useSearchParams()?.get('orderId');
   const amount = useSearchParams()?.get('amount');
   const { data: payment, mutate: mutateSave, isPending } = usePaymentCreate();
-  const { mutate: mutateCartEmpty } = useCartEmpty();
+  const { mutate: mutateCartEmpty } = useCart().useCartEmpty();
   const user = useUserStore((state) => state.user);
   const resetTotalCost = useTotalCostStore((state) => state.resetTotalCost);
   const resetBuyList = useBuyListStore((state) => state.resetBuyList);
@@ -33,7 +33,7 @@ const PaymentSuccessTemplate = () => {
       resetTotalCost();
       resetBuyList();
     }
-  }, [user]);
+  }, [user, paymentSuccess]);
 
   const createPayment = async () => {
     try {

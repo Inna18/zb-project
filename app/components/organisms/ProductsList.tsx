@@ -9,7 +9,7 @@ import Product from '@/app/service/useProductApi';
 import Pagination from '../atoms/pagination/Pagination';
 import moment from 'moment';
 import ProductListIcons from '../molecules/ProductListIcons';
-import { useProductList } from '@/app/queries/queryHooks/product/useProductList';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { commonConstants } from '@/app/constants/common';
 import { useSearchParams } from 'next/navigation';
 
@@ -21,7 +21,8 @@ const { LIST_EMPTY } = commonConstants;
 const ProductsList = (productsListProps: ProductsListProps) => {
   const searchParams = useSearchParams();
   const { renderSubMenu } = productsListProps;
-  const { isLoading, data: productList } = useProductList('_createdAt');
+  const { isLoading, data: productList } =
+    useProduct().useProductList('_createdAt');
 
   const page = searchParams?.get('page') ?? '1';
   const perPage = searchParams?.get('per_page') ?? '5';

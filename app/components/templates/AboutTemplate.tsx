@@ -24,7 +24,13 @@ const AboutTemplate = () => {
               <Image
                 src={mainBanner}
                 alt={'about-main-banner'}
-                style={{ maxWidth: '100%', height: 'inherit' }}
+                style={{
+                  maxWidth: '100%',
+                  height: 'inherit',
+                  zIndex: -10,
+                  position: 'absolute',
+                  objectFit: 'cover',
+                }}
               />
               <div className={styles['banner-label']}>
                 <div className={styles['banner-title']}>Our Mission</div>

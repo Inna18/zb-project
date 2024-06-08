@@ -11,7 +11,7 @@ import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
 import { signOut, useSession } from 'next-auth/react';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
-import { useCartTotalCostSet } from '@/app/queries/queryHooks/cart/useCartTotalCostSet';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -28,7 +28,7 @@ const Navbar = () => {
   const router = useRouter();
   const { user, resetUser } = useUserStore((state) => state);
   const { totalCost, resetTotalCost } = useTotalCostStore((state) => state);
-  const { mutate: mutateUpdateCart } = useCartTotalCostSet();
+  const { mutate: mutateUpdateCart } = useCart().useCartTotalCostSet();
 
   const [profileMenu, setProfileMenu] = useState<
     { id: number; value: string }[]

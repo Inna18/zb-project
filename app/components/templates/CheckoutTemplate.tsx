@@ -10,12 +10,12 @@ import CheckoutProduct from '../organisms/CheckoutProduct';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { commonConstants } from '@/app/constants/common';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
-import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
+import { useUser } from '@/app/queries/queryHooks/user/useUser';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { numberWithCommas } from '@/app/utils/number';
 import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 
 const { FIELD_EMPTY } = commonConstants;
 
@@ -28,13 +28,13 @@ const CheckoutTemplate = () => {
   const { user, setUser } = useUserStore((state) => state);
   const totalCost = useTotalCostStore((state) => state.totalCost);
   const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
-  const { data: existingUser, isLoading: loadingGetUser } = useUserByEmail(
-    user.email
+  const { data: existingUser, isLoading: loadingGetUser } =
+    useUser().useUserByEmail(user.email);
+  const { data: cart, isLoading: isLoadingGetCart } = useCart().useCartGet(
+    user._id!
   );
-  const { data: cart, isLoading: isLoadingGetCart } = useCartGet(user._id!);
-  const { data: product, isLoading: isLoadingProduct } = useProductGetById(
-    productId!
-  );
+  const { data: product, isLoading: isLoadingProduct } =
+    useProduct().useProductGetById(productId!);
   const isLoading = isLoadingGetCart || loadingGetUser;
 
   const userProperties = [

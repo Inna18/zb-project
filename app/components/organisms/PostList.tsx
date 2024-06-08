@@ -9,12 +9,10 @@ import Image from 'next/image';
 import deleteIcon from '@/public/icons/delete-left-solid.svg';
 import updateIcon from '@/public/icons/pen-to-square-solid.svg';
 
-import { usePostList } from '@/app/queries/queryHooks/post/usePostList';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { usePostStore } from '@/app/stores/usePostStore';
-import { usePostCreate } from '@/app/queries/queryHooks/post/usePostCreate';
-import { usePostDelete } from '@/app/queries/queryHooks/post/usePostDelete';
+import { usePost } from '@/app/queries/queryHooks/post/usePost';
 import { useSession } from 'next-auth/react';
 
 const PostList = () => {
@@ -23,11 +21,11 @@ const PostList = () => {
   const pathname = usePathname();
   const user = useUserStore((state) => state.user);
   const { post, resetPost } = usePostStore((state) => state);
-  const { data: postList, isLoading } = usePostList();
+  const { data: postList, isLoading } = usePost().usePostList();
   const { mutate: mutatePostSave, isPending: isPendingPostSave } =
-    usePostCreate();
+    usePost().usePostCreate();
   const { mutate: mutatePostDelete, isPending: isPendingPostDelete } =
-    usePostDelete();
+    usePost().usePostDelete();
   const isLoadingOrPending =
     isLoading || isPendingPostSave || isPendingPostDelete;
 

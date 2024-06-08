@@ -5,13 +5,13 @@ import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
 import moment from 'moment';
 
-import { usePostGet } from '@/app/queries/queryHooks/post/usePostGetById';
+import { usePost } from '@/app/queries/queryHooks/post/usePost';
 
 interface PostProps {
   postId: string;
 }
 const Post = ({ postId }: PostProps) => {
-  const { data: post, isLoading } = usePostGet(postId);
+  const { data: post, isLoading } = usePost().usePostGet(postId);
 
   return (
     <>

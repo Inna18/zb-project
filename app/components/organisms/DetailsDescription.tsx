@@ -12,14 +12,14 @@ import { useUserStore } from '@/app/stores/useUserStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
-import { useCartUpdate } from '@/app/queries/queryHooks/cart/useCartUpdate';
-import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { useModalStore } from '@/app/stores/useModalStore';
 import { useModal } from '@/app/hooks/useModal';
 import { useRouter } from 'next/navigation';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
-import { PRODUCT_KEYS } from '@/app/queries/queryKeys';
+import { numberWithCommas } from '@/app/utils/number';
 
 const { CART_UPDATE_SUCCESS, LOGIN_REQUEST } = modalMsgConstants;
 
@@ -31,9 +31,9 @@ const DetailsDescription = () => {
   const addToTotalCost = useTotalCostStore((state) => state.addToTotalCost);
   const setBuyList = useBuyListStore((state) => state.setBuyList);
   const { modal, setModal } = useModalStore((state) => state);
-  const { mutate: mutateUpdateCart } = useCartUpdate();
+  const { mutate: mutateUpdateCart } = useCart().useCartUpdate();
   const { mutate: mutateUpdateQuantity, isSuccess } =
-    useProductUpdateQuantity();
+    useProduct().useProductUpdateQuantity();
   const [count, setCount] = useState<number>(1);
   const { open, close, isOpen } = useModal();
 
@@ -124,7 +124,9 @@ const DetailsDescription = () => {
           </div>
           <div className={styles['price-section']}>
             <div>Price: </div>
-            <div className={styles.price}>{product.price}won</div>
+            <div className={styles.price}>
+              ₩{numberWithCommas(product.price!)}
+            </div>
           </div>
           {session.data?.user?.role !== 'ADMIN' && (
             <>

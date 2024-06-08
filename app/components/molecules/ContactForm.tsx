@@ -5,11 +5,11 @@ import React, { useEffect, useState } from 'react';
 import Input from '../atoms/input/Input';
 import Button from '../atoms/button/Button';
 import Contact from '@/app/service/useContactApi';
-
-import { useContactCreate } from '@/app/queries/queryHooks/contact/useContact';
 import Spinner from '../atoms/spinner/Spinner';
-import { useModal } from '@/app/hooks/useModal';
 import Modal from '../atoms/modal/Modal';
+
+import { useContact } from '@/app/queries/queryHooks/contact/useContact';
+import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 
 const initState = {
@@ -28,7 +28,7 @@ const ContactForm = () => {
     mutate: mutateSaveContact,
     isPending: isPendingSaveContact,
     isSuccess,
-  } = useContactCreate();
+  } = useContact().useContactCreate();
 
   useEffect(() => {
     if (isSuccess) {

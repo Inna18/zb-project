@@ -6,24 +6,27 @@ import Contact, {
   createContact,
 } from '@/app/service/useContactApi';
 
-const useContactList = () => {
-  return useQuery({
-    queryKey: CONTACT_KEYS.list(),
-    queryFn: async () => await getContacts(),
-  });
-};
+export const useContact = () => {
+  const useContactList = () => {
+    return useQuery({
+      queryKey: CONTACT_KEYS.list(),
+      queryFn: async () => await getContacts(),
+    });
+  };
 
-const useContactGet = (id: string) => {
-  return useQuery({
-    queryKey: CONTACT_KEYS.get(id),
-    queryFn: async () => await getContactById(id),
-  });
-};
+  const useContactGet = (id: string) => {
+    return useQuery({
+      queryKey: CONTACT_KEYS.get(id),
+      queryFn: async () => await getContactById(id),
+    });
+  };
 
-const useContactCreate = () => {
-  return useMutation({
-    mutationFn: async (newContact: Contact) => await createContact(newContact),
-  });
-};
+  const useContactCreate = () => {
+    return useMutation({
+      mutationFn: async (newContact: Contact) =>
+        await createContact(newContact),
+    });
+  };
 
-export { useContactList, useContactGet, useContactCreate };
+  return { useContactList, useContactGet, useContactCreate };
+};

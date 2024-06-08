@@ -112,9 +112,9 @@ async function setCartTotalCost(userId: string, cost: number) {
 
 async function emptyCart(userId: string) {
   const deleteResult = client.delete({
-    query: `*[_type == 'cart' && userId == '${userId}'][0...999]`,
+    query: `*[_type == 'cart' && userId == '${userId}'][0]`,
   });
-  return deleteResult;
+  console.log('delete result: ', deleteResult);
 }
 
 export {

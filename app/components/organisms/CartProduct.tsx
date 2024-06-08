@@ -6,12 +6,11 @@ import payIcon from '@/public/icons/money-check-dollar-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
 import Spinner from '../atoms/spinner/Spinner';
 
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { numberWithCommas } from '@/app/utils/number';
-import { useCartDelete } from '@/app/queries/queryHooks/cart/useCartDelete';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useQueryClient } from '@tanstack/react-query';
-import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 import { useRouter } from 'next/navigation';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
@@ -34,12 +33,12 @@ const CartProduct = (cartProductProps: CartProductProps) => {
     (state) => state
   );
   const { productId, count, idx } = cartProductProps;
-  const { data: product, isLoading } = useProductGetById(productId);
+  const { data: product, isLoading } =
+    useProduct().useProductGetById(productId);
   const { mutate: mutateCartDelete, isPending: pendingCartDelete } =
-    useCartDelete();
+    useCart().useCartDelete();
   const { mutate: mutateQuantityUpdate, isPending: pendingQuantityUpdate } =
-    useProductUpdateQuantity();
-
+    useProduct().useProductUpdateQuantity();
   const isLoadingOrPending =
     isLoading || pendingCartDelete || pendingQuantityUpdate;
 

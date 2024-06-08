@@ -9,9 +9,7 @@ import Image from 'next/image';
 import Spinner from '../atoms/spinner/Spinner';
 import Modal from '../atoms/modal/Modal';
 
-import { useCategoryCreate } from '@/app/queries/queryHooks/category/useCategoryCreate';
-import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
-import { useCategoryDelete } from '@/app/queries/queryHooks/category/useCategoryDelete';
+import { useCategory } from '@/app/queries/queryHooks/category/useCategory';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
 
@@ -24,10 +22,10 @@ const Categories = () => {
     mutate: mutateCreate,
     isPending: pendingCreate,
     isSuccess,
-  } = useCategoryCreate();
-  const { isLoading, data: categories } = useCategoryList();
+  } = useCategory().useCategoryCreate();
+  const { isLoading, data: categories } = useCategory().useCategoryList();
   const { mutate: mutateDelete, isPending: pendingDelete } =
-    useCategoryDelete();
+    useCategory().useCategoryDelete();
   const { close, isOpen } = useModal();
   const isLoadingOrPending = isLoading || pendingCreate || pendingDelete;
 

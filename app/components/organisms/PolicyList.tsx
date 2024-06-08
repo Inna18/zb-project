@@ -6,9 +6,8 @@ import Spinner from '../atoms/spinner/Spinner';
 import Button from '../atoms/button/Button';
 import moment from 'moment';
 
-import { useShippingPolicyGet } from '@/app/queries/queryHooks/policy/useShippingPolicyGet';
+import { usePolicy } from '@/app/queries/queryHooks/policy/usePolicy';
 import { commonConstants } from '@/app/constants/common';
-import { useShippingPolicyCreate } from '@/app/queries/queryHooks/policy/useShippingPolicyCreate';
 import { useShippingPolicyStore } from '@/app/stores/useShippingPolicyStore';
 
 const { LIST_EMPTY } = commonConstants;
@@ -17,8 +16,10 @@ const PolicyList = () => {
   const setShippingPolicy = useShippingPolicyStore(
     (state) => state.setShippingPolicy
   );
-  const { data: shippingPolicyData, isLoading } = useShippingPolicyGet();
-  const { mutate: mutateCreate, isSuccess } = useShippingPolicyCreate();
+  const { data: shippingPolicyData, isLoading } =
+    usePolicy().useShippingPolicyGet();
+  const { mutate: mutateCreate, isSuccess } =
+    usePolicy().useShippingPolicyCreate();
   const [render, setRender] = useState<string>('list');
 
   useEffect(() => {
