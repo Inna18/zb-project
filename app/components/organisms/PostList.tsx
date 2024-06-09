@@ -61,7 +61,7 @@ const PostList = () => {
           )}
           </div>
           {postList.map((post: Post) => (
-            <div className={styles['post-list']}>
+            <div key={post._id} className={styles['post-list']}>
               <div onClick={() => handleClick(post._id)}>
                 <PostCard post={post} key={post._id} />
               </div>

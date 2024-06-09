@@ -19,7 +19,7 @@ const Orders = () => {
       {!isLoading && (
         <>
         {orderList.map((order: Order) => (
-          <div className={styles['order-card']}>
+          <div key={order._id} className={styles['order-card']}>
             <div>{moment(order._createdAt).format('YYYY-MM-DD, HH:mm')}</div>
           {order.itemSet.map((item: {_key: string, image: string, name: string, price: number, count: number}) => (
             <>

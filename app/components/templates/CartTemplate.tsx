@@ -67,7 +67,7 @@ const CartTemplate = () => {
                     )
                   )
                 ) : (
-                  <div className={styles.centered}>Cart empty</div>
+                  <tr className={styles.centered}>Cart empty</tr>
                 )}
               </tbody>
             </table>

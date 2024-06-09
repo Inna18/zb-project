@@ -21,7 +21,7 @@ const ContactList = () => {
       </div>
       {contacts &&
         contacts.length > 0 &&
-        contacts.map((contact: Contact) => <ContactCard contact={contact} />)}
+        contacts.map((contact: Contact) => <ContactCard key={contact._id} contact={contact} />)}
     </div>
   );
 };
