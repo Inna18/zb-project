@@ -55,6 +55,11 @@ const PostList = () => {
                 <Button value='Add Post' onClick={() => handleRoute()} />
               )}
           </div>
+          <div className={styles.centered}>
+          {postList && postList.length <= 0 && (
+            <div className={styles.empty}>No Posts</div>
+          )}
+          </div>
           {postList.map((post: Post) => (
             <div className={styles['post-list']}>
               <div onClick={() => handleClick(post._id)}>

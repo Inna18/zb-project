@@ -1,7 +1,6 @@
 import { client } from '@/sanity/lib/client';
 
 export default interface Payment {
-  orderName: string;
   approvedAt: string;
   receipt: { url: string };
   totalAmount: number;
@@ -13,7 +12,6 @@ export default interface Payment {
 async function createPayment(newPayment: Payment) {
   const sanityPayment = {
     _type: 'payment',
-    orderName: newPayment.orderName,
     approvedAt: newPayment.approvedAt,
     receipt: { url: newPayment.receipt.url },
     totalAmount: newPayment.totalAmount,

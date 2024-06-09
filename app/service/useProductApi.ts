@@ -72,7 +72,9 @@ async function getShopProductList(orderBy: string, filter?: string | null) {
       name,
       _createdAt,
       "productImages": productImages[].asset->url,
+      price,
       posted,
+      rating
     }`;
   } else {
     query = `*[_type == 'product' && posted == true] | order(${orderBy} asc) {
@@ -82,7 +84,9 @@ async function getShopProductList(orderBy: string, filter?: string | null) {
       name,
       _createdAt,
       "productImages": productImages[].asset->url,
+      price,
       posted,
+      rating
     }`;
   }
   const postedProductList = await client.fetch(query);

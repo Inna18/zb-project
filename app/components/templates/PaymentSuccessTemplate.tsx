@@ -9,6 +9,7 @@ import { usePaymentCreate } from '@/app/queries/queryHooks/payment/usePayment';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useBuyListStore } from '@/app/stores/useBuyListStore';
 import { useCart } from '@/app/queries/queryHooks/cart/useCart';
+import { useOrder } from '@/app/queries/queryHooks/order/useOrder';
 import { useUserStore } from '@/app/stores/useUserStore';
 
 const PaymentSuccessTemplate = () => {
@@ -19,9 +20,10 @@ const PaymentSuccessTemplate = () => {
   const amount = useSearchParams()?.get('amount');
   const { data: payment, mutate: mutateSave, isPending } = usePaymentCreate();
   const { mutate: mutateCartEmpty } = useCart().useCartEmpty();
+  const { mutate: mutateOrderCreate } = useOrder().useOrderCreate();
   const user = useUserStore((state) => state.user);
-  const resetTotalCost = useTotalCostStore((state) => state.resetTotalCost);
-  const resetBuyList = useBuyListStore((state) => state.resetBuyList);
+  const { totalCost, resetTotalCost } = useTotalCostStore((state) => state);
+  const { buyList, resetBuyList } = useBuyListStore((state) => state);
 
   useEffect(() => {
     createPayment();
@@ -30,8 +32,15 @@ const PaymentSuccessTemplate = () => {
   useEffect(() => {
     if (paymentSuccess === true) {
       mutateCartEmpty(user._id!);
+      mutateOrderCreate({
+        userId: user._id!,
+        itemSet: buyList.map(itemSet => {return { _key: itemSet.item._id!, image: itemSet.item.productImages![0], name: itemSet.item.name!, price: itemSet.item.price!, count: itemSet.count! }}),
+        totalCost: buyList.reduce((acc, curVal) => acc + (curVal.item.price! * curVal.count), 0)
+      }
+      );
       resetTotalCost();
       resetBuyList();
+      
     }
   }, [user, paymentSuccess]);
 
@@ -94,21 +103,6 @@ const PaymentSuccessTemplate = () => {
                   </div>
                   <div className='p-grid-col text--right' id='orderId'>
                     {payment.orderId}
-                  </div>
-                </div>
-                <div
-                  className={styles['payment-desc']}
-                  style={{ margin: '10px 0' }}
-                >
-                  <div className='p-grid-col text--left'>
-                    <b>제품명: </b>
-                  </div>
-                  <div
-                    className='p-grid-col text--right'
-                    id='paymentKey'
-                    style={{ whiteSpace: 'initial', width: '250px' }}
-                  >
-                    {payment.orderName}
                   </div>
                 </div>
               </div>

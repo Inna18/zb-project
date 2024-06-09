@@ -103,7 +103,7 @@ const DetailsDescription = () => {
       open();
     }
     if (session.status === 'authenticated' && product._id && user._id) {
-      setBuyList(product);
+      setBuyList({ item: product, count: count });
       router.push(`/checkout?productId=${product._id}&count=${count}&type=buy`);
     }
   };

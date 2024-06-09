@@ -14,6 +14,11 @@ const ContactList = () => {
       <div className={styles.title}>
         <span>Contact Inquiries</span>
       </div>
+      <div className={styles.centered}>
+        {contacts && contacts.length <= 0 && (
+          <div className={styles.empty}>No Inquiries</div> 
+        )}
+      </div>
       {contacts &&
         contacts.length > 0 &&
         contacts.map((contact: Contact) => <ContactCard contact={contact} />)}

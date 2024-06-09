@@ -3,7 +3,6 @@ export default {
   title: 'Payment',
   type: 'document',
   fields: [
-    { name: 'orderName', title: 'Order Name', type: 'string' },
     { name: 'approvedAt', title: 'Approved At', type: 'string' },
     {
       name: 'receipt',

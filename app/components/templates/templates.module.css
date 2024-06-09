@@ -145,7 +145,7 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .shop-list .empty {
-  grid-column-end: span 5;
+  grid-column-end: span 10;
 }
 
 /* product details */

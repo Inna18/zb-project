@@ -29,7 +29,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const substructFromTotalCost = useTotalCostStore(
     (state) => state.substructFromTotalCost
   );
-  const { setBuyList, addToBuyList, resetBuyList } = useBuyListStore(
+  const { buyList, setBuyList, addToBuyList, removeFromBuyList } = useBuyListStore(
     (state) => state
   );
   const { productId, count, idx } = cartProductProps;
@@ -43,12 +43,14 @@ const CartProduct = (cartProductProps: CartProductProps) => {
     isLoading || pendingCartDelete || pendingQuantityUpdate;
 
   useEffect(() => {
-    resetBuyList();
-  }, []);
-
-  useEffect(() => {
-    if (product) addToBuyList(product);
-  }, [product]);
+    if (product) {
+      if (buyList.filter(itemSet => itemSet.item._id === product._id).length <= 0) addToBuyList({ item: product, count: count });
+      if (buyList.filter(itemSet => itemSet.item._id === product._id).length > 0) {
+        removeFromBuyList(product);
+        addToBuyList({ item: product, count: count })
+      }
+    }
+  }, [product, count]);
 
   const handleDelete = () => {
     if (user._id) {
@@ -65,6 +67,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
               { id: productId, quantity: product.quantity + count }
             );
             substructFromTotalCost(product.price * count);
+            removeFromBuyList(product);
           },
         }
       );
@@ -73,7 +76,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   const handleRoute = () => {
     if (user._id) {
-      setBuyList(product);
+      setBuyList({ item: product, count: count });
       router.push(`/checkout?productId=${productId}&count=${count}&type=cart`);
     }
   };
@@ -91,6 +94,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
                 alt={''}
                 width={70}
                 height={70}
+                style={{objectFit: 'cover'}}
               />
             ) : (
               <div>No Image</div>

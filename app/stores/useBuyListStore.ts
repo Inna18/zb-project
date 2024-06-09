@@ -3,11 +3,12 @@ import { devtools, persist } from 'zustand/middleware';
 import Product from '@/app/service/useProductApi.ts';
 
 interface State {
-  buyList: Product[];
+  buyList: { item: Product, count: number }[];
 }
 interface Action {
-  setBuyList: (items: Product) => void;
-  addToBuyList: (item: Product) => void;
+  setBuyList: (itemSet: {item: Product, count: number}) => void;
+  addToBuyList: (itemSet: {item: Product, count: number}) => void;
+  removeFromBuyList: (item: Product) => void;
   resetBuyList: () => void;
 }
 
@@ -16,9 +17,11 @@ export const useBuyListStore = create<State & Action>()(
     persist(
       (set) => ({
         buyList: [],
-        setBuyList: (items) => set(() => ({ buyList: [items] })),
-        addToBuyList: (item) =>
-          set((state) => ({ buyList: [...state.buyList, item] })),
+        setBuyList: (itemSet: {item: Product, count: number}) => set(() => ({ buyList: [itemSet] })),
+        addToBuyList: (itemSet: {item: Product, count: number}) =>
+          set((state) => ({ buyList: [...state.buyList, itemSet] })),
+        removeFromBuyList: (item) => 
+          set((state) => ({ buyList: state.buyList.filter(itemSet => itemSet.item._id !== item._id)})),
         resetBuyList: () => set({ buyList: [] }),
       }),
       { name: 'buyListStore' }

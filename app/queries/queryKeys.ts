@@ -37,3 +37,7 @@ export const CONTACT_KEYS = {
   list: () => ['contact'],
   get: (contactId: string) => ['contact', contactId],
 };
+
+export const ORDER_KEYS = {
+  list: (userId: string) => ['orders', { userId: userId}]
+}

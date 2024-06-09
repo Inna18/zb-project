@@ -14,6 +14,7 @@ import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
 import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
 
 const MENU_LIST = [
   { id: 1, value: 'home' },
@@ -28,6 +29,7 @@ const Navbar = () => {
   const router = useRouter();
   const { user, resetUser } = useUserStore((state) => state);
   const { totalCost, resetTotalCost } = useTotalCostStore((state) => state);
+  const resetBuyList = useBuyListStore((state) => state.resetBuyList);
   const { mutate: mutateUpdateCart } = useCart().useCartTotalCostSet();
 
   const [profileMenu, setProfileMenu] = useState<
@@ -100,6 +102,7 @@ const Navbar = () => {
     signOut();
     resetTotalCost(); // reset Stores
     resetUser();
+    resetBuyList();
     console.log('home');
     router.push('/home');
   };
