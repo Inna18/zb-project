@@ -104,6 +104,7 @@ async function deletePost(postId: string) {
   if (inDB) {
     const deleteResult = await client.delete(postId);
     console.log('Post delete: ', deleteResult);
+    return postId;
   } else {
     console.log('No such post');
     throw new Error('No such post');
@@ -120,6 +121,7 @@ async function deletePostImage(postId: string) {
       })
       .commit();
     console.log('Post image delete: ', deleteResult);
+    return inDB;
   } else {
     console.log('No such post');
     throw new Error('No such post');

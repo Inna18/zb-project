@@ -10,10 +10,9 @@ import starIcon from '@/public/icons/star-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
 
 import { hideInfo } from '@/app/utils/text';
-import { useCommentDeleteById } from '@/app/queries/queryHooks/comment/useCommentDeleteById';
+import { useComment } from '@/app/queries/queryHooks/comment/useComment';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useQueryClient } from '@tanstack/react-query';
 import { commonConstants } from '@/app/constants/common';
 
 const RATING_DESCRIPTION = [
@@ -33,15 +32,21 @@ interface CommentsProps {
 }
 const Comments = (commentsProps: CommentsProps) => {
   const { productId, commentsData, email } = commentsProps;
-  const queryClient = useQueryClient();
   const [starNumArr, setStarNumArr] = useState<number[][]>();
-  const { mutate: mutateDelete, isPending: pendingDelete } =
-    useCommentDeleteById();
+  const {
+    mutate: mutateDelete,
+    isPending: pendingDelete,
+    isSuccess,
+  } = useComment().useCommentDeleteById(productId);
   const { open, close, isOpen } = useModal();
 
   useEffect(() => {
     if (commentsData) _getRatingArray();
   }, [commentsData]);
+
+  useEffect(() => {
+    if (isSuccess) open();
+  }, [isSuccess]);
 
   const _getRatingArray = () => {
     let array1 = [];
@@ -64,17 +69,7 @@ const Comments = (commentsProps: CommentsProps) => {
   };
 
   const handleDelete = (commentId: string | undefined) => {
-    if (commentId) {
-      mutateDelete(commentId, {
-        onSuccess: () => {
-          open();
-          queryClient.setQueryData(
-            ['comments', { productId: productId }],
-            (old: Comment[]) => old.filter((c) => c._id !== commentId)
-          );
-        },
-      });
-    }
+    if (commentId) mutateDelete(commentId);
   };
 
   return (

@@ -9,25 +9,23 @@ import Image from 'next/image';
 import deleteIcon from '@/public/icons/delete-left-solid.svg';
 import updateIcon from '@/public/icons/pen-to-square-solid.svg';
 
-import { usePostList } from '@/app/queries/queryHooks/post/usePostList';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { usePostStore } from '@/app/stores/usePostStore';
-import { usePostCreate } from '@/app/queries/queryHooks/post/usePostCreate';
-import { usePostDelete } from '@/app/queries/queryHooks/post/usePostDelete';
-import { useQueryClient } from '@tanstack/react-query';
+import { usePost } from '@/app/queries/queryHooks/post/usePost';
+import { useSession } from 'next-auth/react';
 
 const PostList = () => {
+  const session = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const user = useUserStore((state) => state.user);
   const { post, resetPost } = usePostStore((state) => state);
-  const queryClient = useQueryClient();
-  const { data: postList, isLoading } = usePostList();
+  const { data: postList, isLoading } = usePost().usePostList();
   const { mutate: mutatePostSave, isPending: isPendingPostSave } =
-    usePostCreate();
+    usePost().usePostCreate();
   const { mutate: mutatePostDelete, isPending: isPendingPostDelete } =
-    usePostDelete();
+    usePost().usePostDelete();
   const isLoadingOrPending =
     isLoading || isPendingPostSave || isPendingPostDelete;
 
@@ -41,27 +39,10 @@ const PostList = () => {
 
   const handleRoute = (id?: string | undefined) => {
     if (id) router.push(`${pathname}/fix?postId=${id}`);
-    else {
-      mutatePostSave(
-        { ...post, createdBy: user.email },
-        {
-          onSuccess: (data) => {
-            router.push(`${pathname}/fix?postId=${data._id}`);
-          },
-        }
-      );
-    }
+    else mutatePostSave({ ...post, createdBy: user.email });
   };
 
-  const handleDelete = (id: string) => {
-    mutatePostDelete(id, {
-      onSuccess: () => {
-        queryClient.setQueryData(['posts'], (old: Post[]) =>
-          old.filter((p) => p._id !== id)
-        );
-      },
-    });
-  };
+  const handleDelete = (id: string) => mutatePostDelete(id);
 
   return (
     <>
@@ -69,12 +50,18 @@ const PostList = () => {
       {!isLoading && (
         <>
           <div className={styles['add-button']}>
-            {user.role === 'ADMIN' && (
-              <Button value='Add Post' onClick={() => handleRoute()} />
-            )}
+            {session.status === 'authenticated' &&
+              session.data.user?.role === 'ADMIN' && (
+                <Button value='Add Post' onClick={() => handleRoute()} />
+              )}
+          </div>
+          <div className={styles.centered}>
+          {postList && postList.length <= 0 && (
+            <div className={styles.empty}>No Posts</div>
+          )}
           </div>
           {postList.map((post: Post) => (
-            <div className={styles['post-list']}>
+            <div key={post._id} className={styles['post-list']}>
               <div onClick={() => handleClick(post._id)}>
                 <PostCard post={post} key={post._id} />
               </div>

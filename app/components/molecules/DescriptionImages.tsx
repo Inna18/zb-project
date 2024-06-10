@@ -35,6 +35,7 @@ const DescriptionImages = () => {
               alt={'product-img'}
               width={250}
               height={250}
+              style={{objectFit: 'contain'}}
             />
           )}
         {product.productImages &&
@@ -47,6 +48,7 @@ const DescriptionImages = () => {
                   alt={'product-img'}
                   width={100}
                   height={100}
+                  style={{objectFit: 'contain'}}
                 />
               </a>
             </span>

@@ -1,15 +1,13 @@
 import styles from './organisms.module.css';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Spinner from '@/app/components/atoms/spinner/Spinner';
 import Button from '@/app/components/atoms/button/Button';
 import OrganizationEntity from '@/app/service/useOrganizationApi';
 import Modal from '@/app/components/atoms/modal/Modal';
 import Column from '../molecules/Column';
 
-import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
-import { useOrganizationUpdate } from '@/app/queries/queryHooks/organization/useOrganizationUpdate';
-import { useQueryClient } from '@tanstack/react-query';
+import { useOrganization } from '@/app/queries/queryHooks/organization/useOrganization';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModalStore } from '@/app/stores/useModalStore';
@@ -19,8 +17,8 @@ const { ORGANIZATION_UPDATE_SUCCESS, ORGANIZATION_UPDATE_CANCEL } =
 
 const Organization = () => {
   const { modal, setModal } = useModalStore((state) => state);
-  const queryClient = useQueryClient();
-  const { isLoading, data: organization } = useOrganizationGet();
+  const { isLoading, data: organization } =
+    useOrganization().useOrganizationGet();
   const [show, setShow] = useState<string>('view');
   const [myOrganization, setMyOrganization] = useState<OrganizationEntity>({
     _id: '',
@@ -95,9 +93,19 @@ const Organization = () => {
     },
   ];
 
-  const { mutate } = useOrganizationUpdate();
-
+  const { mutate, isSuccess } = useOrganization().useOrganizationUpdate();
   const { open, close, isOpen } = useModal();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModal({
+        type: 'alert',
+        content: ORGANIZATION_UPDATE_SUCCESS,
+        onClose: handleMove,
+      });
+      open();
+    }
+  }, [isSuccess]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -126,19 +134,7 @@ const Organization = () => {
     orgProperties.map((property) => {
       check.push(property.value[0] !== '');
     });
-    if (!check.includes(false)) {
-      mutate(myOrganization, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['organization'] });
-          setModal({
-            type: 'alert',
-            content: ORGANIZATION_UPDATE_SUCCESS,
-            onClose: handleMove,
-          });
-          open();
-        },
-      });
-    }
+    if (!check.includes(false)) mutate(myOrganization);
   };
 
   const handleCheckDisabled = (name: string | undefined) => name === 'name';

@@ -6,7 +6,7 @@ import Button from '../atoms/button/Button';
 import CartProduct from '../organisms/CartProduct';
 import Spinner from '../atoms/spinner/Spinner';
 
-import { useCartGet } from '@/app/queries/queryHooks/cart/useCartGet';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useDeliveryFeeStore } from '@/app/stores/useDeliveryFeeStore';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
@@ -18,7 +18,7 @@ const CartTemplate = () => {
   const user = useUserStore((state) => state.user);
   const { totalCost, addToTotalCost } = useTotalCostStore((state) => state);
   const { deliveryFee, setDeliveryFee } = useDeliveryFeeStore((state) => state);
-  const { data: cart, isLoading } = useCartGet(user._id!);
+  const { data: cart, isLoading } = useCart().useCartGet(user._id!);
 
   useEffect(() => {
     if (cart && totalCost === 0) {
@@ -67,7 +67,7 @@ const CartTemplate = () => {
                     )
                   )
                 ) : (
-                  <div className={styles.centered}>Cart empty</div>
+                  <tr className={styles.centered}>Cart empty</tr>
                 )}
               </tbody>
             </table>

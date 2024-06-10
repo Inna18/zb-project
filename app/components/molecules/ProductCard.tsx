@@ -1,10 +1,11 @@
 import styles from './molecules.module.css';
 
 import Product from '@/app/service/useProductApi';
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import starIcon from '@/public/icons/star-solid.svg';
 import { useRouter } from 'next/navigation';
+import { numberWithCommas } from '@/app/utils/number';
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +17,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const handleShopDetails = (productId: string | undefined) => {
     if (productId) push(`/shop/details?productId=${productId}`);
   };
+
+  useEffect(() => {
+    if (product) console.log(product)
+  }, [product])
 
   return (
     <div>
@@ -33,6 +38,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 alt={'item-image'}
                 width={200}
                 height={200}
+                style={{objectFit: 'cover'}}
               />
             ))}
         </div>
@@ -42,7 +48,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div>
             <span className={styles.category}>#{product.category}</span>
           </div>
-          <div>{product.price}won</div>
+          <div>₩{numberWithCommas(product.price!)}</div>
           <div className={styles.rating}>
             <Image src={starIcon} alt={'item-image'} width={18} height={18} />
             <span>{product.rating}</span>

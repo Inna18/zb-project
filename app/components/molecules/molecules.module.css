@@ -406,3 +406,42 @@
   justify-content: center;
   margin: 50px 0;
 }
+
+/* contact form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 460px;
+  background: #fff;
+  padding: 20px;
+  border: none;
+  border-radius: 28px;
+  box-shadow: 0 0 20px rgb(36, 34, 32, 0.3);
+}
+.contact-form .title {
+  font-size: 20px;
+  margin: 30px;
+  font-weight: 500;
+}
+.contact-form .form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.contact-form .form > * {
+  margin: 10px 0;
+}
+
+/* contact-card */
+.contact-card {
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid rgb(36, 34, 32, 0.3);
+  border-radius: 4px;
+}
+.contact-card > * {
+  margin: 6px 0;
+}

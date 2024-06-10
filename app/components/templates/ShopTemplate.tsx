@@ -8,7 +8,7 @@ import Product from '@/app/service/useProductApi';
 import ProductCard from '../molecules/ProductCard';
 
 import { useSearchParams } from 'next/navigation';
-import { useShopProductList } from '@/app/queries/queryHooks/product/useShopProductList';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 
 const ShopTemplate = () => {
   const searchParams = useSearchParams()?.get('category');
@@ -16,7 +16,7 @@ const ShopTemplate = () => {
     isLoading,
     data: productList,
     refetch,
-  } = useShopProductList('name', searchParams);
+  } = useProduct().useShopProductList('name', searchParams);
 
   useEffect(() => {
     refetch();

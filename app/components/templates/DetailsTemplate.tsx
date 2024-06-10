@@ -8,7 +8,7 @@ import DetailsDescription from '../organisms/DetailsDescription';
 import About from '../organisms/About';
 import Reviews from '../organisms/Reviews';
 import DeliveryReturn from '../organisms/DeliveryReturn';
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { useSearchParams } from 'next/navigation';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { toUpper } from '@/app/utils/text';
@@ -23,7 +23,9 @@ const TABS = [
 const DetailsTemplate = () => {
   const { product, setProduct } = useProductStore((state) => state);
   const productId = useSearchParams()?.get('productId');
-  const { isLoading, data: existingProduct } = useProductGetById(productId!);
+  const { isLoading, data: existingProduct } = useProduct().useProductGetById(
+    productId!
+  );
 
   const { handleActiveTab, tabRenderer, activeTab } = useTabRenderer(TABS);
 

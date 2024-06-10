@@ -97,7 +97,6 @@ async function removeFromCart(userId: string, productId: string) {
 }
 
 async function setCartTotalCost(userId: string, cost: number) {
-  console.log(cost);
   const existingCart = await getCartByUserId(userId);
   if (existingCart) {
     const updatedCart = await client
@@ -111,10 +110,18 @@ async function setCartTotalCost(userId: string, cost: number) {
   }
 }
 
+async function emptyCart(userId: string) {
+  const deleteResult = client.delete({
+    query: `*[_type == 'cart' && userId == '${userId}'][0]`,
+  });
+  console.log('delete result: ', deleteResult);
+}
+
 export {
   getCartByUserId,
   createCart,
   addToCart,
   removeFromCart,
   setCartTotalCost,
+  emptyCart,
 };

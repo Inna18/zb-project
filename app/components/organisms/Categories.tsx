@@ -1,7 +1,7 @@
 import styles from './organisms.module.css';
 import removeIcon from '@/public/icons/minus-solid.svg';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Input from '@/app/components/atoms/input/Input';
 import Category from '@/app/service/useCategoryApi';
 import Button from '@/app/components/atoms/button/Button';
@@ -9,25 +9,24 @@ import Image from 'next/image';
 import Spinner from '../atoms/spinner/Spinner';
 import Modal from '../atoms/modal/Modal';
 
-import { useCategoryCreate } from '@/app/queries/queryHooks/category/useCategoryCreate';
-import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
-import { useCategoryDelete } from '@/app/queries/queryHooks/category/useCategoryDelete';
-import { useQueryClient } from '@tanstack/react-query';
+import { useCategory } from '@/app/queries/queryHooks/category/useCategory';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
 
 const { LIST_EMPTY } = commonConstants;
 
 const Categories = () => {
-  const queryClient = useQueryClient();
   const [category, setCategory] = useState<Category>({ name: '' });
   const [error, setError] = useState<string>('');
-  const { mutate: mutateCreate, isPending: pendingCreate } =
-    useCategoryCreate();
-  const { isLoading, data: categories } = useCategoryList();
+  const {
+    mutate: mutateCreate,
+    isPending: pendingCreate,
+    isSuccess,
+  } = useCategory().useCategoryCreate();
+  const { isLoading, data: categories } = useCategory().useCategoryList();
   const { mutate: mutateDelete, isPending: pendingDelete } =
-    useCategoryDelete();
-  const { open, close, isOpen } = useModal();
+    useCategory().useCategoryDelete();
+  const { close, isOpen } = useModal();
   const isLoadingOrPending = isLoading || pendingCreate || pendingDelete;
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,31 +34,20 @@ const Categories = () => {
     setCategory({ ...category, [name]: value });
   };
 
-  const handleAdd = () => {
-    if (category.name !== '') {
-      mutateCreate(category, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['categories'] });
-          setCategory((prevState) => {
-            return { ...prevState, name: '' };
-          });
-        },
-        onError: (e) => {
-          setError(e.message);
-          open();
-        },
+  useEffect(() => {
+    if (isSuccess) {
+      setCategory((prevState) => {
+        return { ...prevState, name: '' };
       });
     }
+  }, [isSuccess]);
+
+  const handleAdd = () => {
+    if (category.name !== '') mutateCreate(category);
   };
 
   const handleRemove = (id: string | undefined) => {
-    id
-      ? mutateDelete(id, {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
-          },
-        })
-      : null;
+    id ? mutateDelete(id) : null;
   };
 
   return (

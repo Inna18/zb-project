@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { toUpper } from '@/app/utils/text';
 import { usePageChangeListener } from '@/app/hooks/usePageChangeListener';
-import { useCategoryList } from '@/app/queries/queryHooks/category/useCategoryList';
+import { useCategory } from '@/app/queries/queryHooks/category/useCategory';
 import Dropdown from '@/app/components/atoms/dropdown/Dropdown';
 import Link from 'next/link';
 import Category from '@/app/service/useCategoryApi';
@@ -21,7 +21,7 @@ interface LinksProps {
 const Links = (linksProps: LinksProps) => {
   const pathname = usePathname();
   const { list, isMenu, openMenu, handleOpenMenu } = linksProps;
-  const { isLoading, data: categoryList } = useCategoryList();
+  const { isLoading, data: categoryList } = useCategory().useCategoryList();
   const [shopList, setShopList] = useState<{ id: number; value: string }[]>([]);
 
   useEffect(() => {

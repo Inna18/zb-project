@@ -1,7 +1,7 @@
 import styles from './organisms.module.css';
 
 import React, { useEffect, useState } from 'react';
-import { useBestProductList } from '@/app/queries/queryHooks/product/useBestProductList';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import Product from '@/app/service/useProductApi';
 import Spinner from '../atoms/spinner/Spinner';
 import Image from 'next/image';
@@ -15,7 +15,7 @@ const HomeBestItems = () => {
     isRefetching,
     data: productList,
     refetch,
-  } = useBestProductList(loadCount);
+  } = useProduct().useBestProductList(loadCount);
   const isLoadingOrRefetching = isLoading || isRefetching;
 
   useEffect(() => {

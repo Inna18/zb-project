@@ -5,10 +5,11 @@ import youtubeIcn from '@/public/icons/youtube.svg';
 import React from 'react';
 import Image from 'next/image';
 
-import { useOrganizationGet } from '@/app/queries/queryHooks/organization/useOrganizationGet';
+import { useOrganization } from '@/app/queries/queryHooks/organization/useOrganization';
 
 const Footer = () => {
-  const { isLoading, data: organization } = useOrganizationGet();
+  const { isLoading, data: organization } =
+    useOrganization().useOrganizationGet();
 
   return (
     <>

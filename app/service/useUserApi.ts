@@ -118,6 +118,7 @@ async function updateUser(id: string | undefined, updateUser: User) {
     })
     .commit();
   console.log(updatedUser);
+  return updatedUser;
 }
 
 async function deleteAllUsers() {

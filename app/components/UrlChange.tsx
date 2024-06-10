@@ -13,7 +13,7 @@ const UrlChange = () => {
     if (
       (session.data?.user?.role === 'ADMIN' ||
         session.status === 'unauthenticated') &&
-      pathname === '/cart'
+      (pathname === '/cart' || pathname === '/checkout')
     )
       router.replace('/'); // if ADMIN or GUEST - deny access to /cart
     if (

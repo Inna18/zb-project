@@ -2,7 +2,7 @@
 import styles from '@/app/components/organisms/organisms.module.css';
 import emptyUser from '@/public/icons/user-empty.svg';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Button from '@/app/components/atoms/button/Button';
 import Input from '@/app/components/atoms/input/Input';
@@ -10,13 +10,11 @@ import Spinner from '@/app/components/atoms/spinner/Spinner';
 import Modal from '@/app/components/atoms/modal/Modal';
 
 import User from '@/app/service/useUserApi';
-import { useUserByEmail } from '@/app/queries/queryHooks/user/useUserByEmail';
-import { useUserUpdate } from '@/app/queries/queryHooks/user/useUserUpdate';
+import { useUser } from '@/app/queries/queryHooks/user/useUser';
 import { useSession } from 'next-auth/react';
 import { limit } from '@/app/utils/text';
 import { passwordValidation } from '@/app/utils/validation';
 import { authConstants } from '@/app/constants/auth';
-import { useQueryClient } from '@tanstack/react-query';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
 import { useModal } from '@/app/hooks/useModal';
 import { commonConstants } from '@/app/constants/common';
@@ -28,7 +26,6 @@ const { PASSWORD_ERROR } = authConstants;
 
 const Profile = () => {
   const session = useSession();
-  const queryClient = useQueryClient();
   const { modal, setModal } = useModalStore((state) => state);
   const [show, setShow] = useState<string>('view');
   const [updatedUser, setUpdatedUser] = useState<User>({
@@ -52,9 +49,22 @@ const Profile = () => {
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const { isLoading, data: user } = useUserByEmail(session?.data?.user?.email);
-  const { mutate: mutateUpdate } = useUserUpdate();
+  const { isLoading, data: user } = useUser().useUserByEmail(
+    session?.data?.user?.email
+  );
+  const { mutate: mutateUpdate, isSuccess } = useUser().useUserUpdate();
   const { open, close, isOpen } = useModal();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setModal({
+        type: 'alert',
+        content: USER_UPDATE_SUCCESS,
+        onClose: handleMove,
+      });
+      open();
+    }
+  }, [isSuccess]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -64,7 +74,7 @@ const Profile = () => {
   };
 
   const handleUserUpdate = () => {
-    setImgName(user.profileImg);
+    if (user.profileImg) setImgName(user.profileImg);
     setShow('update');
     setUpdatedUser({ ...user, profileImg: '' });
   };
@@ -84,17 +94,7 @@ const Profile = () => {
     let valid = passwordValidation(updatedUser.password);
     setPasswordValid(valid);
     if (valid && updatedUser.name !== '') {
-      mutateUpdate(updatedUser, {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['users'] });
-          setModal({
-            type: 'alert',
-            content: USER_UPDATE_SUCCESS,
-            onClose: handleMove,
-          });
-          open();
-        },
-      });
+      mutateUpdate(updatedUser);
       setPasswordValid(true);
     } else setPasswordError(PASSWORD_ERROR);
   };
@@ -144,13 +144,15 @@ const Profile = () => {
                 )}
                 {show === 'update' && (
                   <div className={styles.space}>
-                    <Image
-                      src={user.profileImg}
-                      alt={'user-profile'}
-                      width={100}
-                      height={100}
-                    />
-                    <span>{limit(imgName, 20)}</span>
+                    {user && user.profileImg && (
+                      <Image
+                        src={user.profileImg}
+                        alt={'user-profile'}
+                        width={100}
+                        height={100}
+                      />
+                    )}
+                    {imgName && <span>{limit(imgName, 20)}</span>}
                     <Input
                       type='file'
                       id='profile-img'

@@ -1,19 +1,20 @@
 import styles from './organisms.module.css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import payIcon from '@/public/icons/money-check-dollar-solid.svg';
 import removeIcon from '@/public/icons/xmark-solid.svg';
 import Spinner from '../atoms/spinner/Spinner';
 
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { numberWithCommas } from '@/app/utils/number';
-import { useCartDelete } from '@/app/queries/queryHooks/cart/useCartDelete';
+import { useCart } from '@/app/queries/queryHooks/cart/useCart';
 import { useUserStore } from '@/app/stores/useUserStore';
 import { useQueryClient } from '@tanstack/react-query';
-import { useProductUpdateQuantity } from '@/app/queries/queryHooks/product/useProductUpdateQuantity';
 import { useRouter } from 'next/navigation';
 import { useTotalCostStore } from '@/app/stores/useTotalCostStore';
+import { useBuyListStore } from '@/app/stores/useBuyListStore';
+import { CART_KEYS } from '@/app/queries/queryKeys';
 
 interface CartProductProps {
   productId: string;
@@ -28,15 +29,28 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const substructFromTotalCost = useTotalCostStore(
     (state) => state.substructFromTotalCost
   );
+  const { buyList, setBuyList, addToBuyList, removeFromBuyList } = useBuyListStore(
+    (state) => state
+  );
   const { productId, count, idx } = cartProductProps;
-  const { data: product, isLoading } = useProductGetById(productId);
+  const { data: product, isLoading } =
+    useProduct().useProductGetById(productId);
   const { mutate: mutateCartDelete, isPending: pendingCartDelete } =
-    useCartDelete();
+    useCart().useCartDelete();
   const { mutate: mutateQuantityUpdate, isPending: pendingQuantityUpdate } =
-    useProductUpdateQuantity();
-
+    useProduct().useProductUpdateQuantity();
   const isLoadingOrPending =
     isLoading || pendingCartDelete || pendingQuantityUpdate;
+
+  useEffect(() => {
+    if (product) {
+      if (buyList.filter(itemSet => itemSet.item._id === product._id).length <= 0) addToBuyList({ item: product, count: count });
+      if (buyList.filter(itemSet => itemSet.item._id === product._id).length > 0) {
+        removeFromBuyList(product);
+        addToBuyList({ item: product, count: count })
+      }
+    }
+  }, [product, count]);
 
   const handleDelete = () => {
     if (user._id) {
@@ -47,24 +61,23 @@ const CartProduct = (cartProductProps: CartProductProps) => {
         },
         {
           onSuccess: (data) => {
-            queryClient.setQueryData(
-              ['cart', { userId: user._id }],
-              () => data
-            );
+            queryClient.setQueryData(CART_KEYS.get(user._id!), () => data);
             mutateQuantityUpdate(
               // add to product quantity again
               { id: productId, quantity: product.quantity + count }
             );
-            substructFromTotalCost(product.price);
+            substructFromTotalCost(product.price * count);
+            removeFromBuyList(product);
           },
         }
       );
     }
   };
 
-  const handleBuy = () => {
+  const handleRoute = () => {
     if (user._id) {
-      router.push(`/checkout?productId=${productId}`);
+      setBuyList({ item: product, count: count });
+      router.push(`/checkout?productId=${productId}&count=${count}&type=cart`);
     }
   };
 
@@ -81,6 +94,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
                 alt={''}
                 width={70}
                 height={70}
+                style={{objectFit: 'cover'}}
               />
             ) : (
               <div>No Image</div>
@@ -92,7 +106,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
           <td>₩{numberWithCommas(product.price * count)}</td>
           <td>
             <div className={styles.buttons}>
-              <a onClick={handleBuy}>
+              <a onClick={handleRoute}>
                 <Image src={payIcon} alt={'pay-icon'} width={20} height={20} />
               </a>
               <a onClick={handleDelete}>

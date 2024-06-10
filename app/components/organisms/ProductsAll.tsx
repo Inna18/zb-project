@@ -9,7 +9,7 @@ import Spinner from '../atoms/spinner/Spinner';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
 import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
-import { useProductCreate } from '@/app/queries/queryHooks/product/useProductCreate';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 
 const ProductsAll = () => {
   const { product, resetProduct } = useProductStore((state) => state);
@@ -18,7 +18,8 @@ const ProductsAll = () => {
     (state) => state.resetCancelCount
   );
 
-  const { mutate: mutateCreate, isPending: pendingCreate } = useProductCreate();
+  const { mutate: mutateCreate, isPending: pendingCreate } =
+    useProduct().useProductCreate();
 
   const [subMenu, setSubMenu] = useState<string>('list');
   const [formType, setFormType] = useState<string>('');

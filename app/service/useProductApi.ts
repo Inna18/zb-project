@@ -72,7 +72,9 @@ async function getShopProductList(orderBy: string, filter?: string | null) {
       name,
       _createdAt,
       "productImages": productImages[].asset->url,
+      price,
       posted,
+      rating
     }`;
   } else {
     query = `*[_type == 'product' && posted == true] | order(${orderBy} asc) {
@@ -82,7 +84,9 @@ async function getShopProductList(orderBy: string, filter?: string | null) {
       name,
       _createdAt,
       "productImages": productImages[].asset->url,
+      price,
       posted,
+      rating
     }`;
   }
   const postedProductList = await client.fetch(query);
@@ -239,6 +243,7 @@ async function deleteProductImages(id: string, numToDelete: number) {
   }
   const updatedImages = await client.patch(id).unset(imagesToRemove).commit();
   console.log(updatedImages);
+  return updatedImages;
 }
 
 async function getProductImages(id: string | undefined) {
@@ -263,6 +268,7 @@ async function deleteProductById(id: string) {
     const productDeleted = await client.delete(id);
     await deleteAllCommentsByProductId(id);
     console.log(productDeleted);
+    return id;
   } else {
     console.log('No such Product');
     throw new Error('No such Product');

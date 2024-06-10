@@ -11,20 +11,15 @@ import ProductForm from '../molecules/ProductForm';
 
 import { Schema } from '@sanity/schema';
 import { toHTML } from '@portabletext/to-html';
-import { useProductUpdate } from '@/app/queries/queryHooks/product/useProductUpdate';
-import { useProductGetById } from '@/app/queries/queryHooks/product/useProductGetById';
-import { useProductDeleteImgs } from '@/app/queries/queryHooks/product/useProductDeleteImgs';
-import { useQueryClient } from '@tanstack/react-query';
+import { useProduct } from '@/app/queries/queryHooks/product/useProduct';
 import { htmlToBlocks } from '@sanity/block-tools';
 import { useModal } from '@/app/hooks/useModal';
 import { modalMsgConstants } from '@/app/constants/modalMsg';
-import { useProductDeleteById } from '@/app/queries/queryHooks/product/useProductDeleteById';
 import { useProductStore } from '@/app/stores/useProductStore';
 import { useProductIdStore } from '@/app/stores/useProductIdStore';
 import { useImgCancelCountStore } from '@/app/stores/useImgCancelCountStore';
 import { useImgLimitCountStore } from '@/app/stores/useImgLimitCountStore';
 import { useModalStore } from '@/app/stores/useModalStore';
-import { useProductUpdateImages } from '@/app/queries/queryHooks/product/useProductUpdateImages';
 
 interface ProductsProps {
   renderSubMenu: (subMenu: string, id: string) => void;
@@ -47,17 +42,21 @@ const Products = (productProps: ProductsProps) => {
   );
   const { modal, setModal } = useModalStore((state) => state);
 
-  const queryClient = useQueryClient();
   const { renderSubMenu, formType } = productProps;
-  const { mutate: mutateProductUpdate, isPending: pendingProductUpdate } =
-    useProductUpdate();
-  const { data: updatedImages } = useProductUpdateImages();
-  const { mutate: mutateProductDelete, isPending: pendingProductDelete } =
-    useProductDeleteById();
+  const {
+    mutate: mutateProductUpdate,
+    isPending: pendingProductUpdate,
+    isSuccess: isProductUpdateSuccess,
+  } = useProduct().useProductUpdate();
+  const {
+    mutate: mutateProductDelete,
+    isPending: pendingProductDelete,
+    isSuccess: isProductDeleteSuccess,
+  } = useProduct().useProductDeleteById();
   const { mutate: mutateImgsDelete, isPending: pendingImgsDelete } =
-    useProductDeleteImgs();
+    useProduct().useProductDeleteImgs();
   const { isLoading: isLoadingProduct, data: existingProduct } =
-    useProductGetById(productId);
+    useProduct().useProductGetById(productId);
 
   const isLoadingOrPending =
     isLoadingProduct ||
@@ -66,6 +65,24 @@ const Products = (productProps: ProductsProps) => {
     pendingImgsDelete;
   const [emptyName, setEmptyName] = useState<boolean>(false);
   const { open, close, isOpen } = useModal();
+
+  useEffect(() => {
+    if (isProductUpdateSuccess) {
+      let content =
+        formType === 'create' ? PRODUCT_CREATE_SUCCESS : PRODUCT_UPDATE_SUCCESS;
+
+      setModal({
+        type: 'alert',
+        content: content,
+        onClose: routeBack,
+      });
+      open();
+    }
+  }, [isProductUpdateSuccess]);
+
+  useEffect(() => {
+    if (isProductDeleteSuccess) renderSubMenu('list', '');
+  }, [isProductDeleteSuccess]);
 
   useEffect(() => {
     // move data from db to product object
@@ -89,25 +106,8 @@ const Products = (productProps: ProductsProps) => {
   };
 
   const handleSave = () => {
-    let content =
-      formType === 'create' ? PRODUCT_CREATE_SUCCESS : PRODUCT_UPDATE_SUCCESS;
     if (product.name === '') setEmptyName(true);
-    else {
-      mutateProductUpdate(
-        { id: productId, product: product },
-        {
-          onSuccess: () => {
-            queryClient.refetchQueries({ queryKey: ['products'] });
-            setModal({
-              type: 'alert',
-              content: content,
-              onClose: routeBack,
-            });
-            open();
-          },
-        }
-      );
-    }
+    else mutateProductUpdate({ id: productId, product: product });
   };
 
   const handleCancel = () => {
@@ -129,20 +129,11 @@ const Products = (productProps: ProductsProps) => {
     close();
     if (formType === 'create') {
       // if create new -> cancel -> delete whole product
-      mutateProductDelete(productId, {
-        onSuccess: () => renderSubMenu('list', ''),
-      });
+      mutateProductDelete(productId);
     } else {
       // if update product -> cancel -> delete attached images
-      if (imgCancelCount > 0) {
-        mutateImgsDelete(
-          { id: productId, numToDelete: imgCancelCount },
-          {
-            onSuccess: () =>
-              setProduct({ ...product, productImages: updatedImages }),
-          }
-        );
-      }
+      if (imgCancelCount > 0)
+        mutateImgsDelete({ id: productId, numToDelete: imgCancelCount });
       renderSubMenu('list', '');
     }
   };
