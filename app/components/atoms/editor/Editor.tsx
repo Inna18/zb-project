@@ -6,7 +6,7 @@ import Highlight from '@tiptap/extension-highlight';
 import TextAlign from '@tiptap/extension-text-align';
 import StarterKit from '@tiptap/starter-kit';
 
-const MenuBar = ({ editor }) => {
+const MenuBar = ({ editor }: any) => {
   if (!editor) {
     return null;
   }

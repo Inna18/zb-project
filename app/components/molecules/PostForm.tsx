@@ -123,7 +123,6 @@ const PostForm = () => {
             </div>
             <div>
               <textarea
-                name='content'
                 id=''
                 rows='14'
                 cols='100'

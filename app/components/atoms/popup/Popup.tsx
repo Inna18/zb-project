@@ -63,7 +63,6 @@ const Popup = (popupProps: PopupProps) => {
                   />
                 </div>
                 <textarea
-                  name=''
                   id=''
                   rows='14'
                   cols='36'

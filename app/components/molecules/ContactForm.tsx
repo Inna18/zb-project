@@ -73,7 +73,6 @@ const ContactForm = () => {
             changeFunc={handleInput}
           />
           <textarea
-            name='message'
             id=''
             rows='14'
             cols='36'
