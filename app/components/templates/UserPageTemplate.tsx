@@ -9,7 +9,7 @@ import Organization from '@/app/components/organisms/Organization';
 import Categories from '@/app/components/organisms/Categories';
 import ProductsAll from '../organisms/ProductsAll';
 import PolicyList from '../organisms/PolicyList';
-import withAuth from '@/app/components/withAuth';
+import WithAuth from '@/app/components/WithAuth';
 
 import { toUpper } from '@/app/utils/text';
 import { useSession } from 'next-auth/react';
@@ -64,4 +64,4 @@ const UserPageTemplate = () => {
   );
 };
 
-export default withAuth(UserPageTemplate);
+export default WithAuth(UserPageTemplate);
