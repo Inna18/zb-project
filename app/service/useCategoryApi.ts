@@ -56,9 +56,9 @@ async function createCategory(category: Category) {
 }
 
 async function deleteCategory(id: string | undefined) {
-  const inDB = await getCategoryById(id);
+  const inDB = await getCategoryById(id!);
   if (inDB) {
-    const categoryDeleted = await client.delete(id);
+    const categoryDeleted = await client.delete(id!);
     console.log('Category deleted');
   } else {
     console.log('No Such Category');

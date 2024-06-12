@@ -13,9 +13,9 @@ export const useCart = () => {
   const useCartCreate = () => {
     return useMutation({
       mutationFn: async (
-        userId: string,
-        productCountSet: { productId: string; count: number }
-      ) => await createCart(userId, productCountSet),
+        cartObj: {userId: string,
+        productCountSet: { productId: string; count: number }}
+      ) => await createCart(cartObj.userId, cartObj.productCountSet),
     });
   };
 

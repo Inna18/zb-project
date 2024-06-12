@@ -105,7 +105,7 @@ const PaymentTemplate = () => {
                   // @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
                   await paymentWidget?.requestPayment({
                     orderId: nanoid(),
-                    orderName: `${buyList[0].name} ${buyList.length > 1 ? `외${buyList.length - 1}건` : ''} `,
+                    orderName: ``,
                     customerName: `${user.name}`,
                     customerEmail: `${user.email}`,
                     customerMobilePhone: `${user.phoneNumber?.replaceAll('-', '')}`,

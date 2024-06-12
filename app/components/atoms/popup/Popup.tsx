@@ -64,8 +64,8 @@ const Popup = (popupProps: PopupProps) => {
                 </div>
                 <textarea
                   id=''
-                  rows='14'
-                  cols='36'
+                  rows={14}
+                  cols={36}
                   name='content'
                   onChange={handleInputChange}
                 ></textarea>

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import Product from '@/app/service/useProductApi.ts';
+import Product from '@/app/service/useProductApi';
 
 interface State {
   buyList: { item: Product, count: number }[];
