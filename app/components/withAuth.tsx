@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 const authRoutes = ['/myPage', '/cart', '/logout'];
 const noAuthRoutes = ['/login', '/signup'];
 
-export default function WithAuth(Component: React.ElementType) {
+export default function withAuth(Component: React.ElementType) {
   return function WithAuth(props: any) {
     const router = useRouter();
     const session = useSession();
