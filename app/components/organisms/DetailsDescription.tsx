@@ -128,7 +128,7 @@ const DetailsDescription = () => {
               ₩{numberWithCommas(product.price!)}
             </div>
           </div>
-          {session.data?.user?.role !== 'ADMIN' && (
+          {user.role !== 'ADMIN' && (
             <>
               <div className={styles['count-section']}>
                 {product.quantity! <= 0 ? (

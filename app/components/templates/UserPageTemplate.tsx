@@ -12,18 +12,21 @@ import PolicyList from '../organisms/PolicyList';
 import WithAuth from '@/app/components/withAuth';
 
 import { toUpper } from '@/app/utils/text';
-import { useSession } from 'next-auth/react';
 import { useTabRenderer } from '@/app/hooks/useTabRenderer';
+import { useUserStore } from '@/app/stores/useUserStore';
 
 const UserPageTemplate = () => {
-  const session = useSession();
+  const user = useUserStore((state) => state.user);
   const [list, setList] = useState<
     { id: number; value: string; component: React.JSX.Element }[]
   >([]);
   const { handleActiveTab, tabRenderer, activeTab } = useTabRenderer(list);
 
+  useEffect(() => {
+    handleCurrentUser();
+  }, [])
+
   const handleCurrentUser = async () => {
-    const user = session.data?.user;
     if (user && user.role === 'ADMIN')
       setList([
         { id: 1, value: 'profile', component: <Profile /> },
@@ -39,10 +42,6 @@ const UserPageTemplate = () => {
       ]);
     }
   };
-
-  useEffect(() => {
-    handleCurrentUser();
-  }, [session]);
 
   return (
     <div className={styles.container}>

@@ -47,30 +47,38 @@ const Navbar = () => {
   }, [changed]);
 
   useEffect(() => {
-    console.log('sessionInfo: ', session);
+    console.log('sessionInfo: ', session.status);
+    if (session.status === 'loading') {
+      setProfileMenu([
+        { id: 1, value: 'login' },
+        { id: 2, value: 'signup' },
+      ]);
+    } 
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
-      if (session.data.user?.role === 'ADMIN') {
+      if (user.role === 'ADMIN') {
         setProfileMenu([
           { id: 1, value: 'logout' },
           { id: 2, value: 'myPage' },
         ]);
       }
-      if (session.data.user?.role === 'USER') {
+      if (user.role === 'USER') {
         setProfileMenu([
           { id: 1, value: 'logout' },
           { id: 2, value: 'myPage' },
           { id: 3, value: 'cart' },
         ]);
       }
-    } else {
+    } 
+    if (session.status === 'unauthenticated') {
+      resetUser();
       setUsername('Guest');
       setProfileMenu([
         { id: 1, value: 'login' },
         { id: 2, value: 'signup' },
       ]);
     }
-  }, [session]);
+  }, [session.status]);
 
   const handleOpenMenu = (e: boolean) => {
     setOpenMenu(e);
@@ -130,7 +138,7 @@ const Navbar = () => {
         {openUser && (
           <div className={styles['dropdown-section']}>
             <Dropdown
-              key={'user'}
+              key={session.status}
               list={profileMenu}
               open={openUser}
               handleClose={handleOpenUser}
