@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useUserStore } from '../stores/useUserStore';
 
 const UrlChange = () => {
+  const user = useUserStore((state) => state.user);
   const router = useRouter();
   const pathname = usePathname();
   const session = useSession();
@@ -11,7 +13,7 @@ const UrlChange = () => {
     console.log(`The page is now: ${pathname}`);
 
     if (
-      (session.data?.user?.role === 'ADMIN' ||
+      (user.role === 'ADMIN' ||
         session.status === 'unauthenticated') &&
       (pathname === '/cart' || pathname === '/checkout')
     )

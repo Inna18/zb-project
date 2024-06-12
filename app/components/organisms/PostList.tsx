@@ -51,7 +51,7 @@ const PostList = () => {
         <>
           <div className={styles['add-button']}>
             {session.status === 'authenticated' &&
-              session.data.user?.role === 'ADMIN' && (
+              user.role === 'ADMIN' && (
                 <Button value='Add Post' onClick={() => handleRoute()} />
               )}
           </div>
