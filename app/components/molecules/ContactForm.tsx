@@ -74,8 +74,8 @@ const ContactForm = () => {
           />
           <textarea
             id=''
-            rows='14'
-            cols='36'
+            rows={14}
+            cols={36}
             name='message'
             maxLength={100}
             value={contact.message}

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PaymentTemplate from '@/app/components/templates/PaymentTemplate';
 
 const Payment = () => {
   return (
     <div>
-      <PaymentTemplate />
+      <Suspense>
+        <PaymentTemplate />
+      </Suspense>
     </div>
   );
 };

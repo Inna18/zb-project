@@ -8,7 +8,7 @@ export default interface User {
   role?: string;
   address?: string;
   phoneNumber?: string;
-  profileImg?: string;
+  profileImg?: string | File | any;
 }
 
 const BASE_QUERY = `*[_type == 'user']{

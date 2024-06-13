@@ -1,10 +1,12 @@
 import ShopTemplate from '@/app/components/templates/ShopTemplate';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 const Shop = () => {
   return (
     <div>
-      <ShopTemplate />
+      <Suspense>
+        <ShopTemplate />
+      </Suspense>
     </div>
   );
 };

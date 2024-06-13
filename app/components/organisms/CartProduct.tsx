@@ -29,9 +29,8 @@ const CartProduct = (cartProductProps: CartProductProps) => {
   const substructFromTotalCost = useTotalCostStore(
     (state) => state.substructFromTotalCost
   );
-  const { buyList, setBuyList, addToBuyList, removeFromBuyList } = useBuyListStore(
-    (state) => state
-  );
+  const { buyList, setBuyList, addToBuyList, removeFromBuyList } =
+    useBuyListStore((state) => state);
   const { productId, count, idx } = cartProductProps;
   const { data: product, isLoading } =
     useProduct().useProductGetById(productId);
@@ -44,10 +43,16 @@ const CartProduct = (cartProductProps: CartProductProps) => {
 
   useEffect(() => {
     if (product) {
-      if (buyList.filter(itemSet => itemSet.item._id === product._id).length <= 0) addToBuyList({ item: product, count: count });
-      if (buyList.filter(itemSet => itemSet.item._id === product._id).length > 0) {
+      if (
+        buyList.filter((itemSet) => itemSet.item._id === product._id).length <=
+        0
+      )
+        addToBuyList({ item: product, count: count });
+      if (
+        buyList.filter((itemSet) => itemSet.item._id === product._id).length > 0
+      ) {
         removeFromBuyList(product);
-        addToBuyList({ item: product, count: count })
+        addToBuyList({ item: product, count: count });
       }
     }
   }, [product, count]);
@@ -94,7 +99,7 @@ const CartProduct = (cartProductProps: CartProductProps) => {
                 alt={''}
                 width={70}
                 height={70}
-                style={{objectFit: 'cover'}}
+                style={{ objectFit: 'cover' }}
               />
             ) : (
               <div>No Image</div>

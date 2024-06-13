@@ -1,12 +1,8 @@
-import DetailsTemplate from '@/app/components/templates/DetailsTemplate';
-import React from 'react';
+import dynamic from 'next/dynamic';
 
-const Details = () => {
-  return (
-    <div>
-      <DetailsTemplate />
-    </div>
-  );
-};
+const Details = dynamic(
+  () => import('@/app/components/templates/DetailsTemplate'),
+  { ssr: false }
+);
 
 export default Details;

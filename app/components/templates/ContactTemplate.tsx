@@ -13,11 +13,13 @@ const ContactTemplate = () => {
 
   return (
     <div className={styles['contact-container']}>
-      {session.status === 'authenticated' &&
-        user.role === 'ADMIN' && <ContactList />}
+      {session.status === 'authenticated' && user.role === 'ADMIN' && (
+        <ContactList />
+      )}
       {(session.status === 'unauthenticated' ||
-        (session.status === 'authenticated' &&
-          user.role === 'USER')) && <ContactForm />}
+        (session.status === 'authenticated' && user.role === 'USER')) && (
+        <ContactForm />
+      )}
     </div>
   );
 };

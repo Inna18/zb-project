@@ -39,5 +39,5 @@ export const CONTACT_KEYS = {
 };
 
 export const ORDER_KEYS = {
-  list: (userId: string) => ['orders', { userId: userId}]
-}
+  list: (userId: string) => ['orders', { userId: userId }],
+};
