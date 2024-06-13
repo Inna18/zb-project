@@ -1,3 +1,4 @@
+'use client';
 import styles from '@/app/components/atoms/atoms.module.css';
 
 import React, { useEffect, useRef } from 'react';
@@ -17,8 +18,13 @@ interface ModalProps {
 const Modal = (modalProps: ModalProps) => {
   const { selector, show, type, content, onOk, onClose } = modalProps;
 
+  useEffect(() => {
+    if (typeof document !== undefined) {
+      portalRef.current = document.getElementById(selector);
+    }
+  }, []);
+
   const portalRef = useRef<Element | null>(null);
-  portalRef.current = document.getElementById(selector);
 
   return show && portalRef.current
     ? createPortal(

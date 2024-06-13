@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import User, { USER_KEYS } from '@/app/queries/queryKeys';
-import {
+import { USER_KEYS } from '@/app/queries/queryKeys';
+import User, {
   getUserByEmail,
   createUser,
   updateUser,

@@ -124,8 +124,8 @@ const PostForm = () => {
             <div>
               <textarea
                 id=''
-                rows='14'
-                cols='100'
+                rows={14}
+                cols={100}
                 name='content'
                 value={post.content}
                 placeholder={'Insert post content'}

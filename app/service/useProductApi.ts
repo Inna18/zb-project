@@ -113,13 +113,13 @@ async function getBestProductList(count: number) {
 
 async function createProduct(product: Product) {
   product.productImages = [];
-  let productImages: SanityImageAssetDocument[] = [];
-  if (product.productImages) {
-    const promises = product.productImages.map(async (productImage: string) => {
-      return await client.assets.upload('image', productImage);
-    });
-    productImages = await Promise.all(promises);
-  }
+  // let productImages: SanityImageAssetDocument[] = [];
+  // if (product.productImages) {
+  //   const promises = product.productImages.map(async (productImage: string) => {
+  //     return await client.assets.upload('image', productImage);
+  //   });
+  //   productImages = await Promise.all(promises);
+  // }
 
   const sanityProduct = {
     _type: 'product',
@@ -130,18 +130,18 @@ async function createProduct(product: Product) {
     quantity: product.quantity,
     rating: product.rating,
     content: product.content,
-    productImages: productImages
-      ? productImages.map((productImage) => {
-          return {
-            _key: productImage?._id,
-            _type: 'image',
-            asset: {
-              _type: 'reference',
-              _ref: productImage?._id,
-            },
-          };
-        })
-      : null,
+    productImages: product.productImages,
+    // ? productImages.map((productImage) => {
+    //     return {
+    //       _key: productImage?._id,
+    //       _type: 'image',
+    //       asset: {
+    //         _type: 'reference',
+    //         _ref: productImage?._id,
+    //       },
+    //     };
+    //   })
+    // : null,
     posted: false,
   };
   const productCreated = await client.create(sanityProduct);

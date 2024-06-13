@@ -9,7 +9,7 @@ import HomeBestItems from '../organisms/HomeBestItems';
 
 const HomeTemplate = () => {
   useEffect(() => {
-    window.scrollTo(10, 10);
+    if (typeof window !== undefined) window.scrollTo(10, 10);
   }, []);
 
   return (

@@ -1,10 +1,12 @@
 import { client } from '@/sanity/lib/client';
+import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { StaticImageData } from 'next/image';
 
 export default interface Post {
   _id: string;
   title: string;
   content: string;
-  postImage?: string | File;
+  postImage?: string | File | any;
   createdBy: string;
   _createdAt?: string;
 }

@@ -24,7 +24,7 @@ const themeModeReducer = (
   }
 };
 
-export const ThemeModeProvider = ({ children }) => {
+export const ThemeModeProvider = ({ children }: any) => {
   const [state, dispatch] = useReducer(themeModeReducer, {
     mode: 'light',
   });
@@ -34,7 +34,7 @@ export const ThemeModeProvider = ({ children }) => {
   };
 
   return (
-    <ThemeModeContext.Provider value={{ ...state, changeMode }}>
+    <ThemeModeContext.Provider value={{ mode: 'light', changeMode }}>
       {children}
     </ThemeModeContext.Provider>
   );

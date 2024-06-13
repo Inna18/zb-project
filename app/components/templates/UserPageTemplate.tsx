@@ -24,7 +24,7 @@ const UserPageTemplate = () => {
 
   useEffect(() => {
     handleCurrentUser();
-  }, [])
+  }, []);
 
   const handleCurrentUser = async () => {
     if (user && user.role === 'ADMIN')
