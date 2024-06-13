@@ -53,7 +53,7 @@ const Navbar = () => {
         { id: 1, value: 'login' },
         { id: 2, value: 'signup' },
       ]);
-    } 
+    }
     if (session.status === 'authenticated') {
       setUsername(session.data.user?.name);
       if (user.role === 'ADMIN') {
@@ -69,7 +69,7 @@ const Navbar = () => {
           { id: 3, value: 'cart' },
         ]);
       }
-    } 
+    }
     if (session.status === 'unauthenticated') {
       resetUser();
       setUsername('Guest');

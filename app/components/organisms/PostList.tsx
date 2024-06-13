@@ -50,15 +50,14 @@ const PostList = () => {
       {!isLoading && (
         <>
           <div className={styles['add-button']}>
-            {session.status === 'authenticated' &&
-              user.role === 'ADMIN' && (
-                <Button value='Add Post' onClick={() => handleRoute()} />
-              )}
+            {session.status === 'authenticated' && user.role === 'ADMIN' && (
+              <Button value='Add Post' onClick={() => handleRoute()} />
+            )}
           </div>
           <div className={styles.centered}>
-          {postList && postList.length <= 0 && (
-            <div className={styles.empty}>No Posts</div>
-          )}
+            {postList && postList.length <= 0 && (
+              <div className={styles.empty}>No Posts</div>
+            )}
           </div>
           {postList.map((post: Post) => (
             <div key={post._id} className={styles['post-list']}>

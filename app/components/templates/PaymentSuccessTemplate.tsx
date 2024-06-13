@@ -34,13 +34,22 @@ const PaymentSuccessTemplate = () => {
       mutateCartEmpty(user._id!);
       mutateOrderCreate({
         userId: user._id!,
-        itemSet: buyList.map(itemSet => {return { _key: itemSet.item._id!, image: itemSet.item.productImages![0], name: itemSet.item.name!, price: itemSet.item.price!, count: itemSet.count! }}),
-        totalCost: buyList.reduce((acc, curVal) => acc + (curVal.item.price! * curVal.count), 0)
-      }
-      );
+        itemSet: buyList.map((itemSet) => {
+          return {
+            _key: itemSet.item._id!,
+            image: itemSet.item.productImages![0],
+            name: itemSet.item.name!,
+            price: itemSet.item.price!,
+            count: itemSet.count!,
+          };
+        }),
+        totalCost: buyList.reduce(
+          (acc, curVal) => acc + curVal.item.price! * curVal.count,
+          0
+        ),
+      });
       resetTotalCost();
       resetBuyList();
-      
     }
   }, [user, paymentSuccess]);
 

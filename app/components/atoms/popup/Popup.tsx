@@ -1,3 +1,4 @@
+'use client';
 import styles from '@/app/components/atoms/atoms.module.css';
 
 import React, { useEffect, useRef, useState } from 'react';

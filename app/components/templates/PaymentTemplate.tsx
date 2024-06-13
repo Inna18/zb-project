@@ -100,21 +100,23 @@ const PaymentTemplate = () => {
               style={{ marginTop: '30px' }}
               disabled={!paymentMethodsWidgetReady}
               onClick={async () => {
-                try {
-                  // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-                  // @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
-                  await paymentWidget?.requestPayment({
-                    orderId: nanoid(),
-                    orderName: ``,
-                    customerName: `${user.name}`,
-                    customerEmail: `${user.email}`,
-                    customerMobilePhone: `${user.phoneNumber?.replaceAll('-', '')}`,
-                    successUrl: `${window.location.origin}/payment/success`,
-                    failUrl: `${window.location.origin}/payment/fail`,
-                  });
-                } catch (error) {
-                  // 에러 처리하기
-                  console.error(error);
+                if (typeof window !== undefined) {
+                  try {
+                    // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
+                    // @docs https://docs.tosspayments.com/reference/widget-sdk#requestpayment결제-정보
+                    await paymentWidget?.requestPayment({
+                      orderId: nanoid(),
+                      orderName: `product`,
+                      customerName: `${user.name}`,
+                      customerEmail: `${user.email}`,
+                      customerMobilePhone: `${user.phoneNumber?.replaceAll('-', '')}`,
+                      successUrl: `${window.location.origin}/payment/success`,
+                      failUrl: `${window.location.origin}/payment/fail`,
+                    });
+                  } catch (error) {
+                    // 에러 처리하기
+                    console.error(error);
+                  }
                 }
               }}
             />

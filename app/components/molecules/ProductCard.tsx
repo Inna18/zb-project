@@ -19,8 +19,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   useEffect(() => {
-    if (product) console.log(product)
-  }, [product])
+    if (product) console.log(product);
+  }, [product]);
 
   return (
     <div>
@@ -38,7 +38,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 alt={'item-image'}
                 width={200}
                 height={200}
-                style={{objectFit: 'cover'}}
+                style={{ objectFit: 'cover' }}
               />
             ))}
         </div>

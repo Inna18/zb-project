@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import PostForm from '../molecules/PostForm';
 
 const BlogFixTemplate = () => {
   return (
     <div>
-      <PostForm />
+      <Suspense>
+        <PostForm />
+      </Suspense>
     </div>
   );
 };

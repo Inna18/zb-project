@@ -131,17 +131,17 @@ async function createProduct(product: Product) {
     rating: product.rating,
     content: product.content,
     productImages: product.productImages,
-      // ? productImages.map((productImage) => {
-      //     return {
-      //       _key: productImage?._id,
-      //       _type: 'image',
-      //       asset: {
-      //         _type: 'reference',
-      //         _ref: productImage?._id,
-      //       },
-      //     };
-      //   })
-      // : null,
+    // ? productImages.map((productImage) => {
+    //     return {
+    //       _key: productImage?._id,
+    //       _type: 'image',
+    //       asset: {
+    //         _type: 'reference',
+    //         _ref: productImage?._id,
+    //       },
+    //     };
+    //   })
+    // : null,
     posted: false,
   };
   const productCreated = await client.create(sanityProduct);

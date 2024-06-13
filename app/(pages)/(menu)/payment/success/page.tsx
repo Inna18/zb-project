@@ -1,10 +1,12 @@
 import PaymentSuccessTemplate from '@/app/components/templates/PaymentSuccessTemplate';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 const page = () => {
   return (
     <div>
-      <PaymentSuccessTemplate />
+      <Suspense>
+        <PaymentSuccessTemplate />
+      </Suspense>
     </div>
   );
 };

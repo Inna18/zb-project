@@ -23,6 +23,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     post,
     contact,
     payment,
-    order
+    order,
   ],
 };
