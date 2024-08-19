@@ -191,6 +191,52 @@
   text-underline-offset: 4px;
 }
 
+@media screen and (max-width: 430px) {
+  .navbar {
+    position: relative;
+    height: 50px;
+    padding: 0;
+  }
+  .navbar .links div {
+    width: 100px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #f5efeb;
+    border: 1px solid #f5efeb;
+    border-bottom-right-radius: 4px;
+    padding: 20px;
+    z-index: 100;
+  }
+  .navbar .links div span {
+    padding: 4px 0;
+  }
+  .navbar .home-icon {
+    padding: 20px;
+  }
+  .navbar .profile {
+    display: block;
+    top: 6px;
+    padding: 20px;
+    align-items: center;
+    justify-content: end;
+  }
+  .navbar .profile > * {
+    display: flex;
+    margin: 0;
+    justify-content: end;
+  }
+  .profile div {
+    margin-right: 4px;
+  }
+  .profile a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
 /* footer */
 .footer {
   font-size: 10px;
