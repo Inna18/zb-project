@@ -78,7 +78,7 @@ const Navbar = () => {
         { id: 2, value: 'signup' },
       ]);
     }
-  }, [session.status]);
+  }, [session.status, user.role]);
 
   const handleOpenMenu = (e: boolean) => {
     setOpenMenu(e);
@@ -117,12 +117,12 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar} onMouseLeave={handleClose}>
-      <div>
+      <div className={styles['home-icon']}>
         <Link href={'/home'}>
           <Image src={logo} alt='logo' width={40} height={40} />
         </Link>
       </div>
-      <div>
+      <div className={styles.links}>
         <Links
           list={MENU_LIST}
           isMenu={true}
